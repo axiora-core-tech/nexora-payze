@@ -1,6 +1,6 @@
 # Payze — Pay with Ease
 
-A payments SaaS app prototype with full service-layer architecture, realistic loading states, and simulated API latency.
+Multi-tenant payments SaaS with a public marketing site, demo booking flow, and per-client isolated workspaces.
 
 ## Run it
 
@@ -11,76 +11,55 @@ npm run dev
 
 Open http://localhost:5173
 
-## Build for production
+## The three entry points
 
-```bash
-npm run build
-npm run preview
-```
+| URL | What it is | Who uses it |
+|---|---|---|
+| `/` | Public marketing home page | Prospects |
+| `/book-demo` | Calendar + form + Zoom scheduling | Prospects |
+| `/app` | Default merchant workspace (contains Super Admin) | You, the platform operator |
+| `/t/{slug}` | Client-specific workspace (e.g. `/t/acme-corp`) | Each onboarded client |
+| `/app/super-admin` | Tenant management console | You |
+
+## Try the full flow
+
+1. **Visit `/`** — the marketing home. Scroll through benefits, AI, numbers, tech sections.
+2. **Click "Book a demo"** — pick a date, pick a time, fill the form. Confirmation screen shows a realistic email preview with Zoom link.
+3. **Visit `/app/super-admin`** — you'll see your booking appear under "Demo Requests" tab. Also 4 seeded tenants under "Client Workspaces".
+4. **Click "Onboard new client"** — fill the form. Pick a URL slug like `nova-corp`. Watch the banner appear with the new workspace URL.
+5. **Click "Open workspace"** — you're now at `/t/nova-corp`. Header shows the tenant name + color pill. Navigate around — it's the full merchant experience, scoped to that tenant.
+6. **Navigate to `/t/acme-corp`** — Acme's workspace. Everything is tenant-aware.
 
 ## Architecture
 
-### Mock data → services → UI
-```
-src/assets/mock-data/*.json  →  src/services/*  →  useAsync hook  →  Pages
-```
+### Marketing + Booking
 
-All data lives in 13 JSON files under `src/assets/mock-data/`. Services in `src/services/index.ts` wrap the JSON with `mockFetch()`, which simulates realistic network latency (300–900ms for GETs, 500–1200ms for mutations). The `useAsync` hook handles loading, error, and data states uniformly across every page.
+- **HomePage** (`src/app/pages/Home.tsx`) — single-page marketing site with parallax hero, animated counters, benefits grid, dark AI section, numbers strip, tech showcase, testimonial, CTA.
+- **BookDemoPage** (`src/app/pages/BookDemo.tsx`) — 3-step flow (pick slot → details → confirmed). Generates real Zoom-style URLs and meeting IDs. Email preview shown post-booking.
 
-**To connect to a real backend**, replace the internals of `src/services/api.ts` with real `fetch()` calls. The service interfaces and UI code remain unchanged.
+### Multi-tenancy
 
-### Files
+Every route under `/t/{slug}` wraps the app in `<TenantWorkspace>`, which:
+- Looks up the tenant by slug
+- Provides the tenant via `useTenant()` hook to any child
+- Shows a not-found redirect if the slug is invalid
+- The `Layout` reads the slug from params to build `basePath = /t/{slug}` and all nav/links respect it
+- The header shows the tenant's name + brand color when scoped
+- The Super Admin nav item is hidden inside tenant workspaces (only visible in `/app`)
 
-- `src/assets/mock-data/` — 13 JSON files (dashboard, admin, analytics, settlements, subscriptions, risk, payment-links, payment-methods, invoice, developer, onboarding, notifications, qr)
-- `src/services/api.ts` — `mockFetch()` + `mockMutate()` with configurable latency and optional failure-rate simulation
-- `src/services/index.ts` — 13 typed domain services
-- `src/hooks/useAsync.ts` — generic async-data hook with refetch
-- `src/app/components/Loaders.tsx` — Skeleton, Spinner, CardSkeleton, RowSkeleton, PageLoader, ErrorState (with retry)
+### Data persistence
 
-### Service-wired pages (load via useAsync + show skeletons)
+- **Tenants and demo bookings** persist in `localStorage` (keys: `payze.tenants`, `payze.demoBookings`). Seeded on first load with 4 example tenants.
+- **Everything else** uses the same `mockFetch` latency-simulation pattern as before.
 
-- Dashboard (`/`)
-- Admin (`/admin`)
-- Analytics (`/analytics`)
-- Subscriptions (`/subscriptions`)
-- Risk (`/risk`)
-- Settlements (`/settlements`)
-- Payment Links (`/payment-links`)
+### Where to plug in real backend
 
-### Pages using inline data
+- **`src/services/api.ts`** — swap `mockFetch` for real `fetch()` calls.
+- **`src/services/tenants.ts`** — `bookingService.create()` has a `TODO` comment pointing at the exact spot where the real Zoom API call should go (`POST https://api.zoom.us/v2/users/me/meetings`). Email sending via SendGrid/Resend happens right after.
+- **For real multi-tenancy**, back `tenantService` with a DB table instead of localStorage. The service interface stays identical.
 
-These still work and compile, but use hardcoded arrays. JSON and services already exist for each — extending them follows the Dashboard.tsx pattern exactly.
+## Navigation dock
 
-- PaymentUI (`/pay`)
-- Invoice (`/invoice`)
-- QRCode (`/qr`)
-- Onboarding (`/onboarding`)
-- Developer (`/developer`)
+Service-backed pages (Dashboard, Admin, Analytics, Subscriptions, Risk, Settlements, Payment Links, PaymentUI, Invoice, QRCode, Onboarding, Developer) all work identically in both `/app` and `/t/{slug}` contexts.
 
-## Key behaviors
-
-### Brand
-- Animated favicon (SVG SMIL with Safari JS-PNG-swap fallback)
-- Clickable Payze wordmark linking to `/` with animated teal → blue → indigo gradient
-- Branded loading spinner used throughout
-
-### Navigation
-- Home icon centered in the floating dock with brand gradient
-- Left of Home: Onboarding · Admin · Developer · Risk · Settlements
-- Right of Home: Pay · Invoice · Links · QR · Subs · Analytics
-
-### Feedback
-- All actions fire sonner toast notifications (success, error, or info variants based on context)
-- Notification bell shows live unread count with brand-gradient badge
-- "Mark all read" and individual notification clicks work
-
-### Loading simulation
-Tweak `src/services/api.ts` to adjust latency or inject failures:
-
-```typescript
-mockFetch(data, { minLatency: 500, maxLatency: 2000, failureRate: 0.1 })
-```
-
-## Known warnings
-
-- JS bundle is 974 KB (274 KB gzipped). Not a functionality issue. To reduce, add `manualChunks` to `vite.config.ts` or use `React.lazy()` on routes.
+The Super Admin button (crown icon, amber accent) appears only in the default `/app` workspace.

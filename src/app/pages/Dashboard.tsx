@@ -1,12 +1,14 @@
 import { motion } from "motion/react";
 import { ArrowUpRight, ArrowDownLeft, Send, Link as LinkIcon, Download, Zap, ArrowRight } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import { dashboardService } from "../../services";
 import { useAsync } from "../../hooks/useAsync";
 import { CardSkeleton, RowSkeleton, Skeleton, ErrorState } from "../components/Loaders";
 
 export function Dashboard() {
   const { data, loading, error, refetch } = useAsync(() => dashboardService.getOverview(), []);
+  const params = useParams<{ slug?: string }>();
+  const basePath = params.slug ? `/t/${params.slug}` : '/app';
 
   if (error) return <ErrorState message="Couldn't load dashboard" onRetry={refetch} />;
 
@@ -47,13 +49,13 @@ export function Dashboard() {
 
         {/* Action Pills */}
         <div className="flex gap-4">
-          <Link to="/pay" className="group flex items-center gap-3 px-6 py-4 rounded-full bg-stone-900 text-white hover:bg-stone-800 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+          <Link to={`${basePath}/pay`} className="group flex items-center gap-3 px-6 py-4 rounded-full bg-stone-900 text-white hover:bg-stone-800 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
             <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-md">
               <Send size={16} />
             </div>
             <span className="font-medium pr-2">Send Money</span>
           </Link>
-          <Link to="/invoice" className="group flex items-center justify-center w-16 h-16 rounded-full bg-white text-stone-800 border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
+          <Link to={`${basePath}/invoice`} className="group flex items-center justify-center w-16 h-16 rounded-full bg-white text-stone-800 border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
             <Download size={20} />
           </Link>
         </div>
@@ -68,7 +70,7 @@ export function Dashboard() {
           </div>
           <h3 className="text-xl font-medium text-stone-800 mb-2">Generate Payment Link</h3>
           <p className="text-stone-500 text-sm mb-6 max-w-[80%] leading-relaxed">Share a frictionless checkout experience with anyone, anywhere.</p>
-          <Link to="/payment-links" className="flex items-center gap-2 text-stone-800 font-medium text-sm group/btn w-fit">
+          <Link to={`${basePath}/payment-links`} className="flex items-center gap-2 text-stone-800 font-medium text-sm group/btn w-fit">
             Create link <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
           </Link>
         </motion.div>
@@ -80,7 +82,7 @@ export function Dashboard() {
           </div>
           <h3 className="text-xl font-medium text-stone-800 mb-2">Instant UPI Setup</h3>
           <p className="text-stone-500 text-sm mb-6 max-w-[80%] leading-relaxed">Connect your VPA and start accepting instant mobile payments.</p>
-          <Link to="/onboarding" className="flex items-center gap-2 text-stone-800 font-medium text-sm group/btn w-fit">
+          <Link to={`${basePath}/onboarding`} className="flex items-center gap-2 text-stone-800 font-medium text-sm group/btn w-fit">
             Configure <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
           </Link>
         </motion.div>
@@ -90,7 +92,7 @@ export function Dashboard() {
       <section className="pb-16">
         <div className="flex items-center justify-between mb-8">
           <h3 className="text-2xl font-light text-stone-800">Recent Movements</h3>
-          <Link to="/analytics" className="text-stone-400 hover:text-stone-800 transition-colors text-sm font-medium">See All</Link>
+          <Link to={`${basePath}/analytics`} className="text-stone-400 hover:text-stone-800 transition-colors text-sm font-medium">See All</Link>
         </div>
         <div className="space-y-4">
           {loading ? (

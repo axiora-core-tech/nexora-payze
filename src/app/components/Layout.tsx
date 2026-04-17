@@ -1,12 +1,13 @@
-import { Link, Outlet, useLocation, useNavigation, useNavigate } from "react-router";
+import { Link, Outlet, useLocation, useNavigation, useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Search, Bell, User, Settings, LogOut, CheckCircle2,
-  AlertTriangle, FileText, Terminal
+  AlertTriangle, FileText, Terminal, Crown
 } from "lucide-react";
 import { toast } from "sonner";
 import { notificationsService } from "../../services";
+import { useTenant } from "./TenantContext";
 
 // Animated Payze brand logo — matches the favicon exactly
 function PayzeLogo({ size = 32 }: { size?: number }) {
@@ -60,6 +61,7 @@ function CustomIcon({ name, size = 20, active }: { name: string; size?: number; 
       {name === "Onboarding" && <><circle cx="12" cy="7" r="4" /><path d="M5 21C5 17.5 8 14 12 14C16 14 19 17.5 19 21" /></>}
       {name === "Admin" && <><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><path d="M14 14H21V21H14V14Z" fill="currentColor" /></>}
       {name === "Dev" && <><path d="M8 6L2 12L8 18M16 6L22 12L16 18M14 4L10 20" /></>}
+      {name === "Crown" && <><path d="M2 8L6 14L12 4L18 14L22 8V20H2V8Z" /><path d="M12 4V2M6 14L4 16M18 14L20 16" /></>}
     </svg>
   );
 }
@@ -68,12 +70,21 @@ export function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const navigation = useNavigation();
+  const params = useParams<{ slug?: string }>();
+  const tenant = useTenant();
   const [isNavigating, setIsNavigating] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [notifications, setNotifications] = useState<Array<{ id: number; icon: any; title: string; desc: string; time: string; unread: boolean }>>([]);
+
+  // Workspace base path: /t/{slug} when tenant-scoped, else /app
+  const basePath = params.slug ? `/t/${params.slug}` : '/app';
+  // Strip base from current path for active-route matching
+  const subpath = location.pathname.startsWith(basePath)
+    ? location.pathname.slice(basePath.length) || '/'
+    : location.pathname;
 
   // Load notifications from service on mount
   useEffect(() => {
@@ -148,8 +159,8 @@ export function Layout() {
 
       {/* Top Header */}
       <header className="w-full px-6 py-4 flex items-center justify-between z-50 relative">
-        {/* Clickable Payze logo — goes home */}
-        <Link to="/" className="flex items-center gap-3 group relative" aria-label="Payze home">
+        {/* Clickable Payze logo — goes to workspace home */}
+        <Link to={basePath} className="flex items-center gap-3 group relative" aria-label="Workspace home">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -184,6 +195,24 @@ export function Layout() {
           `}</style>
         </Link>
 
+        {/* Tenant identity pill — visible when inside /t/:slug workspace */}
+        {tenant && (
+          <motion.div
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="hidden md:flex items-center gap-2.5 ml-4 pl-4 border-l border-stone-200"
+          >
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0"
+              style={{ backgroundColor: tenant.brandColor }}>
+              {tenant.name.charAt(0)}
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-medium text-stone-900 leading-tight">{tenant.name}</span>
+              <span className="text-[10px] font-mono text-stone-400 leading-tight">/t/{tenant.slug}</span>
+            </div>
+          </motion.div>
+        )}
+
         <div className="flex items-center gap-4 relative">
           {/* Search */}
           <div className="relative z-50 flex items-center justify-end">
@@ -215,23 +244,23 @@ export function Layout() {
                         <button onClick={() => handleSearchSubmit(searchQuery)} className="w-full text-left px-3 py-2 bg-white rounded-xl text-sm text-stone-900 flex items-center gap-2 shadow-sm border border-stone-100 hover:bg-stone-50 transition-colors">
                           <Search size={14} className="text-stone-400" /> Search "{searchQuery}"
                         </button>
-                        <button onClick={() => handleSearchSuggestionClick(`Customer: ${searchQuery}`, "/admin")} className="w-full text-left px-3 py-2 hover:bg-white rounded-xl text-sm text-stone-700 flex items-center gap-2 transition-colors">
+                        <button onClick={() => handleSearchSuggestionClick(`Customer: ${searchQuery}`, `${basePath}/admin`)} className="w-full text-left px-3 py-2 hover:bg-white rounded-xl text-sm text-stone-700 flex items-center gap-2 transition-colors">
                           <User size={14} /> Customer: {searchQuery}
                         </button>
-                        <button onClick={() => handleSearchSuggestionClick(`Invoice #${Math.floor(Math.random() * 10000)}`, "/invoice")} className="w-full text-left px-3 py-2 hover:bg-white rounded-xl text-sm text-stone-700 flex items-center gap-2 transition-colors">
+                        <button onClick={() => handleSearchSuggestionClick(`Invoice #${Math.floor(Math.random() * 10000)}`, `${basePath}/invoice`)} className="w-full text-left px-3 py-2 hover:bg-white rounded-xl text-sm text-stone-700 flex items-center gap-2 transition-colors">
                           <FileText size={14} /> Invoice matching "{searchQuery}"
                         </button>
                       </>
                     ) : (
                       <>
                         <p className="text-[10px] font-semibold uppercase tracking-wider text-stone-400 px-2 py-1">Suggestions</p>
-                        <button onClick={() => handleSearchSuggestionClick("Invoice INV-2024", "/invoice")} className="w-full text-left px-3 py-2 hover:bg-white rounded-xl text-sm text-stone-700 flex items-center gap-2 transition-colors">
+                        <button onClick={() => handleSearchSuggestionClick("Invoice INV-2024", `${basePath}/invoice`)} className="w-full text-left px-3 py-2 hover:bg-white rounded-xl text-sm text-stone-700 flex items-center gap-2 transition-colors">
                           <FileText size={14} /> Invoice INV-2024
                         </button>
-                        <button onClick={() => handleSearchSuggestionClick("John Doe", "/admin")} className="w-full text-left px-3 py-2 hover:bg-white rounded-xl text-sm text-stone-700 flex items-center gap-2 transition-colors">
+                        <button onClick={() => handleSearchSuggestionClick("John Doe", `${basePath}/admin`)} className="w-full text-left px-3 py-2 hover:bg-white rounded-xl text-sm text-stone-700 flex items-center gap-2 transition-colors">
                           <User size={14} /> John Doe
                         </button>
-                        <button onClick={() => handleSearchSuggestionClick("API Documentation", "/developer")} className="w-full text-left px-3 py-2 hover:bg-white rounded-xl text-sm text-stone-700 flex items-center gap-2 transition-colors">
+                        <button onClick={() => handleSearchSuggestionClick("API Documentation", `${basePath}/developer`)} className="w-full text-left px-3 py-2 hover:bg-white rounded-xl text-sm text-stone-700 flex items-center gap-2 transition-colors">
                           <Terminal size={14} /> API Documentation
                         </button>
                       </>
@@ -396,22 +425,30 @@ export function Layout() {
       <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 px-4 w-full max-w-[95vw] overflow-x-auto hide-scrollbar flex justify-center pb-4 -mb-4">
         <nav className="flex items-center gap-1.5 p-2 bg-white/80 backdrop-blur-2xl rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,1)] border border-stone-200/50 w-max pointer-events-auto transition-transform hover:scale-[1.02] duration-300">
           {/* LEFT side — management/admin */}
-          <NavItem to="/onboarding" icon="Onboarding" label="Onboarding" active={location.pathname === "/onboarding"} />
-          <NavItem to="/admin" icon="Admin" label="Admin" active={location.pathname === "/admin"} />
-          <NavItem to="/developer" icon="Dev" label="Developer" active={location.pathname === "/developer"} />
-          <NavItem to="/risk" icon="Risk" label="Risk" active={location.pathname === "/risk"} />
-          <NavItem to="/settlements" icon="Settlements" label="Settlements" active={location.pathname === "/settlements"} />
+          <NavItem to={`${basePath}/onboarding`} icon="Onboarding" label="Onboarding" active={subpath === "/onboarding"} />
+          <NavItem to={`${basePath}/admin`} icon="Admin" label="Admin" active={subpath === "/admin"} />
+          <NavItem to={`${basePath}/developer`} icon="Dev" label="Developer" active={subpath === "/developer"} />
+          <NavItem to={`${basePath}/risk`} icon="Risk" label="Risk" active={subpath === "/risk"} />
+          <NavItem to={`${basePath}/settlements`} icon="Settlements" label="Settlements" active={subpath === "/settlements"} />
 
           {/* CENTER — Home */}
-          <NavItem to="/" icon="Home" label="Home" active={location.pathname === "/"} featured />
+          <NavItem to={basePath} icon="Home" label="Home" active={subpath === "/" || subpath === ""} featured />
 
           {/* RIGHT side — operational/daily use */}
-          <NavItem to="/pay" icon="Pay" label="Pay" active={location.pathname.startsWith("/pay") && location.pathname !== "/payment-links"} />
-          <NavItem to="/invoice" icon="Invoice" label="Invoice" active={location.pathname === "/invoice"} />
-          <NavItem to="/payment-links" icon="Links" label="Links" active={location.pathname === "/payment-links"} />
-          <NavItem to="/qr" icon="QR" label="QR" active={location.pathname === "/qr"} />
-          <NavItem to="/subscriptions" icon="Subs" label="Subs" active={location.pathname === "/subscriptions"} />
-          <NavItem to="/analytics" icon="Analytics" label="Analytics" active={location.pathname === "/analytics"} />
+          <NavItem to={`${basePath}/pay`} icon="Pay" label="Pay" active={subpath.startsWith("/pay") && subpath !== "/payment-links"} />
+          <NavItem to={`${basePath}/invoice`} icon="Invoice" label="Invoice" active={subpath === "/invoice"} />
+          <NavItem to={`${basePath}/payment-links`} icon="Links" label="Links" active={subpath === "/payment-links"} />
+          <NavItem to={`${basePath}/qr`} icon="QR" label="QR" active={subpath === "/qr"} />
+          <NavItem to={`${basePath}/subscriptions`} icon="Subs" label="Subs" active={subpath === "/subscriptions"} />
+          <NavItem to={`${basePath}/analytics`} icon="Analytics" label="Analytics" active={subpath === "/analytics"} />
+
+          {/* Super Admin — only visible in non-tenant (default /app) workspace */}
+          {!tenant && (
+            <>
+              <div className="w-px h-6 bg-stone-200 mx-1" />
+              <NavItem to={`${basePath}/super-admin`} icon="Crown" label="Super Admin" active={subpath === "/super-admin"} superAdmin />
+            </>
+          )}
         </nav>
       </div>
 
@@ -423,7 +460,7 @@ export function Layout() {
   );
 }
 
-function NavItem({ to, icon, label, active, featured }: { to: string; icon: string; label: string; active: boolean; featured?: boolean }) {
+function NavItem({ to, icon, label, active, featured, superAdmin }: { to: string; icon: string; label: string; active: boolean; featured?: boolean; superAdmin?: boolean }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -437,12 +474,18 @@ function NavItem({ to, icon, label, active, featured }: { to: string; icon: stri
       {active && (
         <motion.div
           layoutId="nav-indicator"
-          className={`absolute inset-0 rounded-full shadow-md ${featured ? 'bg-gradient-to-br from-[#00D4AA] to-[#00A3FF]' : 'bg-stone-900'}`}
+          className={`absolute inset-0 rounded-full shadow-md ${
+            superAdmin ? 'bg-gradient-to-br from-amber-400 to-amber-600' :
+            featured ? 'bg-gradient-to-br from-[#00D4AA] to-[#00A3FF]' : 'bg-stone-900'
+          }`}
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
         />
       )}
       {!active && featured && (
         <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#00D4AA]/10 to-[#00A3FF]/10" />
+      )}
+      {!active && superAdmin && (
+        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-400/15 to-amber-600/10" />
       )}
       <AnimatePresence>
         {!active && isHovered && (
@@ -455,7 +498,12 @@ function NavItem({ to, icon, label, active, featured }: { to: string; icon: stri
           />
         )}
       </AnimatePresence>
-      <div className={`relative z-10 flex items-center justify-center transition-colors duration-300 ${active ? "text-white" : featured ? "text-[#00A3FF]" : "text-stone-500 group-hover:text-stone-900"}`}>
+      <div className={`relative z-10 flex items-center justify-center transition-colors duration-300 ${
+        active ? "text-white" :
+        superAdmin ? "text-amber-600" :
+        featured ? "text-[#00A3FF]" :
+        "text-stone-500 group-hover:text-stone-900"
+      }`}>
         <motion.div
           animate={{
             scale: active ? 1 : isHovered ? 1.1 : 1,

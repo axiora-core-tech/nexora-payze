@@ -129,3 +129,7 @@ export const notificationsService = {
 export const qrService = {
   getAll: () => mockFetch(qrData),
 };
+
+// Multi-tenant + demo booking services
+export { tenantService, bookingService } from './tenants';
+export type { Tenant, DemoBooking } from './tenants';
