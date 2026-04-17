@@ -1,60 +1,47 @@
-import { createBrowserRouter, Outlet } from "react-router";
-import { Layout } from "./components/Layout";
-import { TenantWorkspace } from "./components/TenantContext";
-import { HomePage } from "./pages/Home";
-import { BookDemoPage } from "./pages/BookDemo";
-import { TenantsPage } from "./pages/Tenants";
-import { Dashboard } from "./pages/Dashboard";
-import { PaymentUI } from "./pages/PaymentUI";
-import { AdminDashboard } from "./pages/Admin";
-import { DeveloperPage } from "./pages/Developer";
-import { InvoicePage } from "./pages/Invoice";
-import { RiskPage } from "./pages/Risk";
-import { QRCodePage } from "./pages/QRCode";
-import { SubscriptionsPage } from "./pages/Subscriptions";
-import { AnalyticsPage } from "./pages/Analytics";
-import { SettlementsPage } from "./pages/Settlements";
-import { OnboardingPage } from "./pages/Onboarding";
-import { PaymentLinks } from "./pages/PaymentLinks";
+import React from 'react';
+import { createBrowserRouter } from 'react-router';
+import { AppLayout } from './AppLayout';
+import { TenantWorkspace } from './components/TenantContext';
 
-// All the merchant workspace routes — shared between /app and /t/:slug
-const workspaceRoutes = [
-  { index: true, Component: Dashboard },
-  { path: "pay", Component: PaymentUI },
-  { path: "pay/:id", Component: PaymentUI },
-  { path: "payment-links", Component: PaymentLinks },
-  { path: "admin", Component: AdminDashboard },
-  { path: "developer", Component: DeveloperPage },
-  { path: "invoice", Component: InvoicePage },
-  { path: "risk", Component: RiskPage },
-  { path: "qr", Component: QRCodePage },
-  { path: "subscriptions", Component: SubscriptionsPage },
-  { path: "analytics", Component: AnalyticsPage },
-  { path: "settlements", Component: SettlementsPage },
-  { path: "onboarding", Component: OnboardingPage },
-  { path: "super-admin", Component: TenantsPage },
+import { Home } from './pages/Home';
+import { BookDemo } from './pages/BookDemo';
+import { Dashboard } from './pages/Dashboard';
+import { Transactions } from './pages/Transactions';
+import { Tenants } from './pages/Tenants';
+import { Risk } from './pages/Risk';
+import { Settlements } from './pages/Settlements';
+import { Analytics } from './pages/Analytics';
+import { Invoices } from './pages/Invoices';
+import { PaymentLinks } from './pages/PaymentLinks';
+import { Subscriptions } from './pages/Subscriptions';
+import { Developer } from './pages/Developer';
+import { Admin } from './pages/Admin';
+import { SuperAdmin } from './pages/SuperAdmin';
+import { Onboarding } from './pages/Onboarding';
+
+const appChildren = [
+  { index: true, element: <Dashboard /> },
+  { path: 'transactions', element: <Transactions /> },
+  { path: 'tenants', element: <Tenants /> },
+  { path: 'risk', element: <Risk /> },
+  { path: 'settlements', element: <Settlements /> },
+  { path: 'analytics', element: <Analytics /> },
+  { path: 'invoices', element: <Invoices /> },
+  { path: 'links', element: <PaymentLinks /> },
+  { path: 'subscriptions', element: <Subscriptions /> },
+  { path: 'developer', element: <Developer /> },
+  { path: 'admin', element: <Admin /> },
+  { path: 'super-admin', element: <SuperAdmin /> },
+  { path: 'onboarding', element: <Onboarding /> },
 ];
 
 export const router = createBrowserRouter([
-  // ── Public marketing ──
-  { path: "/", Component: HomePage },
-  { path: "/book-demo", Component: BookDemoPage },
-
-  // ── Default merchant workspace (no tenant scope, for demo/legacy) ──
+  { path: '/', element: <Home /> },
+  { path: '/book-demo', element: <BookDemo /> },
+  { path: '/app', element: <AppLayout />, children: appChildren },
   {
-    path: "/app",
-    Component: Layout,
-    children: workspaceRoutes,
-  },
-
-  // ── Tenant-scoped workspace ──
-  {
-    path: "/t/:slug",
-    Component: () => (
-      <TenantWorkspace>
-        <Layout />
-      </TenantWorkspace>
-    ),
-    children: workspaceRoutes,
+    path: '/t/:slug',
+    element: <TenantWorkspace><AppLayout /></TenantWorkspace>,
+    children: appChildren.filter(c => c.path !== 'super-admin'),
   },
 ]);

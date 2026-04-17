@@ -1,181 +1,134 @@
-import { useState } from "react";
-import { motion } from "motion/react";
-import { ShieldAlert, ShieldCheck, Shield, Plus, Filter, AlertTriangle, CheckCircle2, XCircle, Activity, BarChart3 } from "lucide-react";
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { toast } from "sonner";
-import { riskService } from "../../services";
-import { useAsync } from "../../hooks/useAsync";
-import { PageLoader, ErrorState } from "../components/Loaders";
+import React from 'react';
+import { colors, radius, typography } from '../../design/tokens';
+import { Card, Kicker, Button } from '../../design/primitives';
+import * as Icons from '../../design/icons';
 
-export function RiskPage() {
-  const [activeTab, setActiveTab] = useState("rules");
-  const { data, loading, error, refetch } = useAsync(() => riskService.getAll(), []);
+const riskRegister = [
+  { id: 'R.047', subject: 'First-time purchase, high ticket', sub: 'Card issued abroad; billing address mismatch; 7-day-old account', score: 91, time: '14:32', verdict: 'declined' },
+  { id: 'R.046', subject: 'Velocity anomaly, four cards in eight minutes', sub: 'Same device fingerprint; consecutive declines on three; pattern familiar', score: 87, time: '14:19', verdict: 'blocked' },
+  { id: 'R.045', subject: 'Returning subscriber — elevated amount', sub: '22-month customer; step-up auth requested, honoured', score: 42, time: '13:58', verdict: 'passed', pill: 'Permitted w/3DS' },
+  { id: 'R.044', subject: 'Card tested against seven micro-amounts', sub: 'Classic enumeration, visible in first three attempts; rest never reached bank', score: 96, time: '11:07', verdict: 'blocked' },
+  { id: 'R.043', subject: 'Mid-ticket, corporate card, known buyer', sub: 'Quiet signals throughout; flagged only for amount novelty', score: 18, time: '10:22', verdict: 'allowed' },
+];
 
-  if (error) return <ErrorState message="Couldn't load risk data" onRetry={refetch} />;
-  if (loading || !data) return <PageLoader label="Loading risk data" />;
-
-  const distribution = data.distribution;
-  const rules = data.rules;
-  const reviewQueue = data.review_queue;
-  const metrics = data.metrics;
-
+export function Risk() {
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-12 mt-4 relative">
-      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-gradient-to-tr from-rose-100/40 to-orange-100/40 rounded-full blur-[100px] -z-10 mix-blend-multiply opacity-50 pointer-events-none" />
-
-      {/* Header */}
-      <div className="flex justify-between items-start">
-        <div className="flex items-center gap-6">
-          <div className="w-20 h-20 rounded-[28px] bg-stone-100 flex items-center justify-center text-stone-900 mb-2 border border-stone-200/50 shrink-0 shadow-sm">
-            <ShieldAlert size={36} />
+    <div style={{ animation: 'payze-fadein 0.4s ease-out' }}>
+      <div style={{ marginBottom: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '16px', flexWrap: 'wrap' }}>
+        <div>
+          <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>Risk</Kicker>
+          <div style={{ ...typography.pageTitle, color: colors.ink }}>Watch</div>
+          <div style={{ fontSize: '13px', color: colors.text2, marginTop: '2px' }}>
+            Signals, scores, and decisions. Updated live.
           </div>
+        </div>
+        <Button variant="secondary" icon={<Icons.IconSettings size={14} />}>Risk rules</Button>
+      </div>
+
+      {/* Hero row: gauge + stats */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.3fr)', gap: '20px', marginBottom: '20px' }}>
+        <Card padded style={{ padding: '32px' }}>
+          <Kicker style={{ marginBottom: '20px' }}>Composite risk posture</Kicker>
+          <RiskGauge score={23} label="Vigilant" />
+          <div style={{ fontSize: '12px', color: colors.text2, marginTop: '18px', lineHeight: 1.6, textAlign: 'center' }}>
+            Three attempts declined this hour; none permitted passage.
+          </div>
+        </Card>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', alignContent: 'stretch' }}>
+          <MetricCard label="Declined today" value="11" sub="of 427 attempts" />
+          <MetricCard label="Disputes open" value="3" sub="2 awaiting docs" />
+          <MetricCard label="Win rate, YTD" value="78%" sub="industry avg: 34%" />
+          <MetricCard label="Blocked by rules" value="₹42,800" sub="22 attempts" />
+        </div>
+      </div>
+
+      {/* Register */}
+      <Card padded>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '20px' }}>
           <div>
-            <h1 className="text-4xl md:text-5xl font-light tracking-tight text-stone-900 mb-2">Fraud & Risk.</h1>
-            <p className="text-stone-500 max-w-md text-lg leading-relaxed">
-              Configure risk thresholds, review flagged transactions, and monitor platform security.
-            </p>
+            <Kicker style={{ marginBottom: '4px' }}>The register</Kicker>
+            <div style={{ fontSize: '15px', fontWeight: 600, color: colors.ink }}>Attempts, scored and judged</div>
           </div>
+          <Button variant="ghost" size="sm">View all →</Button>
         </div>
-        <button onClick={() => toast.info('Opening rule creator')} className="group flex items-center gap-2 px-6 py-4 rounded-full bg-stone-900 text-white hover:bg-stone-800 shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all font-medium">
-          <Plus size={18} />
-          Create Rule
-        </button>
-      </div>
 
-      {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 bg-stone-100/50 p-1.5 rounded-full w-fit border border-stone-200/50">
-        {[
-          { id: "rules", label: "Risk Rules", icon: Shield },
-          { id: "queue", label: "Review Queue", icon: AlertTriangle },
-          { id: "analytics", label: "Analytics", icon: BarChart3 }
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium text-sm transition-all ${
-              activeTab === tab.id 
-                ? "bg-white text-stone-900 shadow-sm border border-stone-200/50" 
-                : "text-stone-500 hover:text-stone-700 hover:bg-stone-200/30"
-            }`}
-          >
-            <tab.icon size={16} />
-            {tab.label}
-          </button>
+        <div style={{ display: 'grid', gridTemplateColumns: '0.6fr 2fr 0.6fr 0.7fr 0.8fr', gap: '16px', padding: '10px 0', borderTop: `0.5px solid ${colors.ink}`, borderBottom: `0.5px solid ${colors.border}`, fontSize: '10px', fontWeight: 500, color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+          <div>N°</div>
+          <div>Subject · Signal</div>
+          <div>Score</div>
+          <div>Hour</div>
+          <div style={{ textAlign: 'right' }}>Judgement</div>
+        </div>
+
+        {riskRegister.map((r, i) => (
+          <div key={r.id} style={{
+            display: 'grid', gridTemplateColumns: '0.6fr 2fr 0.6fr 0.7fr 0.8fr', gap: '16px',
+            padding: '18px 0', borderBottom: i < riskRegister.length - 1 ? `0.5px solid ${colors.border}` : 'none',
+            alignItems: 'center',
+          }}>
+            <div style={{ fontFamily: typography.family.mono, fontSize: '11px', color: r.score >= 80 ? colors.ink : colors.text3 }}>{r.id}</div>
+            <div>
+              <div style={{ fontSize: '13px', color: colors.ink, fontWeight: 500, marginBottom: '2px' }}>
+                {r.subject}
+                {r.pill && (
+                  <span style={{ fontFamily: typography.family.mono, fontSize: '10px', letterSpacing: '0.1em', color: colors.teal, border: `0.5px solid ${colors.teal}`, padding: '2px 8px', marginLeft: '8px', borderRadius: radius.pill, textTransform: 'uppercase' }}>
+                    {r.pill}
+                  </span>
+                )}
+              </div>
+              <div style={{ fontSize: '11px', color: colors.text3, fontStyle: 'italic', lineHeight: 1.5 }}>{r.sub}</div>
+            </div>
+            <div style={{ fontSize: '18px', fontWeight: 600, color: r.score >= 80 ? colors.ink : r.score >= 40 ? colors.text2 : colors.teal, letterSpacing: '-0.015em' }}>{r.score}</div>
+            <div style={{ fontFamily: typography.family.mono, fontSize: '11px', color: colors.text2 }}>{r.time}</div>
+            <div style={{ textAlign: 'right', fontFamily: typography.family.mono, fontSize: '10px', letterSpacing: '0.1em', color: r.score >= 80 ? colors.ink : colors.text2, textTransform: 'uppercase', fontWeight: 500 }}>
+              {r.verdict}
+            </div>
+          </div>
         ))}
-      </div>
-
-      {activeTab === "rules" && (
-        <div className="grid grid-cols-1 gap-6">
-          {rules.map((rule: any, idx: number) => (
-            <motion.div 
-              key={idx}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.05 }}
-              className="bg-white/60 backdrop-blur-xl border border-stone-100 p-6 rounded-[32px] flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-[0_4px_20px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all"
-            >
-              <div>
-                <h3 className="text-lg font-medium text-stone-800 mb-1">{rule.name}</h3>
-                <div className="flex items-center gap-3 text-sm text-stone-500">
-                  <span className="font-mono bg-stone-100 px-2 py-1 rounded-lg text-stone-600">IF {rule.condition}</span>
-                  <span>→</span>
-                  <span className={`font-medium ${rule.action === 'Block' ? 'text-rose-500' : 'text-orange-500'}`}>{rule.action}</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <button onClick={() => toast.info('Opening rule editor')} className="text-stone-400 hover:text-stone-800 text-sm font-medium">Edit</button>
-                <div className={`w-14 h-8 rounded-full flex items-center p-1 cursor-pointer transition-colors ${rule.status ? 'bg-emerald-500' : 'bg-stone-200'}`}>
-                  <motion.div 
-                    layout 
-                    className="w-6 h-6 bg-white rounded-full shadow-sm"
-                    animate={{ x: rule.status ? 24 : 0 }}
-                  />
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      )}
-
-      {activeTab === "queue" && (
-        <div className="bg-white/60 backdrop-blur-xl border border-stone-100 rounded-[40px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-          <div className="flex justify-between items-center mb-8 border-b border-stone-100 pb-6">
-            <h3 className="text-xl font-medium text-stone-800">Pending Review (12)</h3>
-            <button onClick={() => toast.info('Filters applied to review queue')} className="flex items-center gap-2 text-stone-500 hover:text-stone-800 transition-colors">
-              <Filter size={16} /> Filter
-            </button>
-          </div>
-          
-          <div className="space-y-4">
-            {reviewQueue.map((txn: any, i: number) => (
-              <div key={i} className="flex flex-col md:flex-row items-center justify-between p-4 rounded-3xl hover:bg-stone-50 transition-colors border border-transparent hover:border-stone-100">
-                <div className="flex items-center gap-6 flex-1 w-full">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${txn.risk > 80 ? 'bg-rose-100 text-rose-600' : 'bg-orange-100 text-orange-600'}`}>
-                    <span className="font-bold">{txn.risk}</span>
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-stone-800">{txn.id} <span className="text-stone-400 font-normal ml-2">{txn.time}</span></h4>
-                    <p className="text-sm text-stone-500">Triggered: <span className="font-medium text-stone-700">{txn.rule}</span></p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-8 flex-1 justify-end w-full mt-4 md:mt-0">
-                  <div className="text-right">
-                    <p className="font-medium text-stone-900">{txn.amount}</p>
-                    <p className="text-sm text-stone-400">{txn.method}</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <button onClick={() => toast.error('Transaction rejected', { description: 'Customer will be notified.' })} className="p-3 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-2xl transition-colors"><XCircle size={20} /></button>
-                    <button onClick={() => toast.success('Transaction approved')} className="p-3 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-2xl transition-colors"><CheckCircle2 size={20} /></button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {activeTab === "analytics" && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-white/60 backdrop-blur-xl border border-stone-100 rounded-[40px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-             <h3 className="text-xl font-medium text-stone-800 mb-2">Risk Score Distribution</h3>
-             <p className="text-stone-500 text-sm mb-8">Volume of transactions across risk bands.</p>
-             <div className="h-[300px] w-full">
-               <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={distribution}>
-                    <XAxis key="xaxis" dataKey="score" axisLine={false} tickLine={false} tick={{ fill: "#a8a29e", fontSize: 12 }} dy={10} />
-                    <Tooltip key="tooltip" cursor={{ fill: '#f5f5f4' }} contentStyle={{ borderRadius: "16px", border: "none", boxShadow: "0 4px 20px rgba(0,0,0,0.05)" }} />
-                    <Bar key="bar" dataKey="volume" fill="#f97316" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-               </ResponsiveContainer>
-             </div>
-          </div>
-          
-          <div className="space-y-6">
-            <div className="bg-white/60 backdrop-blur-xl border border-stone-100 rounded-[32px] p-6 flex items-center gap-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-              <div className="w-16 h-16 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-500"><ShieldAlert size={28} /></div>
-              <div>
-                <p className="text-sm text-stone-500 mb-1">Blocked Value (30d)</p>
-                <p className="text-3xl font-light text-stone-900">{metrics.blocked_value_30d}</p>
-              </div>
-            </div>
-            <div className="bg-white/60 backdrop-blur-xl border border-stone-100 rounded-[32px] p-6 flex items-center gap-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-              <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-500"><ShieldCheck size={28} /></div>
-              <div>
-                <p className="text-sm text-stone-500 mb-1">False Positive Rate</p>
-                <p className="text-3xl font-light text-stone-900">{metrics.false_positive_rate}</p>
-              </div>
-            </div>
-            <div className="bg-white/60 backdrop-blur-xl border border-stone-100 rounded-[32px] p-6 flex items-center gap-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-              <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-500"><Activity size={28} /></div>
-              <div>
-                <p className="text-sm text-stone-500 mb-1">Rules Triggered Today</p>
-                <p className="text-3xl font-light text-stone-900">{metrics.rules_triggered_today}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
+      </Card>
     </div>
+  );
+}
+
+function RiskGauge({ score, label }: { score: number; label: string }) {
+  const angle = -138 + (score / 100) * 276;
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <svg viewBox="0 0 280 260" style={{ width: '100%', maxWidth: '260px' }}>
+        <circle cx="140" cy="140" r="110" fill="none" stroke={colors.border} strokeWidth="0.5" />
+        <path d="M 38 140 A 102 102 0 0 1 242 140" fill="none" stroke={colors.borderHover} strokeWidth="0.5" />
+
+        {[0, 25, 50, 75, 100].map((v, i) => {
+          const a = (-180 + (v / 100) * 180) * (Math.PI / 180);
+          const x = 140 + Math.cos(a) * 120;
+          const y = 140 + Math.sin(a) * 120;
+          return (
+            <text key={i} x={x} y={y} fontFamily={typography.family.mono} fontSize="9" fill={colors.text3} textAnchor="middle" dominantBaseline="middle">
+              {v}
+            </text>
+          );
+        })}
+
+        <g transform={`rotate(${angle} 140 140)`}>
+          <line x1="140" y1="140" x2="140" y2="46" stroke={colors.ink} strokeWidth="1.5" />
+          <circle cx="140" cy="140" r="6" fill={colors.ink} />
+          <circle cx="140" cy="140" r="3" fill={colors.teal} />
+        </g>
+
+        <text x="140" y="195" textAnchor="middle" fontFamily={typography.family.sans} fontSize="56" fontWeight="600" fill={colors.ink} letterSpacing="-0.02em">{score}</text>
+        <text x="140" y="220" textAnchor="middle" fontFamily={typography.family.mono} fontSize="10" fill={colors.text2} letterSpacing="3">{label.toUpperCase()}</text>
+      </svg>
+    </div>
+  );
+}
+
+function MetricCard({ label, value, sub }: { label: string; value: string; sub: string }) {
+  return (
+    <Card padded style={{ padding: '18px' }}>
+      <div style={{ fontSize: '11px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>{label}</div>
+      <div style={{ fontSize: '28px', fontWeight: 600, color: colors.ink, letterSpacing: '-0.02em', marginBottom: '4px' }}>{value}</div>
+      <div style={{ fontSize: '11px', color: colors.text2 }}>{sub}</div>
+    </Card>
   );
 }

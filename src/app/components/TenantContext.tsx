@@ -1,7 +1,7 @@
-import { createContext, useContext, ReactNode, useEffect, useState } from 'react';
+import React, { createContext, useContext, ReactNode, useEffect, useState } from 'react';
 import { useParams, Navigate } from 'react-router';
 import { tenantService, Tenant } from '../../services';
-import { PageLoader, ErrorState } from '../components/Loaders';
+import { PageLoader, ErrorState } from '../../design/primitives';
 
 const TenantContext = createContext<Tenant | null>(null);
 
@@ -10,12 +10,12 @@ export function useTenant() {
 }
 
 /**
- * Wraps any route under /t/:slug. Loads the tenant from the slug, provides
- * tenant context to children via useTenant(). Redirects to / if slug is invalid.
+ * Wraps any route under /t/:slug. Loads the tenant from the slug,
+ * provides tenant context to children via useTenant().
  */
 export function TenantWorkspace({ children }: { children: ReactNode }) {
   const { slug } = useParams<{ slug: string }>();
-  const [tenant, setTenant] = useState<Tenant | null | undefined>(undefined); // undefined = loading
+  const [tenant, setTenant] = useState<Tenant | null | undefined>(undefined);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {

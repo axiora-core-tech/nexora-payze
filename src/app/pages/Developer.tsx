@@ -1,140 +1,136 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { Terminal, Key, Webhook, Copy, CheckCircle2, FileJson } from "lucide-react";
-import { toast } from "sonner";
-import { developerService } from "../../services";
-import { useAsync } from "../../hooks/useAsync";
-import { PageLoader, ErrorState } from "../components/Loaders";
+import React, { useState } from 'react';
+import { colors, radius, typography } from '../../design/tokens';
+import { Card, Kicker, Button, Pill } from '../../design/primitives';
+import * as Icons from '../../design/icons';
+import { toast } from 'sonner';
 
-export function DeveloperPage() {
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [isTestMode, setIsTestMode] = useState(true);
-  const { data, loading, error, refetch } = useAsync(
-    () => developerService.getKeys(isTestMode),
-    [isTestMode]
-  );
+export function Developer() {
+  const [mode, setMode] = useState<'test' | 'live'>('test');
+  const [copied, setCopied] = useState<string | null>(null);
 
-  if (error) return <ErrorState message="Couldn't load API keys" onRetry={refetch} />;
+  const keys = mode === 'test'
+    ? [
+        { name: 'Publishable key', value: 'pk_test_a1b2c3d4e5f6g7h8i9j0', env: 'Test' },
+        { name: 'Secret key', value: 'sk_test_9x8y7z6w5v4u3t2s1r0q', env: 'Test' },
+      ]
+    : [
+        { name: 'Publishable key', value: 'pk_live_••••••••••••••', env: 'Live' },
+        { name: 'Secret key', value: 'sk_live_••••••••••••••', env: 'Live' },
+      ];
 
-  const handleCopy = (key: string) => {
-    navigator.clipboard.writeText(key);
-    setCopiedKey(key);
-    toast.success("API key copied to clipboard");
-    setTimeout(() => setCopiedKey(null), 2000);
+  const copy = (v: string) => {
+    navigator.clipboard.writeText(v);
+    setCopied(v);
+    toast.success('Copied to clipboard');
+    setTimeout(() => setCopied(null), 1500);
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-16 mt-8">
-      
-      {/* Abstract Background Orbs */}
-      <div className="fixed top-0 right-0 w-[600px] h-[600px] bg-gradient-to-tr from-stone-200/40 to-stone-300/40 rounded-full blur-[120px] -z-10 mix-blend-multiply opacity-50 pointer-events-none" />
-
-      {/* Header */}
-      <div className="flex items-center gap-6">
-        <div className="w-20 h-20 rounded-[28px] bg-stone-900 flex items-center justify-center text-white shrink-0 shadow-lg">
-          <Terminal size={36} />
-        </div>
-        <div className="flex-1">
-          <div className="flex items-center justify-between mb-3">
-            <h1 className="text-4xl md:text-5xl font-light tracking-tight text-stone-900">Integrate beautifully.</h1>
-            
-            {/* Live/Test Toggle */}
-            <div className="flex items-center gap-3 bg-white/80 backdrop-blur-xl px-4 py-2.5 rounded-full border border-stone-200/80 shadow-sm transition-all hover:bg-white text-base">
-              <span className={`text-xs font-semibold uppercase tracking-wider transition-colors ${!isTestMode ? 'text-stone-900' : 'text-stone-400'}`}>Live</span>
-              <button 
-                onClick={() => { const next = !isTestMode; setIsTestMode(next); toast.info(next ? 'Switched to Test mode' : 'Switched to Live mode'); }}
-                className={`w-12 h-6 rounded-full relative transition-colors ${isTestMode ? 'bg-orange-500' : 'bg-stone-900'}`}
-              >
-                <motion.div layout animate={{ x: isTestMode ? 24 : 0 }} className="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 shadow-sm"/>
-              </button>
-              <span className={`text-xs font-semibold uppercase tracking-wider transition-colors ${isTestMode ? 'text-orange-600' : 'text-stone-400'}`}>Test</span>
-            </div>
+    <div style={{ animation: 'payze-fadein 0.4s ease-out' }}>
+      <div style={{ marginBottom: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '16px', flexWrap: 'wrap' }}>
+        <div>
+          <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>Integrate</Kicker>
+          <div style={{ ...typography.pageTitle, color: colors.ink }}>Developer</div>
+          <div style={{ fontSize: '13px', color: colors.text2, marginTop: '2px' }}>
+            Keys, webhooks, and a code sample to get you live in minutes.
           </div>
-          <p className="text-stone-500 max-w-xl text-lg leading-relaxed">
-            The Payze API is organized around REST, designed to have predictable, resource-oriented URLs, and uses HTTP response codes to indicate API errors.
-          </p>
+        </div>
+        <div style={{ display: 'flex', gap: '6px', background: colors.bg, padding: '4px', borderRadius: radius.pill }}>
+          {['test', 'live'].map(m => (
+            <button
+              key={m}
+              onClick={() => setMode(m as any)}
+              style={{
+                padding: '6px 14px', borderRadius: radius.pill,
+                fontSize: '12px', fontWeight: 500,
+                background: mode === m ? colors.card : 'transparent',
+                color: mode === m ? colors.ink : colors.text2,
+                border: mode === m ? `0.5px solid ${colors.border}` : 'none',
+                cursor: 'pointer', textTransform: 'capitalize',
+                fontFamily: typography.family.sans,
+              }}
+            >
+              {m} mode
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Authentication & Keys */}
-      <section className="bg-white/70 backdrop-blur-xl border border-stone-100 p-8 md:p-12 rounded-[40px] shadow-[0_8px_30px_rgb(0,0,0,0.03)] space-y-8">
-        <div className="flex items-center gap-4 border-b border-stone-100 pb-6">
-          <div className="p-3 bg-stone-50 rounded-2xl"><Key size={20} className="text-stone-700" /></div>
-          <div>
-            <h2 className="text-xl font-medium text-stone-800">API Credentials</h2>
-            <p className="text-sm text-stone-500">Your secret keys for authenticating requests.</p>
-          </div>
+      <Card padded style={{ marginBottom: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <Kicker>API keys</Kicker>
+          <div style={{ fontSize: '11px', color: colors.text3 }}>Rotate with caution. Last rotated 18 days ago.</div>
         </div>
-        
-        <div className="space-y-6">
-          {loading || !data ? (
-            <>
-              <div className="p-5 bg-stone-50/50 border border-stone-100 rounded-3xl h-20 animate-pulse" />
-              <div className="p-5 bg-stone-50/50 border border-stone-100 rounded-3xl h-20 animate-pulse" />
-            </>
-          ) : (
-            data.active_keys.map((key: any) => (
-            <div key={key.id} className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-stone-50/50 border border-stone-100 rounded-3xl group transition-all hover:bg-stone-50">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-1">
-                  <span className="font-medium text-stone-800">{key.name}</span>
-                  <span className="text-[10px] uppercase font-bold tracking-widest bg-stone-200/50 text-stone-500 px-2 py-0.5 rounded-full">{key.env}</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {keys.map((k) => (
+            <div key={k.name} style={{
+              display: 'flex', alignItems: 'center', gap: '14px',
+              padding: '14px', background: colors.bg, borderRadius: radius.md,
+              border: `0.5px solid ${colors.border}`,
+            }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '13px', fontWeight: 500, color: colors.ink }}>{k.name}</span>
+                  <Pill tone={mode === 'live' ? 'ink' : 'outline'}>{k.env}</Pill>
                 </div>
-                <div className="font-mono text-sm text-stone-500 truncate">{key.value}</div>
+                <div style={{ fontFamily: typography.family.mono, fontSize: '12px', color: colors.text2 }}>{k.value}</div>
               </div>
-              <button 
-                onClick={() => handleCopy(key.value)}
-                className="self-start md:self-auto p-3 bg-white border border-stone-200 rounded-2xl text-stone-600 hover:text-stone-900 shadow-sm transition-all flex items-center gap-2 text-sm font-medium hover:shadow-md"
-              >
-                {copiedKey === key.value ? (
-                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}><CheckCircle2 size={16} className="text-emerald-500" /></motion.div>
-                ) : (
-                  <><Copy size={16} /> Copy</>
-                )}
-              </button>
+              <Button variant="secondary" size="sm" icon={copied === k.value ? <Icons.IconCheck size={12} /> : <Icons.IconCopy size={12} />} onClick={() => copy(k.value)}>
+                {copied === k.value ? 'Copied' : 'Copy'}
+              </Button>
             </div>
-            ))
-          )}
+          ))}
         </div>
-      </section>
+      </Card>
 
-      {/* Code Snippet & Webhooks */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <section className="bg-stone-900 border border-stone-800 p-8 rounded-[40px] shadow-2xl space-y-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          <div className="flex items-center gap-4 pb-6">
-            <div className="p-3 bg-stone-800 rounded-2xl"><FileJson size={20} className="text-stone-300" /></div>
-            <div>
-              <h2 className="text-xl font-medium text-white">Create a Payment</h2>
-              <p className="text-sm text-stone-400">Initialize a checkout session.</p>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: '20px' }}>
+        <Card padded={false} style={{ background: '#1A1A1A', color: '#F6F6F2', border: `0.5px solid rgba(255,255,255,0.08)` }}>
+          <div style={{ padding: '16px 20px', borderBottom: `0.5px solid rgba(255,255,255,0.08)`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ fontFamily: typography.family.mono, fontSize: '11px', color: '#B4B4B0', letterSpacing: '0.08em' }}>sample.js</div>
+            <Button variant="ghost" size="sm" style={{ color: '#F6F6F2', borderColor: 'rgba(255,255,255,0.15)' }} icon={<Icons.IconCopy size={11} />}>Copy</Button>
+          </div>
+          <pre style={{
+            margin: 0, padding: '20px',
+            fontFamily: typography.family.mono, fontSize: '12px',
+            color: '#E8E4D9', lineHeight: 1.65,
+            overflow: 'auto',
+          }}>{`import Payze from '@payze/node';
+
+const payze = new Payze(process.env.PAYZE_SECRET);
+
+const payment = await payze.payments.create({
+  amount: 1200,
+  currency: 'inr',
+  method: 'upi',
+  customer: 'cus_a9f3e2',
+  metadata: {
+    invoice: 'INV-0228'
+  }
+});
+
+console.log(payment.id);
+// payze_pmt_9f3e2a1b8d`}</pre>
+        </Card>
+
+        <Card padded>
+          <Kicker style={{ marginBottom: '16px' }}>Webhooks</Kicker>
+          {[
+            { url: 'https://acme.com/api/payze/webhook', events: '142 events · last success 2m ago', status: 'Healthy' },
+            { url: 'https://staging.acme.com/payze', events: '12 events · last failure 1d ago', status: 'Degraded' },
+          ].map((w, i) => (
+            <div key={i} style={{
+              padding: '14px 0',
+              borderBottom: i === 0 ? `0.5px solid ${colors.border}` : 'none',
+            }}>
+              <div style={{ fontFamily: typography.family.mono, fontSize: '12px', color: colors.ink, marginBottom: '4px' }}>{w.url}</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ fontSize: '11px', color: colors.text3 }}>{w.events}</div>
+                <Pill tone={w.status === 'Healthy' ? 'teal' : 'outline'}>{w.status}</Pill>
+              </div>
             </div>
-          </div>
-          <div className="bg-[#1C1C1A] p-6 rounded-3xl font-mono text-sm text-stone-300 overflow-x-auto border border-stone-800/50">
-<pre><code>{`const session = await fintech.checkout.create({
-  payment_method_types: ['card', 'upi'],
-  line_items: [{
-    price: 'price_1MotwRLkdIwHu7',
-    quantity: 1,
-  }],
-  mode: 'payment',
-  success_url: 'https://demo.com/success',
-  cancel_url: 'https://demo.com/cancel',
-});`}</code></pre>
-          </div>
-        </section>
-
-        <section className="bg-white/70 backdrop-blur-xl border border-stone-100 p-8 rounded-[40px] shadow-[0_8px_30px_rgb(0,0,0,0.03)] space-y-6 flex flex-col justify-center text-center items-center">
-          <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 mb-2 border border-emerald-100">
-            <Webhook size={32} />
-          </div>
-          <h2 className="text-2xl font-medium text-stone-800">Webhooks</h2>
-          <p className="text-stone-500 text-sm max-w-[80%] leading-relaxed">
-            Listen for events on your account so your integration can automatically trigger reactions.
-          </p>
-          <button onClick={() => toast.info('Add webhook endpoint', { description: 'Endpoint configuration opening.' })} className="mt-4 px-6 py-3 bg-stone-100 hover:bg-stone-200 text-stone-800 font-medium rounded-full transition-colors flex items-center gap-2">
-            <Webhook size={16} /> Add Endpoint
-          </button>
-        </section>
+          ))}
+          <Button variant="ghost" size="sm" icon={<Icons.IconPlus size={12} />} style={{ marginTop: '12px', width: '100%' }}>Add endpoint</Button>
+        </Card>
       </div>
     </div>
   );

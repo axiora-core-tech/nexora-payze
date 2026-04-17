@@ -1,169 +1,101 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { Repeat, CreditCard, ScanLine, Play, Pause, XOctagon, Plus, Calendar, RotateCcw } from "lucide-react";
-import { toast } from "sonner";
-import { subscriptionsService } from "../../services";
-import { useAsync } from "../../hooks/useAsync";
-import { Skeleton, ErrorState } from "../components/Loaders";
+import React, { useState } from 'react';
+import { colors, radius, typography } from '../../design/tokens';
+import { Card, Kicker, Button, Pill } from '../../design/primitives';
+import * as Icons from '../../design/icons';
 
-export function SubscriptionsPage() {
-  const [tab, setTab] = useState<"upi" | "nach">("upi");
-  const { data, loading, error, refetch } = useAsync(
-    () => subscriptionsService.getByType(tab),
-    [tab]
-  );
+const subs = [
+  { id: 'sub_482a', customer: 'Rohan Shankar', plan: 'Acme Pro · Quarterly', amount: '₹4,500', method: 'UPI Autopay', nextCharge: '17 Jul', status: 'Active' },
+  { id: 'sub_481b', customer: 'Priya Venkataraman', plan: 'Nova Scale', amount: '₹9,999', method: 'NACH', nextCharge: '01 May', status: 'Active' },
+  { id: 'sub_480c', customer: 'Studio Lumière', plan: 'Luminary Growth', amount: '€299', method: 'SEPA DD', nextCharge: '01 May', status: 'Active' },
+  { id: 'sub_479d', customer: 'Test Customer', plan: 'Acme Starter', amount: '₹499', method: 'UPI Autopay', nextCharge: '22 Apr', status: 'Paused' },
+];
 
-  if (error) return <ErrorState message="Couldn't load mandates" onRetry={refetch} />;
+export function Subscriptions() {
+  const [tab, setTab] = useState<'all' | 'upi' | 'nach' | 'international'>('all');
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-12 mt-4 relative">
-      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-gradient-to-tr from-purple-100/40 to-blue-100/40 rounded-full blur-[100px] -z-10 mix-blend-multiply opacity-50 pointer-events-none" />
-
-      {/* Header */}
-      <div className="flex justify-between items-start">
-        <div className="flex items-center gap-6">
-          <div className="w-20 h-20 rounded-[28px] bg-stone-100 flex items-center justify-center text-stone-900 mb-2 border border-stone-200/50 shrink-0 shadow-sm">
-            <Repeat size={36} />
-          </div>
-          <div>
-            <h1 className="text-4xl md:text-5xl font-light tracking-tight text-stone-900 mb-2">Mandates & Auto-Pay.</h1>
-            <p className="text-stone-500 max-w-md text-lg leading-relaxed">
-              Manage recurring payments, subscriptions, and Dunning workflows effortlessly.
-            </p>
+    <div style={{ animation: 'payze-fadein 0.4s ease-out' }}>
+      <div style={{ marginBottom: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '16px', flexWrap: 'wrap' }}>
+        <div>
+          <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>Recurring</Kicker>
+          <div style={{ ...typography.pageTitle, color: colors.ink }}>Subscriptions</div>
+          <div style={{ fontSize: '13px', color: colors.text2, marginTop: '2px' }}>
+            Mandates and recurring billing.
           </div>
         </div>
-        <button onClick={() => toast.info('Opening mandate creator')} className="group flex items-center gap-2 px-6 py-4 rounded-full bg-stone-900 text-white hover:bg-stone-800 shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all font-medium">
-          <Plus size={18} />
-          New Mandate
-        </button>
+        <Button variant="primary" icon={<Icons.IconPlus size={14} />}>New subscription</Button>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center gap-2 bg-stone-100/50 p-1.5 rounded-full w-fit border border-stone-200/50">
-        {[
-          { id: "upi", label: "UPI AutoPay", icon: ScanLine },
-          { id: "nach", label: "NACH E-Mandate", icon: CreditCard }
-        ].map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id as any)}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium text-sm transition-all ${
-              tab === t.id 
-                ? "bg-white text-stone-900 shadow-sm border border-stone-200/50" 
-                : "text-stone-500 hover:text-stone-700 hover:bg-stone-200/30"
-            }`}
-          >
-            <t.icon size={16} />
-            {t.label}
-          </button>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '20px' }}>
+        <StatCard label="Active mandates" value="1,842" sub="across 47 merchants" />
+        <StatCard label="MRR" value="₹48.2 L" sub="+12.4% MoM" />
+        <StatCard label="Churn" value="2.8%" sub="industry avg: 5.2%" />
+        <StatCard label="Success rate" value="96.4%" sub="renewal collections" />
+      </div>
+
+      <Card padded={false}>
+        <div style={{ padding: '16px 24px', borderBottom: `0.5px solid ${colors.border}` }}>
+          <div style={{ display: 'flex', gap: '6px', background: colors.bg, padding: '4px', borderRadius: radius.pill, width: 'fit-content' }}>
+            {[
+              { id: 'all', label: 'All' },
+              { id: 'upi', label: 'UPI Autopay' },
+              { id: 'nach', label: 'NACH' },
+              { id: 'international', label: 'International' },
+            ].map(t => (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id as any)}
+                style={{
+                  padding: '6px 14px', borderRadius: radius.pill,
+                  fontSize: '12px', fontWeight: 500,
+                  background: tab === t.id ? colors.card : 'transparent',
+                  color: tab === t.id ? colors.ink : colors.text2,
+                  border: tab === t.id ? `0.5px solid ${colors.border}` : 'none',
+                  cursor: 'pointer', fontFamily: typography.family.sans,
+                }}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ padding: '12px 24px', display: 'grid', gridTemplateColumns: '1fr 1.5fr 1fr 1fr 1fr 0.8fr', gap: '16px', background: colors.bg, fontSize: '10px', fontWeight: 500, color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+          <div>Subscriber</div>
+          <div>Plan</div>
+          <div>Amount</div>
+          <div>Method</div>
+          <div>Next charge</div>
+          <div>Status</div>
+        </div>
+        {subs.map((s, i) => (
+          <div key={s.id} style={{
+            display: 'grid', gridTemplateColumns: '1fr 1.5fr 1fr 1fr 1fr 0.8fr', gap: '16px',
+            padding: '16px 24px',
+            borderBottom: i < subs.length - 1 ? `0.5px solid ${colors.border}` : 'none',
+            alignItems: 'center', fontSize: '13px',
+          }}>
+            <div style={{ color: colors.ink, fontWeight: 500 }}>{s.customer}</div>
+            <div style={{ color: colors.text2, fontSize: '12px' }}>{s.plan}</div>
+            <div style={{ color: colors.ink, fontWeight: 600 }}>{s.amount}</div>
+            <div style={{ color: colors.text2, fontSize: '12px' }}>{s.method}</div>
+            <div style={{ color: colors.text2 }}>{s.nextCharge}</div>
+            <div>
+              <Pill tone={s.status === 'Active' ? 'teal' : 'neutral'}>{s.status}</Pill>
+            </div>
+          </div>
         ))}
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-6 bg-white/60 backdrop-blur-xl border border-stone-100 rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
-          <div className="flex items-center justify-between mb-4">
-             <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center"><Play size={18} /></div>
-             <span className="text-emerald-500 text-sm font-medium">Active</span>
-          </div>
-          <p className="text-stone-500 text-sm mb-1">Total Active</p>
-          <h3 className="text-3xl font-light text-stone-900">{loading || !data ? <Skeleton className="w-32 h-8" /> : data.stats.active}</h3>
-        </motion.div>
-        
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="p-6 bg-white/60 backdrop-blur-xl border border-stone-100 rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
-          <div className="flex items-center justify-between mb-4">
-             <div className="w-10 h-10 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center"><Pause size={18} /></div>
-             <span className="text-orange-500 text-sm font-medium">Paused</span>
-          </div>
-          <p className="text-stone-500 text-sm mb-1">Suspended Mandates</p>
-          <h3 className="text-3xl font-light text-stone-900">{loading || !data ? <Skeleton className="w-24 h-8" /> : data.stats.paused}</h3>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="p-6 bg-white/60 backdrop-blur-xl border border-stone-100 rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
-          <div className="flex items-center justify-between mb-4">
-             <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center"><XOctagon size={18} /></div>
-             <span className="text-rose-500 text-sm font-medium">Failed</span>
-          </div>
-          <p className="text-stone-500 text-sm mb-1">Dunning Queue</p>
-          <h3 className="text-3xl font-light text-stone-900">{loading || !data ? <Skeleton className="w-20 h-8" /> : data.stats.failed}</h3>
-        </motion.div>
-      </div>
-
-      {/* Main Table Area */}
-      <div className="bg-white/60 backdrop-blur-xl rounded-[40px] border border-stone-100 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)] min-h-[500px]">
-        <div className="flex justify-between items-center mb-8 border-b border-stone-100 pb-6">
-          <h3 className="text-xl font-medium text-stone-800">Recent Registrations</h3>
-          <div className="flex gap-4">
-            <input type="text" placeholder="Search customer or ID..." className="bg-stone-50 border-none rounded-full px-6 py-2.5 text-sm text-stone-700 outline-none w-64 focus:ring-2 focus:ring-stone-200" />
-            <button onClick={() => toast.info('Select your date range')} className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-medium text-sm transition-colors">
-              <Calendar size={16} /> Date Range
-            </button>
-          </div>
-        </div>
-
-        <table className="w-full text-left">
-          <thead className="text-stone-500 text-sm font-medium uppercase tracking-wider">
-            <tr>
-              <th className="pb-4 font-normal">Customer</th>
-              <th className="pb-4 font-normal">{tab === "upi" ? "UPI VPA" : "Account / UMRN"}</th>
-              <th className="pb-4 font-normal">Amount / Freq</th>
-              <th className="pb-4 font-normal">Next Debit</th>
-              <th className="pb-4 font-normal">Status</th>
-              <th className="pb-4 font-normal text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-stone-100">
-            <AnimatePresence>
-              {loading || !data ? (
-                <>
-                  {[1, 2, 3].map(i => (
-                    <tr key={`sk-${i}`}>
-                      <td colSpan={6} className="py-4"><Skeleton className="w-full h-12" /></td>
-                    </tr>
-                  ))}
-                </>
-              ) : data.mandates.length === 0 ? (
-                <tr><td colSpan={6} className="py-12 text-center text-stone-400">No mandates found for this type</td></tr>
-              ) : (
-                data.mandates.map((row: any, i: number) => (
-                <motion.tr 
-                  key={row.name + tab} 
-                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ delay: i * 0.05 }}
-                  className="hover:bg-stone-50/50 transition-colors group cursor-pointer"
-                >
-                  <td className="py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-stone-500 font-medium">
-                        {row.name.charAt(0)}
-                      </div>
-                      <span className="font-medium text-stone-800">{row.name}</span>
-                    </div>
-                  </td>
-                  <td className="py-4 text-stone-500 font-mono text-sm">{row.id}</td>
-                  <td className="py-4">
-                    <p className="font-medium text-stone-900">{row.amt}</p>
-                    <p className="text-xs text-stone-400 uppercase tracking-widest mt-0.5">{row.freq}</p>
-                  </td>
-                  <td className={`py-4 ${row.next === 'Overdue' ? 'text-rose-500 font-medium' : 'text-stone-600'}`}>{row.next}</td>
-                  <td className="py-4">
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium uppercase tracking-widest ${row.color}`}>
-                      {row.status}
-                    </span>
-                  </td>
-                  <td className="py-4 text-right">
-                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      {row.status === 'Failed' && <button onClick={() => toast.success('Mandate retry initiated')} className="p-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl transition-colors"><RotateCcw size={16} /></button>}
-                      <button onClick={() => toast('Mandate paused', { description: 'Collections are suspended.' })} className="p-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl transition-colors"><Pause size={16} /></button>
-                      <button onClick={() => toast.error('Mandate cancelled')} className="p-2 bg-stone-100 hover:bg-rose-100 text-stone-700 hover:text-rose-600 rounded-xl transition-colors"><XOctagon size={16} /></button>
-                    </div>
-                  </td>
-                </motion.tr>
-              ))
-              )}
-            </AnimatePresence>
-          </tbody>
-        </table>
-      </div>
+      </Card>
     </div>
+  );
+}
+
+function StatCard({ label, value, sub }: any) {
+  return (
+    <Card padded style={{ padding: '18px' }}>
+      <div style={{ fontSize: '11px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>{label}</div>
+      <div style={{ fontSize: '22px', fontWeight: 600, color: colors.ink, letterSpacing: '-0.02em', marginBottom: '4px' }}>{value}</div>
+      <div style={{ fontSize: '11px', color: colors.text2 }}>{sub}</div>
+    </Card>
   );
 }
