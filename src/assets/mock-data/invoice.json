@@ -1,0 +1,11 @@
+{
+  "default_client": "Acme Corp",
+  "default_items": [
+    { "id": 1, "desc": "Brand Identity Design", "amount": 1250 }
+  ],
+  "recent_invoices": [
+    { "id": "INV-2084", "client": "Acme Corp", "amount": 12000.00, "status": "Paid", "due": "Apr 10, 2026" },
+    { "id": "INV-2083", "client": "Global Media Ltd", "amount": 8500.00, "status": "Pending", "due": "Apr 25, 2026" },
+    { "id": "INV-2082", "client": "Design Studio", "amount": 1200.00, "status": "Overdue", "due": "Apr 05, 2026" }
+  ]
+}

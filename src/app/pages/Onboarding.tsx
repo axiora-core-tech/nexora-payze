@@ -1,20 +1,21 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Users, FileCheck, Landmark, CheckCircle2, ChevronRight, ChevronLeft, UploadCloud, CreditCard, Building, ShieldCheck, Mail, Phone, MapPin, Search } from "lucide-react";
-
-const STEPS = [
-  "Business Details",
-  "KYC Documents",
-  "Bank Account",
-  "Payment Methods",
-  "White-Label",
-  "Activation"
-];
+import { toast } from "sonner";
+import { onboardingService } from "../../services";
+import { useAsync } from "../../hooks/useAsync";
+import { PageLoader, ErrorState } from "../components/Loaders";
 
 export function OnboardingPage() {
   const [step, setStep] = useState(1);
+  const { data, loading, error, refetch } = useAsync(() => onboardingService.getSteps(), []);
 
-  const nextStep = () => setStep(s => Math.min(s + 1, 6));
+  if (error) return <ErrorState message="Couldn't load onboarding" onRetry={refetch} />;
+  if (loading || !data) return <PageLoader label="Preparing onboarding" />;
+
+  const STEPS = data.steps;
+
+  const nextStep = () => setStep(s => Math.min(s + 1, STEPS.length));
   const prevStep = () => setStep(s => Math.max(s - 1, 1));
 
   return (
@@ -166,7 +167,7 @@ export function OnboardingPage() {
                          <h4 className="font-medium text-indigo-900 mb-1">Penny Drop Verification</h4>
                          <p className="text-sm text-indigo-700/70">We will deposit ₹1 to instantly verify the account name.</p>
                        </div>
-                       <button onClick={() => alert('Penny drop verification initiated')} className="px-6 py-3 bg-indigo-600 text-white rounded-full font-medium shadow-sm hover:bg-indigo-700 transition-colors">
+                       <button onClick={() => toast.success('Verifying your bank account', { description: 'Sending Rs 1 to your account...' })} className="px-6 py-3 bg-indigo-600 text-white rounded-full font-medium shadow-sm hover:bg-indigo-700 transition-colors">
                          Verify Instantly
                        </button>
                     </div>

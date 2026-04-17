@@ -1,0 +1,13 @@
+{
+  "current_checkout": {
+    "amount": "1,450.00",
+    "recipient": "Acme Design Co.",
+    "currency": "USD"
+  },
+  "methods": [
+    { "id": "apple", "label": "Apple Pay", "icon": "Smartphone", "color": "bg-stone-900", "textColor": "text-white" },
+    { "id": "card", "label": "Black Card", "icon": "CreditCard", "color": "bg-white", "textColor": "text-stone-900" },
+    { "id": "upi", "label": "UPI & Wallets", "icon": "ScanLine", "color": "bg-[#E6F4F1]", "textColor": "text-teal-900" },
+    { "id": "paypal", "label": "PayPal", "icon": "Wallet", "color": "bg-[#E8F0FE]", "textColor": "text-blue-900" }
+  ]
+}

@@ -1,20 +1,24 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { CreditCard, ScanLine, Smartphone, Wallet, ArrowLeft, CheckCircle2, Lock } from "lucide-react";
+import { toast } from "sonner";
+import { paymentMethodsService } from "../../services";
+import { useAsync } from "../../hooks/useAsync";
+import { PageLoader, ErrorState } from "../components/Loaders";
+
+const iconMap: Record<string, any> = { Smartphone, CreditCard, ScanLine, Wallet };
 
 export function PaymentUI() {
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
   const [paymentState, setPaymentState] = useState<"idle" | "processing" | "success">("idle");
+  const { data, loading, error, refetch } = useAsync(() => paymentMethodsService.getMethods(), []);
 
-  const amount = "1,450.00";
-  const recipient = "Acme Design Co.";
+  if (error) return <ErrorState message="Couldn't load payment methods" onRetry={refetch} />;
+  if (loading || !data) return <PageLoader label="Loading checkout" />;
 
-  const methods = [
-    { id: "apple", label: "Apple Pay", icon: Smartphone, color: "bg-stone-900", textColor: "text-white" },
-    { id: "card", label: "Black Card", icon: CreditCard, color: "bg-white", textColor: "text-stone-900" },
-    { id: "upi", label: "UPI & Wallets", icon: ScanLine, color: "bg-[#E6F4F1]", textColor: "text-teal-900" },
-    { id: "paypal", label: "PayPal", icon: Wallet, color: "bg-[#E8F0FE]", textColor: "text-blue-900" },
-  ];
+  const amount = data.current_checkout.amount;
+  const recipient = data.current_checkout.recipient;
+  const methods = data.methods.map((m: any) => ({ ...m, icon: iconMap[m.icon] || CreditCard }));
 
   const handlePay = () => {
     setPaymentState("processing");
@@ -222,7 +226,7 @@ export function PaymentUI() {
                   </div>
                   <div className="w-full flex">
                     <input type="text" placeholder="yourname@upi" className="w-full bg-stone-50 border-none rounded-l-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-stone-200 text-stone-800 font-medium placeholder:text-stone-400 transition-shadow" />
-                    <button onClick={() => alert('VPA Verified!')} className="bg-stone-200 text-stone-700 px-6 rounded-r-2xl font-medium hover:bg-stone-300 transition-colors">Verify</button>
+                    <button onClick={() => toast.success('VPA verified')} className="bg-stone-200 text-stone-700 px-6 rounded-r-2xl font-medium hover:bg-stone-300 transition-colors">Verify</button>
                   </div>
                 </div>
               )}

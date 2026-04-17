@@ -11,6 +11,7 @@ import { SubscriptionsPage } from "./pages/Subscriptions";
 import { AnalyticsPage } from "./pages/Analytics";
 import { SettlementsPage } from "./pages/Settlements";
 import { OnboardingPage } from "./pages/Onboarding";
+import { PaymentLinks } from "./pages/PaymentLinks";
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
       { index: true, Component: Dashboard },
       { path: "pay", Component: PaymentUI },
       { path: "pay/:id", Component: PaymentUI },
+      { path: "payment-links", Component: PaymentLinks },
       { path: "admin", Component: AdminDashboard },
       { path: "developer", Component: DeveloperPage },
       { path: "invoice", Component: InvoicePage },

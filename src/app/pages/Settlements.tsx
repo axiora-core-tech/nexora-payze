@@ -1,11 +1,24 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Landmark, ArrowRightLeft, Calendar, FileDown, CheckCircle2, AlertCircle, Clock, FileSearch, Search, Filter } from "lucide-react";
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, CartesianGrid } from "recharts";
+import { toast } from "sonner";
+import { settlementsService } from "../../services";
+import { useAsync } from "../../hooks/useAsync";
+import { Skeleton, ErrorState } from "../components/Loaders";
 
 export function SettlementsPage() {
   const [tab, setTab] = useState<"batches" | "config">("batches");
   const [reconciling, setReconciling] = useState<string | null>(null);
+  const { data, loading, error, refetch } = useAsync(() => settlementsService.getAll(), []);
+
+  if (error) return <ErrorState message="Couldn't load settlements" onRetry={refetch} />;
+  const batches = data?.batches ?? [];
+  const schedules = data?.schedules ?? [];
+  const accounts = data?.payout_accounts ?? [];
+  void accounts;
+  const summary = data?.summary;
+  const reconSummary = data?.reconciliation_summary;
+
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-12 mt-4 relative">
@@ -24,8 +37,10 @@ export function SettlementsPage() {
         </div>
         <div className="flex flex-col items-end gap-2">
           <span className="text-sm font-medium text-stone-500 uppercase tracking-wider">Next Payout</span>
-          <div className="text-2xl font-light text-stone-900">$45,200.00</div>
-          <span className="text-xs text-stone-400">Scheduled for Today, 6:00 PM</span>
+          <div className="text-2xl font-light text-stone-900">
+            {loading || !summary ? <Skeleton className="w-32 h-7" /> : summary.next_payout_amount}
+          </div>
+          <span className="text-xs text-stone-400">Scheduled for {summary?.next_payout_time ?? "—"}</span>
         </div>
       </div>
 
@@ -62,7 +77,7 @@ export function SettlementsPage() {
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" size={16} />
                     <input type="text" placeholder="Search batch ID or UTR..." className="bg-stone-50 border-none rounded-full pl-10 pr-6 py-2.5 text-sm text-stone-700 outline-none w-64 focus:ring-2 focus:ring-stone-200" />
                   </div>
-                  <button onClick={() => alert('Filters applied')} className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-medium text-sm transition-colors">
+                  <button onClick={() => toast.info('Filters applied')} className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-medium text-sm transition-colors">
                     <Filter size={16} /> Filter
                   </button>
                 </div>
@@ -81,12 +96,14 @@ export function SettlementsPage() {
                 </thead>
                 <tbody className="divide-y divide-stone-100">
                   <AnimatePresence>
-                    {[
-                      { id: "STL-9824", date: "Today", txns: 1245, gross: "$46,200.00", fees: "-$1,000.00", net: "$45,200.00", status: "Pending", utr: "" },
-                      { id: "STL-9823", date: "Yesterday", txns: 890, gross: "$32,100.00", fees: "-$640.00", net: "$31,460.00", status: "Settled", utr: "UTR: BNK000129384" },
-                      { id: "STL-9822", date: "Apr 14, 2026", txns: 1102, gross: "$40,500.00", fees: "-$810.00", net: "$39,690.00", status: "Settled", utr: "UTR: BNK000129112" },
-                      { id: "STL-9821", date: "Apr 13, 2026", txns: 940, gross: "$35,000.00", fees: "-$700.00", net: "$34,300.00", status: "Failed", utr: "Bank Reject" },
-                    ].map((row, i) => (
+                    {loading ? (
+                      <>
+                        {[1, 2, 3, 4].map(i => (
+                          <tr key={`sk-${i}`}><td colSpan={6} className="py-4"><Skeleton className="w-full h-12" /></td></tr>
+                        ))}
+                      </>
+                    ) : (
+                      batches.map((row: any, i: number) => (
                       <motion.tr 
                         key={row.id} 
                         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
@@ -118,7 +135,8 @@ export function SettlementsPage() {
                            </div>
                         </td>
                       </motion.tr>
-                    ))}
+                    ))
+                    )}
                   </AnimatePresence>
                 </tbody>
               </table>
@@ -142,7 +160,7 @@ export function SettlementsPage() {
                           <p className="text-stone-500 text-sm font-mono">Batch: {reconciling}</p>
                         </div>
                         <div className="flex gap-3">
-                          <button onClick={() => alert('Downloading CSV...')} className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-stone-200 text-stone-700 font-medium text-sm hover:bg-stone-50 shadow-sm transition-colors">
+                          <button onClick={() => toast.success('Downloading CSV...', { description: 'Your file will be ready shortly.' })} className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-stone-200 text-stone-700 font-medium text-sm hover:bg-stone-50 shadow-sm transition-colors">
                             <FileDown size={16} /> Download CSV
                           </button>
                           <button onClick={() => setReconciling(null)} className="px-6 py-2.5 rounded-full bg-stone-900 text-white font-medium text-sm hover:bg-stone-800 transition-colors shadow-sm">
@@ -153,15 +171,15 @@ export function SettlementsPage() {
                      <div className="p-8 grid grid-cols-3 gap-6 border-b border-stone-100 bg-white">
                         <div className="p-6 rounded-3xl bg-stone-50 border border-stone-100">
                           <p className="text-sm text-stone-500 mb-1">Matched Transactions</p>
-                          <p className="text-3xl font-light text-stone-900">890</p>
+                          <p className="text-3xl font-light text-stone-900">{reconSummary?.matched ?? "—"}</p>
                         </div>
                         <div className="p-6 rounded-3xl bg-emerald-50 border border-emerald-100 text-emerald-900">
                           <p className="text-sm text-emerald-600/80 mb-1">Total Net Validated</p>
-                          <p className="text-3xl font-light">$31,460.00</p>
+                          <p className="text-3xl font-light">{reconSummary?.net_validated ?? "—"}</p>
                         </div>
                         <div className="p-6 rounded-3xl bg-rose-50 border border-rose-100 text-rose-900">
                           <p className="text-sm text-rose-600/80 mb-1">Unmatched Variance</p>
-                          <p className="text-3xl font-light">$0.00</p>
+                          <p className="text-3xl font-light">{reconSummary?.unmatched_variance ?? "—"}</p>
                         </div>
                      </div>
                      <div className="flex-1 overflow-y-auto p-8">
@@ -199,11 +217,7 @@ export function SettlementsPage() {
                 <h3 className="text-2xl font-light text-stone-800">Settlement Schedule</h3>
                 
                 <div className="space-y-4">
-                  {[
-                    { title: "Instant Settlement", desc: "Funds credited within 15 minutes of transaction capture.", fee: "1.5% premium fee", active: false },
-                    { title: "T+1 Standard", desc: "Settled on the next working day by 6:00 PM.", fee: "Included in standard MDR", active: true },
-                    { title: "Weekly Payout", desc: "Aggregated settlement every Friday.", fee: "Included in standard MDR", active: false },
-                  ].map((s, i) => (
+                  {schedules.map((s: any, i: number) => (
                     <div key={`sched-${i}`} className={`border rounded-3xl p-6 cursor-pointer transition-all ${s.active ? 'border-emerald-500 bg-emerald-50/20 shadow-sm' : 'border-stone-200 bg-white hover:border-stone-300'}`}>
                        <div className="flex justify-between items-start mb-2">
                          <h4 className={`font-medium ${s.active ? 'text-emerald-900' : 'text-stone-800'}`}>{s.title}</h4>
@@ -221,7 +235,7 @@ export function SettlementsPage() {
              <div className="bg-white/60 backdrop-blur-xl border border-stone-100 rounded-[40px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)] space-y-8">
                 <div className="flex justify-between items-center border-b border-stone-100 pb-6">
                   <h3 className="text-2xl font-light text-stone-800">Payout Accounts</h3>
-                  <button onClick={() => alert('Add Account dialog')} className="text-sm font-medium text-emerald-600 bg-emerald-50 px-4 py-2 rounded-full hover:bg-emerald-100 transition-colors">
+                  <button onClick={() => toast.info('Add bank account', { description: 'Opening account verification flow.' })} className="text-sm font-medium text-emerald-600 bg-emerald-50 px-4 py-2 rounded-full hover:bg-emerald-100 transition-colors">
                     Add Account
                   </button>
                 </div>
@@ -251,7 +265,7 @@ export function SettlementsPage() {
                         <p className="text-xs text-stone-500">IFSC: ICIC0000456</p>
                       </div>
                       <div className="flex gap-2">
-                        <button onClick={() => alert('Account set as primary')} className="text-xs font-medium text-stone-500 hover:text-stone-900 transition-colors">Make Primary</button>
+                        <button onClick={() => toast.success('Primary account updated')} className="text-xs font-medium text-stone-500 hover:text-stone-900 transition-colors">Make Primary</button>
                       </div>
                     </div>
                   </div>

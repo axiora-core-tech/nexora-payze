@@ -1,0 +1,16 @@
+{
+  "balance": {
+    "total": 24950.00,
+    "currency": "USD",
+    "pending_transactions": 4,
+    "greeting": "Good morning, Alex"
+  },
+  "recent_transactions": [
+    { "id": 1, "name": "Stripe Payout", "amount": 4250.00, "direction": "credit", "date": "Today, 10:24 AM", "category": "payout" },
+    { "id": 2, "name": "Apple Subscription", "amount": -14.99, "direction": "debit", "date": "Yesterday", "category": "subscription" },
+    { "id": 3, "name": "Creative Agency Invoice", "amount": 12000.00, "direction": "credit", "date": "Oct 12, 2026", "category": "invoice" },
+    { "id": 4, "name": "Amazon Web Services", "amount": -142.00, "direction": "debit", "date": "Oct 10, 2026", "category": "subscription" },
+    { "id": 5, "name": "Razorpay Settlement", "amount": 8500.00, "direction": "credit", "date": "Oct 09, 2026", "category": "settlement" },
+    { "id": 6, "name": "Figma Annual Plan", "amount": -144.00, "direction": "debit", "date": "Oct 08, 2026", "category": "subscription" }
+  ]
+}

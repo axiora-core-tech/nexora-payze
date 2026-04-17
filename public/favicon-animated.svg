@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D4AA">
+        <animate attributeName="stop-color" values="#00D4AA;#00A3FF;#7F77DD;#00D4AA" dur="4s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#00A3FF">
+        <animate attributeName="stop-color" values="#00A3FF;#7F77DD;#00D4AA;#00A3FF" dur="4s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="114" ry="114" fill="url(#bg)"/>
+
+  <!-- P letterform -->
+  <rect x="134" y="136" width="62" height="298" rx="31" fill="#ffffff"/>
+  <path d="M165 136 L290 136 C348 136 388 172 388 228 C388 284 348 320 290 320 L165 320"
+        stroke="#ffffff" stroke-width="62" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Animated ease lines - flowing outward -->
+  <rect x="248" y="380" width="130" height="18" rx="9" fill="#ffffff" opacity="0.55">
+    <animate attributeName="opacity" values="0.55;0.15;0.55" dur="1.6s" repeatCount="indefinite"/>
+    <animate attributeName="x" values="248;258;248" dur="1.6s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="248" y="414" width="90" height="18" rx="9" fill="#ffffff" opacity="0.35">
+    <animate attributeName="opacity" values="0.35;0.1;0.35" dur="1.6s" begin="0.3s" repeatCount="indefinite"/>
+    <animate attributeName="x" values="248;258;248" dur="1.6s" begin="0.3s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="248" y="448" width="56" height="18" rx="9" fill="#ffffff" opacity="0.2">
+    <animate attributeName="opacity" values="0.2;0.05;0.2" dur="1.6s" begin="0.6s" repeatCount="indefinite"/>
+    <animate attributeName="x" values="248;258;248" dur="1.6s" begin="0.6s" repeatCount="indefinite"/>
+  </rect>
+</svg>

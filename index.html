@@ -1,16 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payze — Pay with Ease</title>
+    <meta name="description" content="Payze — one platform for every way money moves. Pay with Ease." />
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Payments System Design</title>
-      <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>
-    </head>
+    <!-- Animated SVG favicon (Chrome, Firefox, Edge) -->
+    <link id="payze-favicon" rel="icon" type="image/svg+xml" href="/favicon-animated.svg" />
+    <!-- PNG fallback -->
+    <link rel="alternate icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
 
-    <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-    </body>
-  </html>
-  
+    <style>
+      html, body { height: 100%; margin: 0; }
+      #root { height: 100%; }
+    </style>
+
+    <script>
+      // JS-based favicon animation fallback for Safari (SVG SMIL in favicon doesn't animate there)
+      (function () {
+        var ua = navigator.userAgent;
+        var isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+        if (!isSafari) return;
+        var frames = ['/favicon-frame-1.png', '/favicon-frame-2.png', '/favicon-frame-3.png'];
+        var i = 0;
+        setInterval(function () {
+          var link = document.getElementById('payze-favicon');
+          if (!link) return;
+          link.setAttribute('type', 'image/png');
+          link.setAttribute('href', frames[i]);
+          i = (i + 1) % frames.length;
+        }, 400);
+      })();
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "stats": {
+    "active": "12,450",
+    "paused": "423",
+    "failed": "89"
+  },
+  "mandates": [
+    { "name": "John Doe", "id": "johndoe@okicici", "amt": "$14.99", "freq": "Monthly", "next": "May 1, 2026", "status": "Active", "color": "text-emerald-600 bg-emerald-50", "type": "upi" },
+    { "name": "Acme Corp", "id": "acme@ybl", "amt": "$450.00", "freq": "Yearly", "next": "Jun 15, 2026", "status": "Pending", "color": "text-orange-600 bg-orange-50", "type": "upi" },
+    { "name": "Sarah Smith", "id": "sarah12@sbi", "amt": "$9.00", "freq": "Weekly", "next": "Apr 20, 2026", "status": "Paused", "color": "text-stone-600 bg-stone-100", "type": "upi" },
+    { "name": "Design Studio", "id": "design@axl", "amt": "$120.00", "freq": "Monthly", "next": "Overdue", "status": "Failed", "color": "text-rose-600 bg-rose-50", "type": "upi" },
+    { "name": "TechStartup Inc", "id": "HDFC0000123-4412", "amt": "$2,500.00", "freq": "Monthly", "next": "May 5, 2026", "status": "Active", "color": "text-emerald-600 bg-emerald-50", "type": "nach" },
+    { "name": "Global Media Ltd", "id": "ICIC0000456-8923", "amt": "$1,200.00", "freq": "Monthly", "next": "Apr 28, 2026", "status": "Active", "color": "text-emerald-600 bg-emerald-50", "type": "nach" }
+  ]
+}

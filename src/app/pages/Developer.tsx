@@ -1,14 +1,25 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Terminal, Key, Webhook, Copy, CheckCircle2, FileJson } from "lucide-react";
+import { toast } from "sonner";
+import { developerService } from "../../services";
+import { useAsync } from "../../hooks/useAsync";
+import { PageLoader, ErrorState } from "../components/Loaders";
 
 export function DeveloperPage() {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [isTestMode, setIsTestMode] = useState(false);
+  const [isTestMode, setIsTestMode] = useState(true);
+  const { data, loading, error, refetch } = useAsync(
+    () => developerService.getKeys(isTestMode),
+    [isTestMode]
+  );
+
+  if (error) return <ErrorState message="Couldn't load API keys" onRetry={refetch} />;
 
   const handleCopy = (key: string) => {
     navigator.clipboard.writeText(key);
     setCopiedKey(key);
+    toast.success("API key copied to clipboard");
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
@@ -31,7 +42,7 @@ export function DeveloperPage() {
             <div className="flex items-center gap-3 bg-white/80 backdrop-blur-xl px-4 py-2.5 rounded-full border border-stone-200/80 shadow-sm transition-all hover:bg-white text-base">
               <span className={`text-xs font-semibold uppercase tracking-wider transition-colors ${!isTestMode ? 'text-stone-900' : 'text-stone-400'}`}>Live</span>
               <button 
-                onClick={() => setIsTestMode(!isTestMode)}
+                onClick={() => { const next = !isTestMode; setIsTestMode(next); toast.info(next ? 'Switched to Test mode' : 'Switched to Live mode'); }}
                 className={`w-12 h-6 rounded-full relative transition-colors ${isTestMode ? 'bg-orange-500' : 'bg-stone-900'}`}
               >
                 <motion.div layout animate={{ x: isTestMode ? 24 : 0 }} className="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 shadow-sm"/>
@@ -56,10 +67,13 @@ export function DeveloperPage() {
         </div>
         
         <div className="space-y-6">
-          {[
-            { id: "pk_test", name: "Publishable key", value: "pk_test_a1b2c3d4e5f6g7h8i9j0", env: "Test" },
-            { id: "sk_test", name: "Secret key", value: "sk_test_1029384756abcdefghij", env: "Test" },
-          ].map((key) => (
+          {loading || !data ? (
+            <>
+              <div className="p-5 bg-stone-50/50 border border-stone-100 rounded-3xl h-20 animate-pulse" />
+              <div className="p-5 bg-stone-50/50 border border-stone-100 rounded-3xl h-20 animate-pulse" />
+            </>
+          ) : (
+            data.active_keys.map((key: any) => (
             <div key={key.id} className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-stone-50/50 border border-stone-100 rounded-3xl group transition-all hover:bg-stone-50">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-1">
@@ -79,7 +93,8 @@ export function DeveloperPage() {
                 )}
               </button>
             </div>
-          ))}
+            ))
+          )}
         </div>
       </section>
 
@@ -116,7 +131,7 @@ export function DeveloperPage() {
           <p className="text-stone-500 text-sm max-w-[80%] leading-relaxed">
             Listen for events on your account so your integration can automatically trigger reactions.
           </p>
-          <button onClick={() => alert('Add Endpoint modal would open here')} className="mt-4 px-6 py-3 bg-stone-100 hover:bg-stone-200 text-stone-800 font-medium rounded-full transition-colors flex items-center gap-2">
+          <button onClick={() => toast.info('Add webhook endpoint', { description: 'Endpoint configuration opening.' })} className="mt-4 px-6 py-3 bg-stone-100 hover:bg-stone-200 text-stone-800 font-medium rounded-full transition-colors flex items-center gap-2">
             <Webhook size={16} /> Add Endpoint
           </button>
         </section>

@@ -1,0 +1,9 @@
+{
+  "default_vpa": "payze@okicici",
+  "recent_qr_payments": [
+    { "id": 1, "amount": "$45.00", "payer": "Customer #8234", "method": "UPI", "time": "2 mins ago" },
+    { "id": 2, "amount": "$120.00", "payer": "Customer #8230", "method": "UPI", "time": "8 mins ago" },
+    { "id": 3, "amount": "$25.00", "payer": "Customer #8226", "method": "UPI", "time": "15 mins ago" },
+    { "id": 4, "amount": "$89.00", "payer": "Customer #8219", "method": "UPI", "time": "32 mins ago" }
+  ]
+}

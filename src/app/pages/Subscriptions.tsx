@@ -1,9 +1,19 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Repeat, CreditCard, ScanLine, Play, Pause, XOctagon, Plus, Calendar, RotateCcw } from "lucide-react";
+import { toast } from "sonner";
+import { subscriptionsService } from "../../services";
+import { useAsync } from "../../hooks/useAsync";
+import { Skeleton, ErrorState } from "../components/Loaders";
 
 export function SubscriptionsPage() {
   const [tab, setTab] = useState<"upi" | "nach">("upi");
+  const { data, loading, error, refetch } = useAsync(
+    () => subscriptionsService.getByType(tab),
+    [tab]
+  );
+
+  if (error) return <ErrorState message="Couldn't load mandates" onRetry={refetch} />;
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-12 mt-4 relative">
@@ -22,7 +32,7 @@ export function SubscriptionsPage() {
             </p>
           </div>
         </div>
-        <button onClick={() => alert('Opening new mandate form')} className="group flex items-center gap-2 px-6 py-4 rounded-full bg-stone-900 text-white hover:bg-stone-800 shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all font-medium">
+        <button onClick={() => toast.info('Opening mandate creator')} className="group flex items-center gap-2 px-6 py-4 rounded-full bg-stone-900 text-white hover:bg-stone-800 shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all font-medium">
           <Plus size={18} />
           New Mandate
         </button>
@@ -57,7 +67,7 @@ export function SubscriptionsPage() {
              <span className="text-emerald-500 text-sm font-medium">Active</span>
           </div>
           <p className="text-stone-500 text-sm mb-1">Total Active</p>
-          <h3 className="text-3xl font-light text-stone-900">12,450</h3>
+          <h3 className="text-3xl font-light text-stone-900">{loading || !data ? <Skeleton className="w-32 h-8" /> : data.stats.active}</h3>
         </motion.div>
         
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="p-6 bg-white/60 backdrop-blur-xl border border-stone-100 rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
@@ -66,7 +76,7 @@ export function SubscriptionsPage() {
              <span className="text-orange-500 text-sm font-medium">Paused</span>
           </div>
           <p className="text-stone-500 text-sm mb-1">Suspended Mandates</p>
-          <h3 className="text-3xl font-light text-stone-900">423</h3>
+          <h3 className="text-3xl font-light text-stone-900">{loading || !data ? <Skeleton className="w-24 h-8" /> : data.stats.paused}</h3>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="p-6 bg-white/60 backdrop-blur-xl border border-stone-100 rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
@@ -75,7 +85,7 @@ export function SubscriptionsPage() {
              <span className="text-rose-500 text-sm font-medium">Failed</span>
           </div>
           <p className="text-stone-500 text-sm mb-1">Dunning Queue</p>
-          <h3 className="text-3xl font-light text-stone-900">89</h3>
+          <h3 className="text-3xl font-light text-stone-900">{loading || !data ? <Skeleton className="w-20 h-8" /> : data.stats.failed}</h3>
         </motion.div>
       </div>
 
@@ -85,7 +95,7 @@ export function SubscriptionsPage() {
           <h3 className="text-xl font-medium text-stone-800">Recent Registrations</h3>
           <div className="flex gap-4">
             <input type="text" placeholder="Search customer or ID..." className="bg-stone-50 border-none rounded-full px-6 py-2.5 text-sm text-stone-700 outline-none w-64 focus:ring-2 focus:ring-stone-200" />
-            <button onClick={() => alert('Selecting date range...')} className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-medium text-sm transition-colors">
+            <button onClick={() => toast.info('Select your date range')} className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-medium text-sm transition-colors">
               <Calendar size={16} /> Date Range
             </button>
           </div>
@@ -104,12 +114,18 @@ export function SubscriptionsPage() {
           </thead>
           <tbody className="divide-y divide-stone-100">
             <AnimatePresence>
-              {[
-                { name: "John Doe", id: "johndoe@okicici", amt: "$14.99", freq: "Monthly", next: "May 1, 2026", status: "Active", color: "text-emerald-600 bg-emerald-50" },
-                { name: "Acme Corp", id: "acme@ybl", amt: "$450.00", freq: "Yearly", next: "Jun 15, 2026", status: "Pending", color: "text-orange-600 bg-orange-50" },
-                { name: "Sarah Smith", id: "sarah12@sbi", amt: "$9.00", freq: "Weekly", next: "Apr 20, 2026", status: "Paused", color: "text-stone-600 bg-stone-100" },
-                { name: "Design Studio", id: "design@axl", amt: "$120.00", freq: "Monthly", next: "Overdue", status: "Failed", color: "text-rose-600 bg-rose-50" },
-              ].map((row, i) => (
+              {loading || !data ? (
+                <>
+                  {[1, 2, 3].map(i => (
+                    <tr key={`sk-${i}`}>
+                      <td colSpan={6} className="py-4"><Skeleton className="w-full h-12" /></td>
+                    </tr>
+                  ))}
+                </>
+              ) : data.mandates.length === 0 ? (
+                <tr><td colSpan={6} className="py-12 text-center text-stone-400">No mandates found for this type</td></tr>
+              ) : (
+                data.mandates.map((row: any, i: number) => (
                 <motion.tr 
                   key={row.name + tab} 
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ delay: i * 0.05 }}
@@ -136,13 +152,14 @@ export function SubscriptionsPage() {
                   </td>
                   <td className="py-4 text-right">
                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      {row.status === 'Failed' && <button onClick={() => alert('Retrying mandate')} className="p-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl transition-colors"><RotateCcw size={16} /></button>}
-                      <button onClick={() => alert('Pausing mandate')} className="p-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl transition-colors"><Pause size={16} /></button>
-                      <button onClick={() => alert('Cancelling mandate')} className="p-2 bg-stone-100 hover:bg-rose-100 text-stone-700 hover:text-rose-600 rounded-xl transition-colors"><XOctagon size={16} /></button>
+                      {row.status === 'Failed' && <button onClick={() => toast.success('Mandate retry initiated')} className="p-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl transition-colors"><RotateCcw size={16} /></button>}
+                      <button onClick={() => toast('Mandate paused', { description: 'Collections are suspended.' })} className="p-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl transition-colors"><Pause size={16} /></button>
+                      <button onClick={() => toast.error('Mandate cancelled')} className="p-2 bg-stone-100 hover:bg-rose-100 text-stone-700 hover:text-rose-600 rounded-xl transition-colors"><XOctagon size={16} /></button>
                     </div>
                   </td>
                 </motion.tr>
-              ))}
+              ))
+              )}
             </AnimatePresence>
           </tbody>
         </table>

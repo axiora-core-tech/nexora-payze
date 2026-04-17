@@ -1,12 +1,24 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { QrCode, Smartphone, Printer, Download, Clock, Link, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
+import { qrService } from "../../services";
+import { useAsync } from "../../hooks/useAsync";
+import { PageLoader, ErrorState } from "../components/Loaders";
 
 export function QRCodePage() {
   const [tab, setTab] = useState<"dynamic" | "static">("dynamic");
   const [amount, setAmount] = useState("120.00");
   const [desc, setDesc] = useState("Cafe Order #892");
   const [generated, setGenerated] = useState(false);
+  const { data, loading, error, refetch } = useAsync(() => qrService.getAll(), []);
+
+  if (error) return <ErrorState message="Couldn't load QR data" onRetry={refetch} />;
+  if (loading || !data) return <PageLoader label="Loading QR workspace" />;
+
+  const defaultVpa = data.default_vpa;
+  const recentPayments = data.recent_qr_payments;
+  void defaultVpa; void recentPayments;
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-12 mt-4 relative">
@@ -89,10 +101,10 @@ export function QRCodePage() {
                    acme.corp@fintech
                  </div>
                  <div className="flex gap-4 justify-center mt-8">
-                   <button onClick={() => alert('Downloading SVG...')} className="flex items-center gap-2 px-6 py-3 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-medium transition-colors">
+                   <button onClick={() => toast.success('Downloading SVG...', { description: 'Your file will be ready shortly.' })} className="flex items-center gap-2 px-6 py-3 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-medium transition-colors">
                      <Download size={16} /> SVG
                    </button>
-                   <button onClick={() => alert('Downloading PDF...')} className="flex items-center gap-2 px-6 py-3 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-medium transition-colors">
+                   <button onClick={() => toast.success('Downloading PDF...', { description: 'Your file will be ready shortly.' })} className="flex items-center gap-2 px-6 py-3 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-medium transition-colors">
                      <Printer size={16} /> PDF
                    </button>
                  </div>
@@ -145,7 +157,7 @@ export function QRCodePage() {
                         <p className="text-sm text-stone-400 mb-1">To Collect</p>
                         <p className="text-2xl font-light tracking-tight text-stone-900">${amount}</p>
                       </div>
-                      <button onClick={() => alert('Link copied!')} className="p-3 bg-stone-100 rounded-xl hover:bg-stone-200 transition-colors text-stone-600">
+                      <button onClick={() => toast.success('Link copied to clipboard')} className="p-3 bg-stone-100 rounded-xl hover:bg-stone-200 transition-colors text-stone-600">
                         <Link size={18} />
                       </button>
                     </div>

@@ -1,0 +1,27 @@
+{
+  "summary": {
+    "next_payout_amount": "$45,200.00",
+    "next_payout_time": "Today, 6:00 PM"
+  },
+  "batches": [
+    { "id": "STL-9824", "date": "Today", "txns": 1245, "gross": "$46,200.00", "fees": "-$1,000.00", "net": "$45,200.00", "status": "Pending", "utr": "" },
+    { "id": "STL-9823", "date": "Yesterday", "txns": 890, "gross": "$32,100.00", "fees": "-$640.00", "net": "$31,460.00", "status": "Settled", "utr": "UTR: BNK000129384" },
+    { "id": "STL-9822", "date": "Apr 14, 2026", "txns": 1102, "gross": "$40,500.00", "fees": "-$810.00", "net": "$39,690.00", "status": "Settled", "utr": "UTR: BNK000129112" },
+    { "id": "STL-9821", "date": "Apr 13, 2026", "txns": 940, "gross": "$35,000.00", "fees": "-$700.00", "net": "$34,300.00", "status": "Failed", "utr": "Bank Reject" },
+    { "id": "STL-9820", "date": "Apr 12, 2026", "txns": 1350, "gross": "$51,200.00", "fees": "-$1,024.00", "net": "$50,176.00", "status": "Settled", "utr": "UTR: BNK000128845" }
+  ],
+  "reconciliation_summary": {
+    "matched": 890,
+    "net_validated": "$31,460.00",
+    "unmatched_variance": "$0.00"
+  },
+  "schedules": [
+    { "title": "Instant Settlement", "desc": "Funds credited within 15 minutes of transaction capture.", "fee": "1.5% premium fee", "active": false },
+    { "title": "T+1 Standard", "desc": "Settled on the next working day by 6:00 PM.", "fee": "Included in standard MDR", "active": true },
+    { "title": "Weekly Payout", "desc": "Aggregated settlement every Friday.", "fee": "Included in standard MDR", "active": false }
+  ],
+  "payout_accounts": [
+    { "id": "acc-1", "bank": "HDFC Bank", "type": "Current", "masked": "•••• 8923", "holder": "Acme Corp Ltd", "ifsc": "HDFC0000123", "verified": true, "primary": true },
+    { "id": "acc-2", "bank": "ICICI Bank", "type": "Savings", "masked": "•••• 4412", "holder": "John Doe", "ifsc": "ICIC0000456", "verified": true, "primary": false }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "notifications": [
+    { "id": 1, "icon": "CheckCircle2", "title": "Settlement completed", "desc": "Batch STL-9824 ($45,200.00) successfully settled.", "time": "2m ago", "unread": true },
+    { "id": 2, "icon": "AlertTriangle", "title": "Anomaly detected", "desc": "Spike in 'Do Not Honour' codes observed.", "time": "15m ago", "unread": true },
+    { "id": 3, "icon": "CheckCircle2", "title": "Invoice INV-2084 paid", "desc": "Acme Corp paid $12,000.00 via UPI AutoPay.", "time": "1h ago", "unread": false }
+  ]
+}

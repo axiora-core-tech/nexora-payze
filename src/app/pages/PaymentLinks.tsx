@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Link as LinkIcon, Plus, Copy, CheckCircle2, QrCode, MoreHorizontal, FileText, ArrowRight, Share2, Mail, MessageSquare } from "lucide-react";
+import { paymentLinksService } from "../../services";
+import { useAsync } from "../../hooks/useAsync";
+import { Skeleton, ErrorState } from "../components/Loaders";
 
 export function PaymentLinks() {
   const [isCreating, setIsCreating] = useState(false);
   const [copiedLink, setCopiedLink] = useState<number | null>(null);
+  const { data, loading, error, refetch } = useAsync(() => paymentLinksService.getAll(), []);
 
-  const links = [
-    { id: 1, title: "Q3 Design Retainer", amount: "$5,000.00", created: "Today", usage: "0/1", collected: "$0.00", status: "Active" },
-    { id: 2, title: "Consulting Session", amount: "$250.00", created: "Yesterday", usage: "3/∞", collected: "$750.00", status: "Active" },
-    { id: 3, title: "Website Audit", amount: "$1,200.00", created: "Oct 12", usage: "1/1", collected: "$1,200.00", status: "Completed" },
-    { id: 4, title: "Subscription Deposit", amount: "Open", created: "Oct 08", usage: "12/50", collected: "$3,450.00", status: "Active" },
-  ];
+  if (error) return <ErrorState message="Couldn't load payment links" onRetry={refetch} />;
+  const links = data?.links ?? [];
 
   const handleCopy = (id: number) => {
     setCopiedLink(id);
@@ -169,7 +169,13 @@ export function PaymentLinks() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-stone-100/50">
-                    {links.map((link) => (
+                    {loading ? (
+                      <>
+                        <Skeleton className="w-full h-20" />
+                        <Skeleton className="w-full h-20" />
+                        <Skeleton className="w-full h-20" />
+                      </>
+                    ) : links.map((link: any) => (
                       <tr key={link.id} className="group hover:bg-stone-50/50 transition-colors">
                         <td className="px-8 py-6">
                           <p className="font-medium text-stone-900 text-lg mb-1">{link.title}</p>

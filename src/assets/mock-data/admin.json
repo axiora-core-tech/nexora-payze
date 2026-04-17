@@ -1,0 +1,17 @@
+{
+  "kpis": [
+    { "title": "Total Volume", "value": "$12.4M", "trend": "+14.5%", "icon": "DollarSign", "color": "text-emerald-600", "bg": "bg-emerald-50" },
+    { "title": "Active Users", "value": "84,592", "trend": "+2.4%", "icon": "Users", "color": "text-blue-600", "bg": "bg-blue-50" },
+    { "title": "Transactions", "value": "1.2M", "trend": "+18.2%", "icon": "Activity", "color": "text-rose-600", "bg": "bg-rose-50" },
+    { "title": "Conversion", "value": "94.2%", "trend": "+1.2%", "icon": "TrendingUp", "color": "text-purple-600", "bg": "bg-purple-50" }
+  ],
+  "volume_chart": [
+    { "name": "Mon", "total": 4000, "volume": 2400 },
+    { "name": "Tue", "total": 3000, "volume": 1398 },
+    { "name": "Wed", "total": 2000, "volume": 9800 },
+    { "name": "Thu", "total": 2780, "volume": 3908 },
+    { "name": "Fri", "total": 1890, "volume": 4800 },
+    { "name": "Sat", "total": 2390, "volume": 3800 },
+    { "name": "Sun", "total": 3490, "volume": 4300 }
+  ]
+}

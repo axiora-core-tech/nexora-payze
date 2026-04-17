@@ -1,11 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Send, FileText, Plus, Hash, User, DollarSign, Calendar, Eye, Download } from "lucide-react";
+import { toast } from "sonner";
+import { invoiceService } from "../../services";
+import { useAsync } from "../../hooks/useAsync";
+import { PageLoader, ErrorState } from "../components/Loaders";
 
 export function InvoicePage() {
-  const [items, setItems] = useState([{ id: 1, desc: "Brand Identity Design", amount: 1250 }]);
-  const [client, setClient] = useState("Acme Corp");
+  const [items, setItems] = useState<Array<{ id: number; desc: string; amount: number }>>([]);
+  const [client, setClient] = useState("");
   const [previewMode, setPreviewMode] = useState(false);
+  const { data, loading, error, refetch } = useAsync(() => invoiceService.getDefaults(), []);
+
+  // Hydrate form with service defaults once loaded
+  useEffect(() => {
+    if (data) {
+      setItems(data.default_items);
+      setClient(data.default_client);
+    }
+  }, [data]);
+
+  if (error) return <ErrorState message="Couldn't load invoice defaults" onRetry={refetch} />;
+  if (loading || !data) return <PageLoader label="Loading invoice" />;
 
   const total = items.reduce((sum, item) => sum + item.amount, 0);
 
@@ -38,7 +54,7 @@ export function InvoicePage() {
             {previewMode ? <FileText size={18} /> : <Eye size={18} />}
             {previewMode ? "Edit Mode" : "Preview"}
           </button>
-          <button onClick={() => alert('Invoice sent successfully!')} className="group flex items-center gap-2 px-6 py-4 rounded-full bg-stone-900 text-white hover:bg-stone-800 shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all font-medium">
+          <button onClick={() => toast.success('Invoice sent', { description: 'The customer will receive it shortly.' })} className="group flex items-center gap-2 px-6 py-4 rounded-full bg-stone-900 text-white hover:bg-stone-800 shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all font-medium">
             <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             Send & Request
           </button>

@@ -1,0 +1,37 @@
+{
+  "real_time": [
+    { "time": "10:00", "tpm": 120, "success": 98 },
+    { "time": "10:05", "tpm": 145, "success": 99 },
+    { "time": "10:10", "tpm": 210, "success": 97 },
+    { "time": "10:15", "tpm": 180, "success": 98 },
+    { "time": "10:20", "tpm": 230, "success": 96 },
+    { "time": "10:25", "tpm": 310, "success": 94 },
+    { "time": "10:30", "tpm": 280, "success": 98 }
+  ],
+  "funnel": [
+    { "step": "Checkout Init", "value": 10000, "drop": 0 },
+    { "step": "Method Selected", "value": 8500, "drop": 15 },
+    { "step": "Details Entered", "value": 7800, "drop": 8 },
+    { "step": "Auth Sent", "value": 7500, "drop": 4 },
+    { "step": "Captured", "value": 7200, "drop": 4 }
+  ],
+  "failures": [
+    { "name": "Insufficient Funds", "value": 45, "color": "#f43f5e" },
+    { "name": "Do Not Honour", "value": 25, "color": "#f97316" },
+    { "name": "3DS Timeout", "value": 15, "color": "#eab308" },
+    { "name": "Invalid Card", "value": 10, "color": "#a8a29e" },
+    { "name": "Fraud Block", "value": 5, "color": "#64748b" }
+  ],
+  "abandonment_reasons": [
+    { "reason": "Timeout / Gateway Error", "pct": "35%" },
+    { "reason": "Authentication Failure (OTP)", "pct": "28%" },
+    { "reason": "User Cancelled", "pct": "22%" },
+    { "reason": "Card Declined", "pct": "15%" }
+  ],
+  "top_failing_methods": [
+    { "method": "HDFC Visa Credit", "failRate": "12.4%", "count": "1,245", "trend": "up" },
+    { "method": "SBI Debit", "failRate": "8.2%", "count": "892", "trend": "down" },
+    { "method": "Amazon Pay", "failRate": "4.1%", "count": "430", "trend": "flat" }
+  ],
+  "overall_fail_rate": "4.2%"
+}

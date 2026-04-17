@@ -1,0 +1,29 @@
+{
+  "distribution": [
+    { "score": "0-10", "volume": 4000 },
+    { "score": "11-20", "volume": 3000 },
+    { "score": "21-30", "volume": 2000 },
+    { "score": "31-40", "volume": 2780 },
+    { "score": "41-50", "volume": 1890 },
+    { "score": "51-60", "volume": 2390 },
+    { "score": "61-70", "volume": 3490 },
+    { "score": "71-80", "volume": 1200 },
+    { "score": "81-90", "volume": 500 },
+    { "score": "91-100", "volume": 100 }
+  ],
+  "rules": [
+    { "name": "High Velocity IPs", "condition": "Transactions > 5 in 10 mins from same IP", "action": "Block", "status": true },
+    { "name": "Unusual Country Match", "condition": "Card Issue Country != IP Country", "action": "Review", "status": true },
+    { "name": "Large Transaction Volume", "condition": "Amount > $10,000", "action": "Review", "status": false },
+    { "name": "Known BIN Blocklist", "condition": "Card BIN in [High Risk List]", "action": "Block", "status": true }
+  ],
+  "review_queue": [
+    { "id": "TXN-98234", "amount": "$4,500.00", "method": "Visa •••• 4242", "risk": 85, "rule": "Unusual Country Match", "time": "10 mins ago" },
+    { "id": "TXN-98231", "amount": "$12,450.00", "method": "Wire Transfer", "risk": 62, "rule": "Large Transaction Volume", "time": "1 hour ago" }
+  ],
+  "metrics": {
+    "blocked_value_30d": "$1.2M",
+    "false_positive_rate": "0.04%",
+    "rules_triggered_today": "842"
+  }
+}

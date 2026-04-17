@@ -1,23 +1,23 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { ShieldAlert, ShieldCheck, Shield, Plus, Filter, AlertTriangle, CheckCircle2, XCircle, Activity, BarChart3 } from "lucide-react";
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
-
-const riskData = [
-  { score: "0-10", volume: 4000 },
-  { score: "11-20", volume: 3000 },
-  { score: "21-30", volume: 2000 },
-  { score: "31-40", volume: 2780 },
-  { score: "41-50", volume: 1890 },
-  { score: "51-60", volume: 2390 },
-  { score: "61-70", volume: 3490 },
-  { score: "71-80", volume: 1200 },
-  { score: "81-90", volume: 500 },
-  { score: "91-100", volume: 100 },
-];
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { toast } from "sonner";
+import { riskService } from "../../services";
+import { useAsync } from "../../hooks/useAsync";
+import { PageLoader, ErrorState } from "../components/Loaders";
 
 export function RiskPage() {
   const [activeTab, setActiveTab] = useState("rules");
+  const { data, loading, error, refetch } = useAsync(() => riskService.getAll(), []);
+
+  if (error) return <ErrorState message="Couldn't load risk data" onRetry={refetch} />;
+  if (loading || !data) return <PageLoader label="Loading risk data" />;
+
+  const distribution = data.distribution;
+  const rules = data.rules;
+  const reviewQueue = data.review_queue;
+  const metrics = data.metrics;
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-12 mt-4 relative">
@@ -36,7 +36,7 @@ export function RiskPage() {
             </p>
           </div>
         </div>
-        <button onClick={() => alert('Opening Create Rule form')} className="group flex items-center gap-2 px-6 py-4 rounded-full bg-stone-900 text-white hover:bg-stone-800 shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all font-medium">
+        <button onClick={() => toast.info('Opening rule creator')} className="group flex items-center gap-2 px-6 py-4 rounded-full bg-stone-900 text-white hover:bg-stone-800 shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all font-medium">
           <Plus size={18} />
           Create Rule
         </button>
@@ -66,12 +66,7 @@ export function RiskPage() {
 
       {activeTab === "rules" && (
         <div className="grid grid-cols-1 gap-6">
-          {[
-            { name: "High Velocity IPs", condition: "Transactions > 5 in 10 mins from same IP", action: "Block", status: true },
-            { name: "Unusual Country Match", condition: "Card Issue Country != IP Country", action: "Review", status: true },
-            { name: "Large Transaction Volume", condition: "Amount > $10,000", action: "Review", status: false },
-            { name: "Known BIN Blocklist", condition: "Card BIN in [High Risk List]", action: "Block", status: true },
-          ].map((rule, idx) => (
+          {rules.map((rule: any, idx: number) => (
             <motion.div 
               key={idx}
               initial={{ opacity: 0, y: 10 }}
@@ -88,7 +83,7 @@ export function RiskPage() {
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <button onClick={() => alert('Edit rule')} className="text-stone-400 hover:text-stone-800 text-sm font-medium">Edit</button>
+                <button onClick={() => toast.info('Opening rule editor')} className="text-stone-400 hover:text-stone-800 text-sm font-medium">Edit</button>
                 <div className={`w-14 h-8 rounded-full flex items-center p-1 cursor-pointer transition-colors ${rule.status ? 'bg-emerald-500' : 'bg-stone-200'}`}>
                   <motion.div 
                     layout 
@@ -106,16 +101,13 @@ export function RiskPage() {
         <div className="bg-white/60 backdrop-blur-xl border border-stone-100 rounded-[40px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
           <div className="flex justify-between items-center mb-8 border-b border-stone-100 pb-6">
             <h3 className="text-xl font-medium text-stone-800">Pending Review (12)</h3>
-            <button onClick={() => alert('Filter pending review queue')} className="flex items-center gap-2 text-stone-500 hover:text-stone-800 transition-colors">
+            <button onClick={() => toast.info('Filters applied to review queue')} className="flex items-center gap-2 text-stone-500 hover:text-stone-800 transition-colors">
               <Filter size={16} /> Filter
             </button>
           </div>
           
           <div className="space-y-4">
-            {[
-              { id: "TXN-98234", amount: "$4,500.00", method: "Visa •••• 4242", risk: 85, rule: "Unusual Country Match", time: "10 mins ago" },
-              { id: "TXN-98231", amount: "$12,450.00", method: "Wire Transfer", risk: 62, rule: "Large Transaction Volume", time: "1 hour ago" },
-            ].map((txn, i) => (
+            {reviewQueue.map((txn: any, i: number) => (
               <div key={i} className="flex flex-col md:flex-row items-center justify-between p-4 rounded-3xl hover:bg-stone-50 transition-colors border border-transparent hover:border-stone-100">
                 <div className="flex items-center gap-6 flex-1 w-full">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center ${txn.risk > 80 ? 'bg-rose-100 text-rose-600' : 'bg-orange-100 text-orange-600'}`}>
@@ -132,8 +124,8 @@ export function RiskPage() {
                     <p className="text-sm text-stone-400">{txn.method}</p>
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={() => alert('Reject transaction')} className="p-3 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-2xl transition-colors"><XCircle size={20} /></button>
-                    <button onClick={() => alert('Approve transaction')} className="p-3 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-2xl transition-colors"><CheckCircle2 size={20} /></button>
+                    <button onClick={() => toast.error('Transaction rejected', { description: 'Customer will be notified.' })} className="p-3 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-2xl transition-colors"><XCircle size={20} /></button>
+                    <button onClick={() => toast.success('Transaction approved')} className="p-3 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-2xl transition-colors"><CheckCircle2 size={20} /></button>
                   </div>
                 </div>
               </div>
@@ -149,7 +141,7 @@ export function RiskPage() {
              <p className="text-stone-500 text-sm mb-8">Volume of transactions across risk bands.</p>
              <div className="h-[300px] w-full">
                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={riskData}>
+                  <BarChart data={distribution}>
                     <XAxis key="xaxis" dataKey="score" axisLine={false} tickLine={false} tick={{ fill: "#a8a29e", fontSize: 12 }} dy={10} />
                     <Tooltip key="tooltip" cursor={{ fill: '#f5f5f4' }} contentStyle={{ borderRadius: "16px", border: "none", boxShadow: "0 4px 20px rgba(0,0,0,0.05)" }} />
                     <Bar key="bar" dataKey="volume" fill="#f97316" radius={[4, 4, 0, 0]} />
@@ -163,21 +155,21 @@ export function RiskPage() {
               <div className="w-16 h-16 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-500"><ShieldAlert size={28} /></div>
               <div>
                 <p className="text-sm text-stone-500 mb-1">Blocked Value (30d)</p>
-                <p className="text-3xl font-light text-stone-900">$1.2M</p>
+                <p className="text-3xl font-light text-stone-900">{metrics.blocked_value_30d}</p>
               </div>
             </div>
             <div className="bg-white/60 backdrop-blur-xl border border-stone-100 rounded-[32px] p-6 flex items-center gap-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
               <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-500"><ShieldCheck size={28} /></div>
               <div>
                 <p className="text-sm text-stone-500 mb-1">False Positive Rate</p>
-                <p className="text-3xl font-light text-stone-900">0.04%</p>
+                <p className="text-3xl font-light text-stone-900">{metrics.false_positive_rate}</p>
               </div>
             </div>
             <div className="bg-white/60 backdrop-blur-xl border border-stone-100 rounded-[32px] p-6 flex items-center gap-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
               <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-500"><Activity size={28} /></div>
               <div>
                 <p className="text-sm text-stone-500 mb-1">Rules Triggered Today</p>
-                <p className="text-3xl font-light text-stone-900">842</p>
+                <p className="text-3xl font-light text-stone-900">{metrics.rules_triggered_today}</p>
               </div>
             </div>
           </div>
