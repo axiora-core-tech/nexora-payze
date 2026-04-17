@@ -30,6 +30,12 @@ export const colors = {
   amber: '#B48C3C',
   amberTint: 'rgba(180,140,60,0.08)',
 
+  // Semantic failure — reserved for settlement failures and blocked risk items.
+  // Muted rose so it reads as a signal without shouting.
+  rose: '#B4554E',
+  roseTint: 'rgba(180,85,78,0.08)',
+  roseTintStrong: 'rgba(180,85,78,0.15)',
+
   // Functional tones (used sparingly — prefer ink + weight for semantics)
   shadow: '0 2px 8px -4px rgba(26,18,10,0.04)',
   shadowMd: '0 4px 16px -6px rgba(26,18,10,0.06)',

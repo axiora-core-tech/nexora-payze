@@ -1,54 +1,65 @@
-# Payze
+# Payze — Pay with Ease
 
-A payments infrastructure platform, rebuilt end-to-end in a quiet studio-grade language.
+Multi-tenant payments SaaS with a public marketing site, demo booking flow, and per-client isolated workspaces.
 
-## Run
+## Run it
 
-```
-unzip payze-final.zip
-cd payze-stage
+```bash
 npm install
 npm run dev
 ```
 
 Open http://localhost:5173
 
-## Routes
+## The three entry points
 
-**Marketing**
-- `/` — home (animated infrastructure)
-- `/book-demo` — calendar + confirmation
+| URL | What it is | Who uses it |
+|---|---|---|
+| `/` | Public marketing home page | Prospects |
+| `/book-demo` | Calendar + form + Zoom scheduling | Prospects |
+| `/app` | Default merchant workspace (contains Super Admin) | You, the platform operator |
+| `/t/{slug}` | Client-specific workspace (e.g. `/t/acme-corp`) | Each onboarded client |
+| `/app/super-admin` | Tenant management console | You |
 
-**Platform operator (you running Payze)**
-- `/app` — dashboard
-- `/app/transactions` — full ledger
-- `/app/tenants` — merchant list
-- `/app/risk` — scored attempts, watch
-- `/app/settlements` — batches
-- `/app/analytics` — charts
-- `/app/invoices` — invoice list
-- `/app/links` — payment links
-- `/app/subscriptions` — recurring mandates
-- `/app/developer` — keys, webhooks, code sample
-- `/app/admin` — team, roles
-- `/app/super-admin` — platform controls + tenant onboarding (crown icon, operator-only)
-- `/app/onboarding` — KYC walkthrough
+## Try the full flow
 
-**Per-tenant merchant workspace**
-- `/t/:slug` — same app chrome, tenant-scoped
-- Try `/t/acme-corp`, `/t/nova-fintech`, `/t/meridian-travel`, `/t/luminary-studio`
+1. **Visit `/`** — the marketing home. Scroll through benefits, AI, numbers, tech sections.
+2. **Click "Book a demo"** — pick a date, pick a time, fill the form. Confirmation screen shows a realistic email preview with Zoom link.
+3. **Visit `/app/super-admin`** — you'll see your booking appear under "Demo Requests" tab. Also 4 seeded tenants under "Client Workspaces".
+4. **Click "Onboard new client"** — fill the form. Pick a URL slug like `nova-corp`. Watch the banner appear with the new workspace URL.
+5. **Click "Open workspace"** — you're now at `/t/nova-corp`. Header shows the tenant name + color pill. Navigate around — it's the full merchant experience, scoped to that tenant.
+6. **Navigate to `/t/acme-corp`** — Acme's workspace. Everything is tenant-aware.
 
-## Design language
+## Architecture
 
-- Warm off-white `#F6F6F2`, ink `#1A1A1A`, one teal accent `#1C6F6B`, one amber `#B48C3C` reserved for the Super Admin crown
-- Inter sans throughout, JetBrains Mono for IDs / timestamps / API keys
-- Custom line icons (35+), 1.6px stroke, rounded caps
-- Left floating dock, 64px → 220px on hover
-- Top header with search (⌘K), currency switcher (INR / USD / EUR / GBP / AED), notifications, avatar menu
+### Marketing + Booking
 
-## Data
+- **HomePage** (`src/app/pages/Home.tsx`) — single-page marketing site with parallax hero, animated counters, benefits grid, dark AI section, numbers strip, tech showcase, testimonial, CTA.
+- **BookDemoPage** (`src/app/pages/BookDemo.tsx`) — 3-step flow (pick slot → details → confirmed). Generates real Zoom-style URLs and meeting IDs. Email preview shown post-booking.
 
-- Mocked via `services/tenants.ts` with `localStorage` persistence
-- Seeded with 4 merchants and an empty bookings list
-- Create a new merchant from Super Admin → appears in Tenants list + unlocks `/t/:slug`
-- Book a demo at `/book-demo` → appears in Super Admin bookings panel
+### Multi-tenancy
+
+Every route under `/t/{slug}` wraps the app in `<TenantWorkspace>`, which:
+- Looks up the tenant by slug
+- Provides the tenant via `useTenant()` hook to any child
+- Shows a not-found redirect if the slug is invalid
+- The `Layout` reads the slug from params to build `basePath = /t/{slug}` and all nav/links respect it
+- The header shows the tenant's name + brand color when scoped
+- The Super Admin nav item is hidden inside tenant workspaces (only visible in `/app`)
+
+### Data persistence
+
+- **Tenants and demo bookings** persist in `localStorage` (keys: `payze.tenants`, `payze.demoBookings`). Seeded on first load with 4 example tenants.
+- **Everything else** uses the same `mockFetch` latency-simulation pattern as before.
+
+### Where to plug in real backend
+
+- **`src/services/api.ts`** — swap `mockFetch` for real `fetch()` calls.
+- **`src/services/tenants.ts`** — `bookingService.create()` has a `TODO` comment pointing at the exact spot where the real Zoom API call should go (`POST https://api.zoom.us/v2/users/me/meetings`). Email sending via SendGrid/Resend happens right after.
+- **For real multi-tenancy**, back `tenantService` with a DB table instead of localStorage. The service interface stays identical.
+
+## Navigation dock
+
+Service-backed pages (Dashboard, Admin, Analytics, Subscriptions, Risk, Settlements, Payment Links, PaymentUI, Invoice, QRCode, Onboarding, Developer) all work identically in both `/app` and `/t/{slug}` contexts.
+
+The Super Admin button (crown icon, amber accent) appears only in the default `/app` workspace.

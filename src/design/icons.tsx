@@ -306,6 +306,22 @@ export const IconSparkle = (p: IconProps) => (
   </svg>
 );
 
+export const IconPay = (p: IconProps) => (
+  <svg {...base(p)}>
+    <rect x="3" y="6" width="18" height="12" rx="2" />
+    <line x1="3" y1="10" x2="21" y2="10" />
+    <circle cx="7.5" cy="14.5" r="0.5" fill="currentColor" stroke="none" />
+  </svg>
+);
+
+export const IconMore = (p: IconProps) => (
+  <svg {...base(p)}>
+    <circle cx="5" cy="12" r="1" fill="currentColor" stroke="none" />
+    <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
+    <circle cx="19" cy="12" r="1" fill="currentColor" stroke="none" />
+  </svg>
+);
+
 export const IconQR = (p: IconProps) => (
   <svg {...base(p)}>
     <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -317,5 +333,94 @@ export const IconQR = (p: IconProps) => (
     <line x1="14" y1="21" x2="18" y2="21" />
     <line x1="20" y1="14" x2="21" y2="14" />
     <line x1="21" y1="18" x2="21" y2="21" />
+  </svg>
+);
+
+export const IconMoreHoriz = (p: IconProps) => (
+  <svg {...base(p)}>
+    <circle cx="12" cy="12" r="1" />
+    <circle cx="19" cy="12" r="1" />
+    <circle cx="5" cy="12" r="1" />
+  </svg>
+);
+
+export const IconRefresh = (p: IconProps) => (
+  <svg {...base(p)}>
+    <polyline points="23 4 23 10 17 10" />
+    <polyline points="1 20 1 14 7 14" />
+    <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+  </svg>
+);
+
+export const IconPause = (p: IconProps) => (
+  <svg {...base(p)}>
+    <rect x="6" y="4" width="4" height="16" />
+    <rect x="14" y="4" width="4" height="16" />
+  </svg>
+);
+
+export const IconPlay = (p: IconProps) => (
+  <svg {...base(p)}>
+    <polygon points="5 3 19 12 5 21 5 3" />
+  </svg>
+);
+
+export const IconPrinter = (p: IconProps) => (
+  <svg {...base(p)}>
+    <polyline points="6 9 6 2 18 2 18 9" />
+    <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" />
+    <rect x="6" y="14" width="12" height="8" />
+  </svg>
+);
+
+export const IconScan = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2" />
+    <line x1="3" y1="12" x2="21" y2="12" />
+  </svg>
+);
+
+export const IconCard = (p: IconProps) => (
+  <svg {...base(p)}>
+    <rect x="2" y="6" width="20" height="14" rx="2" />
+    <line x1="2" y1="10" x2="22" y2="10" />
+  </svg>
+);
+
+export const IconWallet = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M21 12V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2v-5" />
+    <circle cx="17" cy="12" r="1.5" />
+  </svg>
+);
+
+export const IconFileText = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+    <line x1="16" y1="13" x2="8" y2="13" />
+    <line x1="16" y1="17" x2="8" y2="17" />
+  </svg>
+);
+
+export const IconTrendUp = (p: IconProps) => (
+  <svg {...base(p)}>
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
+  </svg>
+);
+
+export const IconTrendDown = (p: IconProps) => (
+  <svg {...base(p)}>
+    <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" />
+    <polyline points="17 18 23 18 23 12" />
+  </svg>
+);
+
+export const IconAlert = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+    <line x1="12" y1="9" x2="12" y2="13" />
+    <line x1="12" y1="17" x2="12.01" y2="17" />
   </svg>
 );

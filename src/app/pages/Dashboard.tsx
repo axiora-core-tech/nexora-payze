@@ -5,11 +5,11 @@ import { Card, Kicker } from '../../design/primitives';
 import * as Icons from '../../design/icons';
 
 const mockActivity = [
-  { time: '14:47', sec: ':12', merchant: 'Acme Corporation', desc: 'payment via UPI after card retry', sub: 'Customer: Priya Venkataraman · Succeeded in 3.8s', amount: '+ ₹7,800', tone: 'teal' as const, tag: 'routed' },
-  { time: '14:45', sec: ':33', merchant: 'Meridian Travel', desc: 'invoice paid', sub: 'INV-0228 · Visa · HDFC · Auth in 1.2s', amount: '+ ₹18,200', tone: 'neutral' as const, tag: null },
-  { time: '14:42', sec: ':07', merchant: 'Nova Fintech', desc: 'declined at bank', sub: 'First-time buyer · velocity flag · will not retry', amount: '₹42,500', tone: 'blocked' as const, tag: 'blocked' },
-  { time: '14:41', sec: ':19', merchant: 'Luminary Studio', desc: 'SEPA routed after ACH timeout', sub: 'International customer · Lumière Paris · 6.1s', amount: '+ €1,890', tone: 'teal' as const, tag: 'routed' },
-  { time: '14:38', sec: ':56', merchant: 'Acme Corporation', desc: 'quarterly mandate collected', sub: 'UPI Autopay · Rohan Shankar · renewal cycle', amount: '+ ₹4,500', tone: 'neutral' as const, tag: null },
+  { time: '14:47', sec: ':12', merchant: 'Zomato Foods', desc: 'payment via UPI after card retry', sub: 'Customer: Priya Venkataraman · Succeeded in 3.8s', amount: '+ ₹7,800', tone: 'teal' as const, tag: 'routed' },
+  { time: '14:45', sec: ':33', merchant: 'Razorpay Technologies', desc: 'invoice paid', sub: 'INV-0228 · Visa · HDFC · Auth in 1.2s', amount: '+ ₹18,200', tone: 'neutral' as const, tag: null },
+  { time: '14:42', sec: ':07', merchant: 'Cred Club', desc: 'declined at bank', sub: 'First-time buyer · velocity flag · will not retry', amount: '₹42,500', tone: 'blocked' as const, tag: 'blocked' },
+  { time: '14:41', sec: ':19', merchant: 'Nykaa Beauty', desc: 'SEPA routed after ACH timeout', sub: 'International customer · Amélie Dubois Paris · 6.1s', amount: '+ €1,890', tone: 'teal' as const, tag: 'routed' },
+  { time: '14:38', sec: ':56', merchant: 'Zomato Foods', desc: 'quarterly mandate collected', sub: 'UPI Autopay · Rohan Shankar · renewal cycle', amount: '+ ₹4,500', tone: 'neutral' as const, tag: null },
 ];
 
 const mockAcceptance = [
@@ -21,11 +21,11 @@ const mockAcceptance = [
 ];
 
 const mockTopMerchants = [
-  { initial: 'A', name: 'Acme', gmv: '₹12.4L', change: '+8.4%', up: true, path: 'M 0 20 L 15 18 L 30 15 L 45 16 L 60 10 L 75 8 L 90 4 L 100 3' },
-  { initial: 'N', name: 'Nova', gmv: '₹9.8L', change: '+4.1%', up: true, path: 'M 0 15 L 15 12 L 30 18 L 45 14 L 60 8 L 75 12 L 90 6 L 100 5' },
-  { initial: 'M', name: 'Meridian', gmv: '₹6.2L', change: '−1.8%', up: false, path: 'M 0 10 L 15 14 L 30 11 L 45 17 L 60 14 L 75 19 L 90 15 L 100 18' },
-  { initial: 'L', name: 'Luminary', gmv: '₹4.1L', change: '+12.3%', up: true, path: 'M 0 18 L 15 16 L 30 14 L 45 12 L 60 10 L 75 9 L 90 8 L 100 7' },
-  { initial: 'H', name: 'Horizon', gmv: '₹3.7L', change: '+0.4%', up: false, path: 'M 0 12 L 15 13 L 30 10 L 45 11 L 60 9 L 75 11 L 90 8 L 100 10' },
+  { initial: 'Z', name: 'Zomato', gmv: '₹12.4L', change: '+8.4%', up: true, path: 'M 0 20 L 15 18 L 30 15 L 45 16 L 60 10 L 75 8 L 90 4 L 100 3' },
+  { initial: 'R', name: 'Razorpay', gmv: '₹9.8L', change: '+4.1%', up: true, path: 'M 0 15 L 15 12 L 30 18 L 45 14 L 60 8 L 75 12 L 90 6 L 100 5' },
+  { initial: 'N', name: 'Nykaa', gmv: '₹6.2L', change: '−1.8%', up: false, path: 'M 0 10 L 15 14 L 30 11 L 45 17 L 60 14 L 75 19 L 90 15 L 100 18' },
+  { initial: 'C', name: 'Cred', gmv: '₹4.1L', change: '+12.3%', up: true, path: 'M 0 18 L 15 16 L 30 14 L 45 12 L 60 10 L 75 9 L 90 8 L 100 7' },
+  { initial: 'U', name: 'Urban Co.', gmv: '₹3.7L', change: '+0.4%', up: false, path: 'M 0 12 L 15 13 L 30 10 L 45 11 L 60 9 L 75 11 L 90 8 L 100 10' },
 ];
 
 export function Dashboard() {
@@ -157,9 +157,7 @@ function StatCell({ label, value, extra }: { label: string; value: React.ReactNo
   return (
     <div>
       <div style={{ color: colors.text3, fontSize: '11px', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '3px' }}>{label}</div>
-      <div style={{ color: colors.ink, fontSize: '15px', fontWeight: 600 }}>
-        {value} {extra}
-      </div>
+      <div style={{ color: colors.ink, fontSize: '15px', fontWeight: 600 }}>{value} {extra}</div>
     </div>
   );
 }
@@ -172,11 +170,7 @@ function ActivityRow({ time, sec, merchant, desc, sub, amount, tone, tag, isLast
   const bar = tone === 'teal' ? colors.tealTintStrong : tone === 'blocked' ? 'rgba(26,26,26,0.25)' : 'rgba(26,26,26,0.1)';
   const amountColor = tone === 'teal' ? colors.teal : tone === 'blocked' ? colors.text2 : colors.ink;
   return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: '14px',
-      padding: '14px 0',
-      borderBottom: isLast ? 'none' : `0.5px solid ${colors.border}`,
-    }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '14px 0', borderBottom: isLast ? 'none' : `0.5px solid ${colors.border}` }}>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: '46px' }}>
         <div style={{ fontFamily: typography.family.mono, fontSize: '11px', color: colors.text2, fontWeight: 500 }}>{time}</div>
         <div style={{ fontFamily: typography.family.mono, fontSize: '10px', color: colors.text3 }}>{sec}</div>
@@ -187,9 +181,7 @@ function ActivityRow({ time, sec, merchant, desc, sub, amount, tone, tag, isLast
           <span style={{ fontWeight: 600 }}>{merchant}</span>{' '}
           <span style={{ color: colors.text2 }}>· {desc}</span>
           {tag === 'blocked' && (
-            <span style={{ fontFamily: typography.family.mono, fontSize: '10px', letterSpacing: '0.08em', color: colors.text2, textTransform: 'uppercase', marginLeft: '6px', textDecoration: 'underline' }}>
-              BLOCKED
-            </span>
+            <span style={{ fontFamily: typography.family.mono, fontSize: '10px', letterSpacing: '0.08em', color: colors.text2, textTransform: 'uppercase', marginLeft: '6px', textDecoration: 'underline' }}>BLOCKED</span>
           )}
         </div>
         <div style={{ fontSize: '11px', color: colors.text3 }}>{sub}</div>

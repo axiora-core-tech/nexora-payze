@@ -147,7 +147,7 @@ export function Pill({
   style = {},
 }: {
   children: React.ReactNode;
-  tone?: 'neutral' | 'teal' | 'ink' | 'outline';
+  tone?: 'neutral' | 'teal' | 'ink' | 'outline' | 'rose';
   style?: React.CSSProperties;
 }) {
   const tones = {
@@ -155,6 +155,7 @@ export function Pill({
     teal: { bg: colors.tealTint, color: colors.teal, border: 'none' },
     ink: { bg: colors.ink, color: '#fff', border: 'none' },
     outline: { bg: 'transparent', color: colors.ink, border: `0.5px solid ${colors.borderStrong}` },
+    rose: { bg: colors.roseTint, color: colors.rose, border: 'none' },
   };
   const t = tones[tone];
   return (
@@ -285,6 +286,112 @@ export function EmptyState({
 
 /* ── Global keyframes ───────────────────────────────────────── */
 
+export function Drawer({
+  open,
+  onClose,
+  title,
+  kicker,
+  children,
+  width = 480,
+}: {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  kicker?: string;
+  children: React.ReactNode;
+  width?: number;
+}) {
+  if (!open) return null;
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, background: 'rgba(26,26,26,0.25)',
+        backdropFilter: 'blur(2px)', zIndex: 100,
+        display: 'flex', justifyContent: 'flex-end',
+        animation: 'payze-fadein 0.2s ease-out',
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: `${width}px`, maxWidth: '95vw',
+          background: colors.card,
+          height: '100vh',
+          boxShadow: '-24px 0 64px -16px rgba(26,18,10,0.12)',
+          overflowY: 'auto',
+          display: 'flex', flexDirection: 'column',
+          animation: 'payze-slide-in 0.25s cubic-bezier(0.22, 1, 0.36, 1)',
+        }}
+      >
+        <div style={{ padding: '24px 28px', borderBottom: `0.5px solid ${colors.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            {kicker && <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>{kicker}</Kicker>}
+            <div style={{ fontSize: '20px', fontWeight: 600, color: colors.ink, letterSpacing: '-0.015em' }}>{title}</div>
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: colors.text2 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+          </button>
+        </div>
+        <div style={{ padding: '24px 28px', flex: 1 }}>{children}</div>
+      </div>
+    </div>
+  );
+}
+
+export function Modal({
+  open,
+  onClose,
+  title,
+  kicker,
+  children,
+  width = 520,
+}: {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  kicker?: string;
+  children: React.ReactNode;
+  width?: number;
+}) {
+  if (!open) return null;
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, background: 'rgba(26,26,26,0.35)',
+        backdropFilter: 'blur(3px)', zIndex: 100,
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px',
+        animation: 'payze-fadein 0.2s ease-out',
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: `${width}px`, maxWidth: '100%',
+          background: colors.card, border: `0.5px solid ${colors.border}`,
+          borderRadius: radius.lg, padding: '28px',
+          boxShadow: '0 30px 60px -15px rgba(0,0,0,0.3)',
+          maxHeight: '85vh', overflowY: 'auto',
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+          <div>
+            {kicker && <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>{kicker}</Kicker>}
+            <div style={{ fontSize: '20px', fontWeight: 600, color: colors.ink, letterSpacing: '-0.015em' }}>{title}</div>
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: colors.text2 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/* ── Global keyframes ───────────────────────────────────────── */
+
 export function GlobalStyles() {
   return (
     <style>{`
@@ -299,6 +406,10 @@ export function GlobalStyles() {
       @keyframes payze-fadein {
         from { opacity: 0; transform: translateY(4px); }
         to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes payze-slide-in {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
       }
       @keyframes payze-pulse-dot {
         0%, 100% { opacity: 0.4; }
