@@ -24,13 +24,15 @@ export type DemoBooking = {
 };
 
 const SEED_TENANTS: Tenant[] = [
-  { id: 't_acme', slug: 'acme-corp', name: 'Acme Corporation', brandColor: '#1C6F6B', industry: 'E-commerce', plan: 'Growth', status: 'Active', gmv30d: 1240000, createdAt: '2026-01-15T10:00:00Z' },
-  { id: 't_nova', slug: 'nova-fintech', name: 'Nova Fintech', brandColor: '#1A1A1A', industry: 'FinTech', plan: 'Scale', status: 'Active', gmv30d: 980000, createdAt: '2026-02-03T14:30:00Z' },
-  { id: 't_meridian', slug: 'meridian-travel', name: 'Meridian Travel', brandColor: '#4A4A48', industry: 'Travel', plan: 'Growth', status: 'Active', gmv30d: 620000, createdAt: '2026-03-10T09:00:00Z' },
-  { id: 't_luminary', slug: 'luminary-studio', name: 'Luminary Studio', brandColor: '#1C6F6B', industry: 'Creative', plan: 'Starter', status: 'Active', gmv30d: 410000, createdAt: '2026-04-01T11:15:00Z' },
+  { id: 't_zomato', slug: 'zomato-foods', name: 'Zomato Foods', brandColor: '#E23744', industry: 'Food & Delivery', plan: 'Scale', status: 'Active', gmv30d: 12400000, createdAt: '2026-01-15T10:00:00Z' },
+  { id: 't_razorpay', slug: 'razorpay-technologies', name: 'Razorpay Technologies', brandColor: '#0B1F3A', industry: 'FinTech', plan: 'Scale', status: 'Active', gmv30d: 9800000, createdAt: '2026-02-03T14:30:00Z' },
+  { id: 't_nykaa', slug: 'nykaa-beauty', name: 'Nykaa Beauty', brandColor: '#FC2779', industry: 'Beauty & E-commerce', plan: 'Growth', status: 'Active', gmv30d: 6200000, createdAt: '2026-03-10T09:00:00Z' },
+  { id: 't_cred', slug: 'cred-club', name: 'Cred Club', brandColor: '#1A1A1A', industry: 'FinTech', plan: 'Growth', status: 'Active', gmv30d: 4100000, createdAt: '2026-04-01T11:15:00Z' },
+  { id: 't_urbanco', slug: 'urban-company', name: 'Urban Company', brandColor: '#1C6F6B', industry: 'Services', plan: 'Growth', status: 'Active', gmv30d: 3700000, createdAt: '2026-02-20T08:45:00Z' },
+  { id: 't_bms', slug: 'bookmyshow', name: 'BookMyShow', brandColor: '#C4242C', industry: 'Entertainment', plan: 'Scale', status: 'Active', gmv30d: 5200000, createdAt: '2026-01-28T12:00:00Z' },
 ];
 
-const TENANTS_KEY = 'payze.tenants';
+const TENANTS_KEY = 'payze.tenants.v2';
 const BOOKINGS_KEY = 'payze.demoBookings';
 
 function getStoredTenants(): Tenant[] {

@@ -38,7 +38,7 @@ export function Home() {
               <Icons.IconCheck size={10} color="#fff" strokeWidth={3} />
             </span>
             <span style={{ fontSize: '13px', fontWeight: 500, color: colors.ink }}>
-              Payments infrastructure for modern teams
+              RBI-licensed · PCI-DSS Level 1 · Made in Bengaluru
             </span>
           </div>
 
@@ -49,8 +49,8 @@ export function Home() {
             for <span style={{ color: colors.teal, fontStyle: 'italic', fontWeight: 500 }}>every payment.</span>
           </div>
 
-          <div style={{ fontSize: '17px', lineHeight: 1.55, color: colors.text2, maxWidth: '560px', margin: '0 auto 40px auto' }}>
-            One infrastructure, every method, everywhere. UPI, cards, wallets, SEPA, ACH — with intelligent routing built in.
+          <div style={{ fontSize: '17px', lineHeight: 1.55, color: colors.text2, maxWidth: '620px', margin: '0 auto 40px auto' }}>
+            UPI, cards, NetBanking, wallets, SEPA, ACH — 135 currencies, one integration. When a card fails at HDFC, we route to ICICI, then RuPay, then UPI. Customers don't notice. You don't lose the sale.
           </div>
 
           <div style={{ display: 'inline-flex', gap: '10px' }}>
@@ -65,14 +65,14 @@ export function Home() {
 
         {/* Trust strip */}
         <div style={{ padding: '32px 0 56px 0' }}>
-          <div style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.15em', color: colors.text3, textTransform: 'uppercase', textAlign: 'center', marginBottom: '22px' }}>Trusted by teams at</div>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '56px', opacity: 0.6, flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '19px', fontWeight: 600, color: colors.text2 }}>ACME</span>
-            <span style={{ fontSize: '16px', fontWeight: 500, letterSpacing: '0.2em', color: colors.text2 }}>MERIDIAN</span>
-            <span style={{ fontSize: '22px', fontWeight: 600, fontStyle: 'italic', color: colors.text2 }}>Nova</span>
-            <span style={{ fontSize: '16px', fontWeight: 500, letterSpacing: '0.08em', color: colors.text2 }}>LUMIÈRE</span>
-            <span style={{ fontSize: '22px', fontWeight: 600, color: colors.text2 }}>axiora</span>
-            <span style={{ fontSize: '18px', fontWeight: 500, color: colors.text2 }}>horizon.</span>
+          <div style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.15em', color: colors.text3, textTransform: 'uppercase', textAlign: 'center', marginBottom: '22px' }}>Trusted by 47+ teams, including</div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '52px', opacity: 0.7, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '22px', fontWeight: 600, fontStyle: 'italic', color: colors.text2 }}>zomato</span>
+            <span style={{ fontSize: '19px', fontWeight: 700, color: colors.text2 }}>Razorpay</span>
+            <span style={{ fontSize: '17px', fontWeight: 500, letterSpacing: '0.25em', color: colors.text2 }}>NYKAA</span>
+            <span style={{ fontSize: '21px', fontWeight: 700, color: colors.text2 }}>CRED</span>
+            <span style={{ fontSize: '17px', fontWeight: 500, letterSpacing: '0.08em', color: colors.text2 }}>BOOKMYSHOW</span>
+            <span style={{ fontSize: '18px', fontWeight: 500, color: colors.text2 }}>urban co.</span>
           </div>
         </div>
 
@@ -98,12 +98,12 @@ export function Home() {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-            <FeatureCard Icon={Icons.IconRoute} title="Intelligent routing" desc="Every transaction routed through the rail most likely to succeed. The model learns per-bank, per-card, per-country." />
-            <FeatureCard Icon={Icons.IconRecurring} title="Automatic fallbacks" desc="When a method fails, fallback logic kicks in at the moment most likely to succeed." />
-            <FeatureCard Icon={Icons.IconShield} title="Fraud, handled" desc="ML fraud detection trained on 180M+ transactions. Dispute win rate 2.3× industry average." />
-            <FeatureCard Icon={Icons.IconGlobe} title="Global by default" desc="135+ currencies. Every major local method — UPI, SEPA, ACH, Pix, Alipay, FPX." />
-            <FeatureCard Icon={Icons.IconDeveloper} title="Developer-first" desc="One SDK. Clean REST APIs. Webhooks that deliver. Your team is live in minutes." />
-            <FeatureCard Icon={Icons.IconChart} title="Plain-English insights" desc="Every anomaly explained in a sentence. Every chart answers 'why?'. Just clarity." />
+            <FeatureCard Icon={Icons.IconRoute} title="Intelligent routing" desc="Card declined at HDFC? We'll try ICICI, then RuPay, then UPI. The model learns per-bank, per-BIN, per-hour." />
+            <FeatureCard Icon={Icons.IconRecurring} title="UPI Autopay & NACH" desc="Native support for every Indian recurring rail. Mandate onboarding that actually completes — 94% success vs industry 72%." />
+            <FeatureCard Icon={Icons.IconShield} title="Fraud that stays quiet" desc="ML trained on 180M+ Indian transactions. False-positive rate 4× lower than rule-based systems. Dispute win rate 2.3× industry average." />
+            <FeatureCard Icon={Icons.IconGlobe} title="Collect from anywhere" desc="135 currencies, every major local method — UPI, cards, SEPA, ACH, Pix, Alipay, FPX. Unified in INR in your dashboard." />
+            <FeatureCard Icon={Icons.IconDeveloper} title="One-day integration" desc="Node, Python, PHP, Go, Ruby SDKs. Webhooks with retry & signing. Test in test mode, flip a toggle, you're live." />
+            <FeatureCard Icon={Icons.IconChart} title="Reports that explain themselves" desc="Every anomaly described in plain English. Reconciliation reports auto-emailed. GST-ready exports." />
           </div>
         </section>
 
@@ -123,13 +123,13 @@ export function Home() {
           <div style={{ maxWidth: '820px', margin: '0 auto' }}>
             <div style={{ fontSize: '32px', fontWeight: 500, lineHeight: 1.3, letterSpacing: '-0.015em', marginBottom: '32px', color: colors.ink }}>
               <span style={{ color: colors.teal, marginRight: '8px' }}>"</span>
-              Before Payze, we lost 14% of checkouts to payment failures we couldn't explain. Three months in, we've seen a meaningful lift in successful completion — revenue that was already walking out the door.
+              We were losing 14% of checkouts to card declines we couldn't explain. Four weeks in on Payze, that number is 3.8%. Routing works, the integration was a day, and reconciliation reports now arrive on their own.
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: colors.ink, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 600 }}>SC</div>
+              <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: colors.ink, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 600 }}>VK</div>
               <div>
-                <div style={{ fontSize: '15px', fontWeight: 500, color: colors.ink }}>Sarah Connor</div>
-                <div style={{ fontSize: '13px', color: colors.text2 }}>VP Engineering, Acme Corporation</div>
+                <div style={{ fontSize: '15px', fontWeight: 500, color: colors.ink }}>Vikram Kothari</div>
+                <div style={{ fontSize: '13px', color: colors.text2 }}>Head of Payments, Zomato Foods</div>
               </div>
             </div>
           </div>
@@ -160,12 +160,13 @@ export function Home() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Icons.PayzeMark size={16} />
           <span style={{ color: colors.ink, fontWeight: 500 }}>Payze</span>
-          <span>© 2026. All rights reserved.</span>
+          <span>© 2026 · Made in Bengaluru</span>
         </div>
         <div style={{ display: 'flex', gap: '28px' }}>
           <a href="#">Privacy</a>
           <a href="#">Terms</a>
           <a href="#">Security</a>
+          <a href="#">RBI disclosures</a>
           <a href="#">Status</a>
         </div>
       </footer>

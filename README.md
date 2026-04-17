@@ -1,65 +1,55 @@
-# Payze — Pay with Ease
+# Payze
 
-Multi-tenant payments SaaS with a public marketing site, demo booking flow, and per-client isolated workspaces.
+Payments infrastructure platform in the IRON/RH design language — warm off-white, single teal accent, geometric sans, custom line icons.
 
-## Run it
+## Run
 
-```bash
+```
+unzip payze-final.zip
+cd payze-stage
 npm install
 npm run dev
 ```
 
 Open http://localhost:5173
 
-## The three entry points
+## Routes
 
-| URL | What it is | Who uses it |
-|---|---|---|
-| `/` | Public marketing home page | Prospects |
-| `/book-demo` | Calendar + form + Zoom scheduling | Prospects |
-| `/app` | Default merchant workspace (contains Super Admin) | You, the platform operator |
-| `/t/{slug}` | Client-specific workspace (e.g. `/t/acme-corp`) | Each onboarded client |
-| `/app/super-admin` | Tenant management console | You |
+**Marketing**
+- `/` — home (animated infrastructure diagram, authentic Indian brand trust strip)
+- `/book-demo` — calendar + confirmation
 
-## Try the full flow
+**Operator (`/app/*`)**
+- `/app` — Dashboard: balance hero, live activity feed with Zomato/Razorpay/Nykaa/Cred/Urban Co., acceptance by method
+- `/app/transactions` — Ledger. Clickable rows open detail drawer with event timeline. Unified INR column with source currency shown below for cross-border
+- `/app/tenants` — Merchant list with search, status filter, "Onboard new merchant" button → Onboarding
+- `/app/risk` — Risk posture (analog-watch gauge) + Signals/Rules/Disputes tabs
+- `/app/settlements` — Batches with filters (status/merchant/date). Clickable rows open reconciliation report drawer (gross volume / refunds / chargebacks / fees / GST / net settled) with PDF/CSV/email actions
+- `/app/analytics` — Overview / Cohorts (retention heatmap) / Funnels tabs
+- `/app/invoices` — List with per-row actions menu. "New invoice" opens builder modal (line items, GST auto-calc). Click row → invoice preview drawer
+- `/app/links` — Payment links with QR / Copy / Open / Menu icon actions. QR button opens modal with rendered QR code
+- `/app/qr` — Dynamic + Static QR generation, live preview, printable formats, recent scans log
+- `/app/pay` — Branded checkout (UPI/Card/NetBanking/Wallet/SEPA/EMI) with method-specific forms + processing → success
+- `/app/subscriptions` — UPI Autopay / NACH / International tabs. Status + date range filters. Per-row actions menu
+- `/app/developer` — Test/Live toggle, API keys, SDK code sample, webhooks
+- `/app/admin` — Team / Audit log / Security tabs. Invite member modal
+- `/app/super-admin` — Platform controls (crown icon, operator-only)
+- `/app/onboarding` — 6-step merchant KYC (Business / Identity / Banking / Webhooks / Branding / Review). Creates a live tenant on activation
 
-1. **Visit `/`** — the marketing home. Scroll through benefits, AI, numbers, tech sections.
-2. **Click "Book a demo"** — pick a date, pick a time, fill the form. Confirmation screen shows a realistic email preview with Zoom link.
-3. **Visit `/app/super-admin`** — you'll see your booking appear under "Demo Requests" tab. Also 4 seeded tenants under "Client Workspaces".
-4. **Click "Onboard new client"** — fill the form. Pick a URL slug like `nova-corp`. Watch the banner appear with the new workspace URL.
-5. **Click "Open workspace"** — you're now at `/t/nova-corp`. Header shows the tenant name + color pill. Navigate around — it's the full merchant experience, scoped to that tenant.
-6. **Navigate to `/t/acme-corp`** — Acme's workspace. Everything is tenant-aware.
+**Per-tenant workspace** (`/t/:slug/*`)
+Same chrome, scoped to one merchant. Seeded tenants:
+- `/t/zomato-foods`
+- `/t/razorpay-technologies`
+- `/t/nykaa-beauty`
+- `/t/cred-club`
+- `/t/urban-company`
+- `/t/bookmyshow`
 
-## Architecture
+## Design language
 
-### Marketing + Booking
-
-- **HomePage** (`src/app/pages/Home.tsx`) — single-page marketing site with parallax hero, animated counters, benefits grid, dark AI section, numbers strip, tech showcase, testimonial, CTA.
-- **BookDemoPage** (`src/app/pages/BookDemo.tsx`) — 3-step flow (pick slot → details → confirmed). Generates real Zoom-style URLs and meeting IDs. Email preview shown post-booking.
-
-### Multi-tenancy
-
-Every route under `/t/{slug}` wraps the app in `<TenantWorkspace>`, which:
-- Looks up the tenant by slug
-- Provides the tenant via `useTenant()` hook to any child
-- Shows a not-found redirect if the slug is invalid
-- The `Layout` reads the slug from params to build `basePath = /t/{slug}` and all nav/links respect it
-- The header shows the tenant's name + brand color when scoped
-- The Super Admin nav item is hidden inside tenant workspaces (only visible in `/app`)
-
-### Data persistence
-
-- **Tenants and demo bookings** persist in `localStorage` (keys: `payze.tenants`, `payze.demoBookings`). Seeded on first load with 4 example tenants.
-- **Everything else** uses the same `mockFetch` latency-simulation pattern as before.
-
-### Where to plug in real backend
-
-- **`src/services/api.ts`** — swap `mockFetch` for real `fetch()` calls.
-- **`src/services/tenants.ts`** — `bookingService.create()` has a `TODO` comment pointing at the exact spot where the real Zoom API call should go (`POST https://api.zoom.us/v2/users/me/meetings`). Email sending via SendGrid/Resend happens right after.
-- **For real multi-tenancy**, back `tenantService` with a DB table instead of localStorage. The service interface stays identical.
-
-## Navigation dock
-
-Service-backed pages (Dashboard, Admin, Analytics, Subscriptions, Risk, Settlements, Payment Links, PaymentUI, Invoice, QRCode, Onboarding, Developer) all work identically in both `/app` and `/t/{slug}` contexts.
-
-The Super Admin button (crown icon, amber accent) appears only in the default `/app` workspace.
+- Warm off-white `#F6F6F2`, ink `#1A1A1A`, single teal `#1C6F6B`, amber `#B48C3C` reserved for Super Admin crown
+- Inter sans throughout, JetBrains Mono for IDs / timestamps / API keys / UTRs
+- 37+ custom line icons (1.6px stroke, rounded caps)
+- Left floating dock, 64px → 220px on hover
+- Top header with ⌘K search, currency switcher (INR/USD/EUR/GBP/AED), notifications, avatar dropdown
+- No green/red semantics — status communicated through position, weight, underline, and strike-through instead
