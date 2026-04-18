@@ -1,0 +1,214 @@
+{
+  "placeholder": "Ask Payze anything — or type a command",
+  "suggestedPrompts": [
+    { "label": "Why is my settlement short today?", "query": "why is my settlement short today" },
+    { "label": "Show today's blocked attempts", "query": "show today's blocked attempts" },
+    { "label": "Export April transactions as CSV", "query": "export april transactions as csv" },
+    { "label": "Which customer lost us the most money this week?", "query": "which customer lost us the most money this week" },
+    { "label": "How's Zomato doing this month?", "query": "how is zomato doing this month" }
+  ],
+  "intents": [
+    {
+      "id": "why_settlement_short",
+      "triggers": ["why is my settlement short", "settlement short", "missing money settlement", "stl-9824 short"],
+      "kind": "answer",
+      "answer": {
+        "summary": "STL-9824 landed ₹200 light of what you expected. The gap is a TDS deduction on one cross-border transaction.",
+        "data": [
+          { "label": "Expected net", "value": "₹45,20,200" },
+          { "label": "Actual landed", "value": "₹45,20,000" },
+          { "label": "Difference", "value": "₹200" },
+          { "label": "Source", "value": "TDS on txn_00475 (MakeMyTrip · USD 320 cross-border)" }
+        ],
+        "nextSteps": [
+          "Post journal entry: Dr TDS Receivable ₹200 / Cr Revenue ₹200",
+          "Claim input credit in Q4 26B-1 filing"
+        ],
+        "links": [
+          { "label": "View STL-9824 breakdown", "href": "/app/settlements" },
+          { "label": "View txn_00475", "href": "/app/transactions" }
+        ]
+      }
+    },
+    {
+      "id": "show_blocked_today",
+      "triggers": ["show today's blocked", "blocked today", "what got blocked today", "show blocked attempts"],
+      "kind": "answer",
+      "answer": {
+        "summary": "11 blocked attempts today totaling ₹68,500. Two patterns dominate.",
+        "data": [
+          { "label": "Total blocked", "value": "11 attempts · ₹68,500" },
+          { "label": "Card enumeration", "value": "1 cluster (Zomato)" },
+          { "label": "Velocity flags", "value": "4 attempts (Cred + 1 new)" },
+          { "label": "Geo restrictions", "value": "3 attempts" },
+          { "label": "New account high-value", "value": "3 attempts" }
+        ],
+        "nextSteps": [
+          "Review Cred Club velocity threshold — 4 flags feels high for their base",
+          "Card enumeration already contained — no action needed"
+        ],
+        "links": [ { "label": "Open Risk register", "href": "/app/risk" } ]
+      }
+    },
+    {
+      "id": "export_txns",
+      "triggers": ["export april transactions", "export transactions csv", "download transactions", "csv export transactions"],
+      "kind": "command",
+      "command": {
+        "action": "export_csv",
+        "confirm": "Export all April transactions (2,418 rows) to CSV?",
+        "doneMessage": "Exported 2,418 transactions to payze-april-2026.csv",
+        "doneDetail": "Includes: id, time, merchant, customer, method, rail, INR amount, source amount, status, notes."
+      }
+    },
+    {
+      "id": "biggest_loss_this_week",
+      "triggers": ["which customer lost us the most", "biggest loss this week", "most money lost", "worst customer"],
+      "kind": "answer",
+      "answer": {
+        "summary": "One pattern accounts for 47% of this week's blocked value — not one customer.",
+        "data": [
+          { "label": "Largest blocked attempt", "value": "₹45,000 · unknown cardholder · Zomato · IP from Sofia" },
+          { "label": "Largest unrecovered loss", "value": "dp_9008 · ₹45,000 · dispute lost · Cred Club" },
+          { "label": "Highest cumulative refunds", "value": "Nykaa Beauty · ₹24,200 (8 refunds, mostly size/fit)" },
+          { "label": "Highest fraud rate merchant", "value": "None above 0.8% — platform average is 0.34%" }
+        ],
+        "nextSteps": [
+          "Nykaa refund rate worth a look — check if size-chart coverage is complete on new catalog items"
+        ],
+        "links": [ { "label": "See all disputes", "href": "/app/risk" } ]
+      }
+    },
+    {
+      "id": "zomato_this_month",
+      "triggers": ["how is zomato doing", "zomato this month", "zomato performance", "zomato analytics"],
+      "kind": "answer",
+      "answer": {
+        "summary": "Zomato Foods is up sharply. Best month since onboarding.",
+        "data": [
+          { "label": "GMV, month to date", "value": "₹2.84 Cr · +31% MoM" },
+          { "label": "Success rate", "value": "94.8% · +0.8pts" },
+          { "label": "Blocked rate", "value": "0.42% · in band" },
+          { "label": "Avg ticket", "value": "₹428" },
+          { "label": "Top method", "value": "UPI Autopay (62%) · growing" }
+        ],
+        "nextSteps": [
+          "Their UPI Autopay adoption is ahead of peers — worth a case study",
+          "Settlement cadence still T+1; T+0 is available on Growth plan"
+        ],
+        "links": [ { "label": "Open Zomato workspace", "href": "/t/zomato-foods" } ]
+      }
+    },
+    {
+      "id": "refund_txn",
+      "triggers": ["refund txn_", "refund transaction", "issue refund"],
+      "kind": "command",
+      "command": {
+        "action": "refund",
+        "confirm": "Issue full refund for txn_00482 (₹7,800 to Priya Venkataraman)?",
+        "doneMessage": "Refund initiated · ₹7,800 · will land in customer's UPI app within 2 hours",
+        "doneDetail": "Refund ID: rfnd_a9f2e1 · webhook payment.refunded sent"
+      }
+    },
+    {
+      "id": "go_to_settlements",
+      "triggers": ["go to settlements", "open settlements", "show settlements", "settlements page"],
+      "kind": "navigate",
+      "navigate": { "href": "/app/settlements", "message": "Opening Settlements" }
+    },
+    {
+      "id": "go_to_risk",
+      "triggers": ["go to risk", "open risk", "show risk", "risk dashboard"],
+      "kind": "navigate",
+      "navigate": { "href": "/app/risk", "message": "Opening Risk" }
+    },
+    {
+      "id": "go_to_transactions",
+      "triggers": ["go to transactions", "open transactions", "show transactions", "transactions page", "open ledger"],
+      "kind": "navigate",
+      "navigate": { "href": "/app/transactions", "message": "Opening the ledger" }
+    },
+    {
+      "id": "go_to_tenants",
+      "triggers": ["go to tenants", "open tenants", "show merchants", "all merchants"],
+      "kind": "navigate",
+      "navigate": { "href": "/app/tenants", "message": "Opening Tenants" }
+    },
+    {
+      "id": "why_declines_today",
+      "triggers": ["why are payments failing", "why decline rate high", "declines today", "why am i seeing declines"],
+      "kind": "answer",
+      "answer": {
+        "summary": "HDFC Visa decline rate was elevated this afternoon — routing has already compensated.",
+        "data": [
+          { "label": "Normal HDFC Visa decline rate", "value": "8%" },
+          { "label": "This afternoon's rate", "value": "23% (14:20–14:38)" },
+          { "label": "Payments saved by fallback", "value": "142 · ₹3,48,200" },
+          { "label": "Current state", "value": "Back in baseline since 14:38" }
+        ],
+        "nextSteps": [
+          "No action needed — routing handled it",
+          "If this recurs, consider RuPay-first on HDFC BINs for that hour window"
+        ],
+        "links": [ { "label": "See anomaly timeline", "href": "/app/risk" } ]
+      }
+    },
+    {
+      "id": "cash_today",
+      "triggers": ["how much cash came in", "revenue today", "volume today", "cash today"],
+      "kind": "answer",
+      "answer": {
+        "summary": "₹1.82 Cr across 2,418 payments today. 64% UPI. ₹64.8L already settled.",
+        "data": [
+          { "label": "Payments today", "value": "2,418 · +12.4%" },
+          { "label": "Volume", "value": "₹1.82 Cr · +8.2%" },
+          { "label": "Settled today", "value": "₹64,80,200" },
+          { "label": "In transit", "value": "₹18,42,100" },
+          { "label": "Settling tomorrow", "value": "₹98,77,700" }
+        ],
+        "nextSteps": [],
+        "links": [ { "label": "Open Dashboard", "href": "/app" } ]
+      }
+    },
+    {
+      "id": "forecast_next",
+      "triggers": ["what will break", "forecast", "what's coming", "routing forecast", "upcoming issues"],
+      "kind": "answer",
+      "answer": {
+        "summary": "Three events worth pre-empting this week.",
+        "data": [
+          { "label": "Sunday 02:00–04:30", "value": "NPCI maintenance · 6 UPI-first merchants · fallback pre-configured" },
+          { "label": "Tuesday 15:00–16:00", "value": "ICICI NetBanking weekly maintenance · 3 merchants affected" },
+          { "label": "End of month (28 Apr+)", "value": "HDFC Visa declines spike 3× — credit limit refresh cycle" }
+        ],
+        "nextSteps": [
+          "Confirm all UPI-first merchants have NetBanking fallback active (1 missing: Urban Co.)",
+          "Review end-of-month routing policy — current setup adequate"
+        ],
+        "links": [ { "label": "See full forecast", "href": "/app/risk" } ]
+      }
+    },
+    {
+      "id": "help",
+      "triggers": ["help", "what can you do", "how do you work", "commands"],
+      "kind": "answer",
+      "answer": {
+        "summary": "I can answer questions about your payments data or do things for you.",
+        "data": [
+          { "label": "Questions", "value": "\"Why is my settlement short?\" · \"How's Zomato doing?\" · \"What's blocked today?\"" },
+          { "label": "Commands", "value": "\"Refund txn_00482\" · \"Export April transactions\" · \"Go to Risk\"" },
+          { "label": "Forecasts", "value": "\"What will break this week?\"" }
+        ],
+        "nextSteps": [
+          "Try one of the suggested prompts below — they all work",
+          "I'm scripted in this prototype; in production I'd use an LLM over your live data"
+        ],
+        "links": []
+      }
+    }
+  ],
+  "fallback": {
+    "summary": "I don't have an answer for that yet. In production I'd query your live data — this prototype uses scripted intents.",
+    "suggestion": "Try one of the suggested prompts, or ask about settlements, risk, transactions, or a specific merchant."
+  }
+}

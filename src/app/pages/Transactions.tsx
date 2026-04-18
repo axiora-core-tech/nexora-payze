@@ -13,10 +13,19 @@ type Txn = {
   events: { time: string; label: string; detail: string }[];
 };
 
+type Enrichment = {
+  title: string;
+  diagnosis: string;
+  historical: string;
+  action: string;
+  customerCopy: string;
+};
+
 const PAGE_SIZE = 10;
 
 export function Transactions() {
   const { data, loading, error, refetch } = useAsync(() => configService.getTransactions(), []);
+  const { data: failureCodes } = useAsync(() => configService.getFailureCodes(), []);
   const [filter, setFilter] = useState<string>('all');
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<Txn | null>(null);
@@ -45,6 +54,17 @@ export function Transactions() {
 
   const setFilterReset = (f: string) => { setFilter(f); setPage(0); };
   const setSearchReset = (v: string) => { setSearch(v); setPage(0); };
+
+  const enrichEvent = (detail: string): Enrichment | null => {
+    if (!failureCodes) return null;
+    for (const key of Object.keys(failureCodes.codes)) {
+      const entry = failureCodes.codes[key];
+      for (const pattern of entry.match) {
+        if (detail.toLowerCase().includes(pattern.toLowerCase())) return entry;
+      }
+    }
+    return null;
+  };
 
   return (
     <div style={{ animation: 'payze-fadein 0.4s ease-out' }}>
@@ -127,7 +147,16 @@ export function Transactions() {
         </div>
       </Card>
 
-      {selected && <TxnDetailDrawer txn={selected} onClose={() => setSelected(null)} fxRate={fxToInr[selected.sourceCurrency]} toInr={toInr} formatSource={formatSource} />}
+      {selected && (
+        <TxnDetailDrawer
+          txn={selected}
+          onClose={() => setSelected(null)}
+          fxRate={fxToInr[selected.sourceCurrency]}
+          toInr={toInr}
+          formatSource={formatSource}
+          enrichEvent={enrichEvent}
+        />
+      )}
     </div>
   );
 }
@@ -192,14 +221,14 @@ function TxnRow({ txn, isLast, onClick, inr, formatInr, formatSource }: any) {
   );
 }
 
-function TxnDetailDrawer({ txn, onClose, fxRate, toInr, formatSource }: any) {
+function TxnDetailDrawer({ txn, onClose, fxRate, toInr, formatSource, enrichEvent }: any) {
   const inr = toInr(txn.sourceAmount, txn.sourceCurrency);
   const isCrossBorder = txn.sourceCurrency !== 'INR';
 
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(26,26,26,0.35)', backdropFilter: 'blur(3px)', zIndex: 100, display: 'flex', justifyContent: 'flex-end' }}>
       <div onClick={(e) => e.stopPropagation()} style={{
-        width: '520px', maxWidth: '100%', height: '100%', background: colors.card,
+        width: '560px', maxWidth: '100%', height: '100%', background: colors.card,
         borderLeft: `0.5px solid ${colors.border}`, padding: '28px 32px', overflowY: 'auto',
         boxShadow: '-20px 0 60px rgba(0,0,0,0.15)',
       }}>
@@ -237,30 +266,67 @@ function TxnDetailDrawer({ txn, onClose, fxRate, toInr, formatSource }: any) {
 
         <Kicker style={{ marginBottom: '14px' }}>Event timeline</Kicker>
         <div style={{ marginBottom: '24px' }}>
-          {txn.events.map((e: any, i: number) => (
-            <div key={i} style={{ display: 'flex', gap: '14px', paddingBottom: i < txn.events.length - 1 ? '16px' : 0, position: 'relative' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
-                <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: i === txn.events.length - 1 ? colors.teal : colors.ink }} />
-                {i < txn.events.length - 1 && <div style={{ width: '1px', flex: 1, background: colors.border, marginTop: '4px' }} />}
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
-                  <div style={{ fontSize: '13px', fontWeight: 600, color: colors.ink }}>{e.label}</div>
-                  <div style={{ fontFamily: typography.family.mono, fontSize: '11px', color: colors.text3 }}>{e.time}</div>
+          {txn.events.map((e: any, i: number) => {
+            const enrichment = enrichEvent(e.detail);
+            const isLast = i === txn.events.length - 1;
+            return (
+              <div key={i} style={{ display: 'flex', gap: '14px', paddingBottom: !isLast ? '16px' : 0, position: 'relative' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+                  <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: isLast ? colors.teal : colors.ink }} />
+                  {!isLast && <div style={{ width: '1px', flex: 1, background: colors.border, marginTop: '4px' }} />}
                 </div>
-                <div style={{ fontSize: '12px', color: colors.text2, lineHeight: 1.5 }}>{e.detail}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 600, color: colors.ink }}>{e.label}</div>
+                    <div style={{ fontFamily: typography.family.mono, fontSize: '11px', color: colors.text3 }}>{e.time}</div>
+                  </div>
+                  <div style={{ fontSize: '12px', color: colors.text2, lineHeight: 1.5, fontFamily: typography.family.mono }}>{e.detail}</div>
+
+                  {enrichment && (
+                    <div style={{
+                      marginTop: '10px', padding: '12px 14px',
+                      background: colors.bg, border: `0.5px solid ${colors.border}`,
+                      borderRadius: radius.md,
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                        <Icons.IconSparkle size={11} color={colors.teal} />
+                        <div style={{ fontSize: '10px', color: colors.teal, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600 }}>Plain English</div>
+                      </div>
+                      <div style={{ fontSize: '12px', fontWeight: 600, color: colors.ink, marginBottom: '6px', lineHeight: 1.5 }}>{enrichment.title}</div>
+                      <div style={{ fontSize: '12px', color: colors.text2, lineHeight: 1.55, marginBottom: '10px' }}>{enrichment.diagnosis}</div>
+
+                      {enrichment.historical && (
+                        <div style={{ fontSize: '11px', color: colors.text3, fontStyle: 'italic', lineHeight: 1.55, marginBottom: '10px' }}>
+                          {enrichment.historical}
+                        </div>
+                      )}
+
+                      <EnrichRow label="What to do" value={enrichment.action} />
+                      {enrichment.customerCopy && <EnrichRow label="Customer copy" value={enrichment.customerCopy} isQuote />}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           {txn.status === 'succeeded' && <Button variant="secondary" size="sm" onClick={() => toast.success('Refund initiated')}>Refund</Button>}
           {txn.status === 'blocked' && <Button variant="secondary" size="sm" onClick={() => toast.success('Released to retry')}>Release</Button>}
           <Button variant="ghost" size="sm" icon={<Icons.IconDownload size={12} />}>Download receipt</Button>
           <Button variant="ghost" size="sm" icon={<Icons.IconCopy size={12} />} onClick={() => { navigator.clipboard.writeText(txn.id); toast.success('ID copied'); }}>Copy id</Button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function EnrichRow({ label, value, isQuote }: { label: string; value: string; isQuote?: boolean }) {
+  return (
+    <div style={{ marginTop: '8px' }}>
+      <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, marginBottom: '3px' }}>{label}</div>
+      <div style={{ fontSize: '12px', color: colors.ink, lineHeight: 1.5, fontStyle: isQuote ? 'italic' : 'normal' }}>{value}</div>
     </div>
   );
 }

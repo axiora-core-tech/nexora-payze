@@ -1,0 +1,79 @@
+{
+  "kicker": "Pre-mortem forecast",
+  "title": "What will likely break this week",
+  "subtitle": "Based on historical routing patterns, maintenance calendars, and anomaly recurrence.",
+  "confidence": "High · 18-month pattern match",
+  "events": [
+    {
+      "id": "fc_npci_sunday",
+      "when": "Sun, 20 Apr · 02:00–04:30 IST",
+      "severity": "high",
+      "category": "NPCI maintenance",
+      "title": "UPI decline rate 4× higher during scheduled maintenance",
+      "detail": "NPCI has published a maintenance window covering HDFC, ICICI, and SBI UPI endpoints. Historical impact: success rate drops from 97% to 74% during this window.",
+      "affected": [
+        { "merchant": "Zomato Foods", "fallbackReady": true },
+        { "merchant": "Razorpay Technologies", "fallbackReady": true },
+        { "merchant": "Nykaa Beauty", "fallbackReady": true },
+        { "merchant": "Cred Club", "fallbackReady": true },
+        { "merchant": "BookMyShow", "fallbackReady": true },
+        { "merchant": "Urban Company", "fallbackReady": false }
+      ],
+      "actions": [
+        "Pre-configured NetBanking fallback active on 5 of 6 UPI-first merchants",
+        "Urban Company is UPI-only — review routing policy before Sunday",
+        "Customer-facing copy ready: 'UPI is temporarily slow — try NetBanking?'"
+      ]
+    },
+    {
+      "id": "fc_icici_tuesday",
+      "when": "Tue, 22 Apr · 15:00–16:00 IST",
+      "severity": "medium",
+      "category": "Bank maintenance",
+      "title": "ICICI NetBanking weekly maintenance",
+      "detail": "ICICI NetBanking is offline for 60 minutes every Tuesday for patching. Predictable, but unwaited merchants still fail here every week.",
+      "affected": [
+        { "merchant": "Razorpay Technologies", "fallbackReady": true },
+        { "merchant": "MakeMyTrip", "fallbackReady": true },
+        { "merchant": "BookMyShow", "fallbackReady": true }
+      ],
+      "actions": [
+        "All three have card fallback active",
+        "No action required — routing will handle"
+      ]
+    },
+    {
+      "id": "fc_hdfc_month_end",
+      "when": "Mon, 28 Apr onwards · end of month",
+      "severity": "medium",
+      "category": "Issuer behavior",
+      "title": "HDFC Visa decline spike · credit-limit refresh cycle",
+      "detail": "Historical pattern: HDFC Visa decline rate jumps from 8% baseline to 24% in the last three days of each month as customers hit their credit limits. Rebounds after 1st of next month.",
+      "affected": [
+        { "merchant": "All merchants with HDFC Visa traffic", "fallbackReady": true }
+      ],
+      "actions": [
+        "Routing policy: HDFC Visa → ICICI Visa → RuPay on decline — already active platform-wide",
+        "Expected recovery rate of blocked attempts: 68%",
+        "Consider customer copy: 'Your card was declined — try UPI for a faster payment'"
+      ]
+    },
+    {
+      "id": "fc_sepa_rebound",
+      "when": "Next 7 days",
+      "severity": "low",
+      "category": "Rail capacity",
+      "title": "SEPA Instant latency creeping up in EU window",
+      "detail": "SEPA Instant median response time has risen from 4.2s to 6.1s over the last 10 days during EU business hours (13:30–18:30 IST). Not yet failure territory but trending wrong.",
+      "affected": [
+        { "merchant": "Nykaa Beauty", "fallbackReady": true },
+        { "merchant": "MakeMyTrip", "fallbackReady": true }
+      ],
+      "actions": [
+        "Watch only — still within SLA",
+        "If median crosses 10s, auto-switch to SEPA Standard (slower but reliable)"
+      ]
+    }
+  ],
+  "historicalMatch": "This week's forecast is based on 18 months of routing data across 47 merchants. Predictions for last week proved accurate on 4 of 4 events."
+}

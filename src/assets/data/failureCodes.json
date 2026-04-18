@@ -1,0 +1,59 @@
+{
+  "codes": {
+    "05": {
+      "match": ["05 — do not honor", "do not honor", "bank declined (05"],
+      "title": "Bank declined — usually credit limit",
+      "diagnosis": "The customer's card issuer refused the charge. This is almost always a credit limit, a bank-side fraud flag, or the card being near expiry. It's a hard decline — retrying on the same card won't help.",
+      "historical": "On this merchant, retrying with UPI succeeds 84% of the time within 2 minutes.",
+      "action": "Offer a different method immediately — UPI first, NetBanking second.",
+      "customerCopy": "\"Your bank declined this charge. Want to try UPI instead? It's faster and free.\""
+    },
+    "51": {
+      "match": ["51 — insufficient funds", "insufficient funds"],
+      "title": "Insufficient funds",
+      "diagnosis": "The customer's account doesn't have enough balance for this charge.",
+      "historical": "Retrying later the same day fails 91% of the time. Retrying in 3+ days succeeds 34%.",
+      "action": "Don't retry today. Schedule a 3-day follow-up email or let customer initiate.",
+      "customerCopy": "\"This charge couldn't go through. Try again later, or use UPI for a faster payment.\""
+    },
+    "ach_timeout": {
+      "match": ["ACH via bank timeout", "ACH timeout"],
+      "title": "ACH didn't respond in time",
+      "diagnosis": "The customer's bank took longer than 30 seconds to confirm the ACH debit. This is a bank-side latency issue, not a decline. Routing has already fallen back to SEPA Instant.",
+      "historical": "When ACH times out, SEPA Instant fallback succeeds 97% of the time.",
+      "action": "No action required — fallback handled it. Monitor if ACH timeout pattern grows.",
+      "customerCopy": "(Customer does not see this — resolved transparently.)"
+    },
+    "velocity_first_time_high_value": {
+      "match": ["first_time_high_value", "velocity anomaly"],
+      "title": "Velocity rule — first-time, high amount",
+      "diagnosis": "New account (7 days old), attempting an amount 3× the merchant's median ticket. Matches a pattern that historically correlates with stolen-card testing.",
+      "historical": "Across 47 merchants, 91% of attempts matching this pattern are confirmed fraudulent within 30 days.",
+      "action": "Blocked is correct. If the customer reaches out, verify ID manually before allowing retry.",
+      "customerCopy": "\"We need to verify a few details before accepting this charge. Contact support@[merchant].com — we'll get this sorted quickly.\""
+    },
+    "card_enumeration": {
+      "match": ["card_enumeration", "card enumeration", "enumeration"],
+      "title": "Card enumeration — almost certainly a bot",
+      "diagnosis": "Four cards attempted from the same device in under 2 minutes. This is classic card-testing behavior — an attacker with a stolen card list checking which are still live.",
+      "historical": "98% of enumeration patterns are malicious. The 2% legitimate cases are almost always developer testing.",
+      "action": "Blocked is correct. Consider a device-level block for 24 hours.",
+      "customerCopy": "(No customer communication — this is a bot, not a person.)"
+    },
+    "geo_restriction": {
+      "match": ["geo_restriction", "blocked region", "VPN detected"],
+      "title": "Request from a restricted region",
+      "diagnosis": "Card issued in India, payment attempted from an IP in a country your merchant has blocked (or VPN detected).",
+      "historical": "This rule blocks 89 attempts per month platform-wide — 100% confirmed legitimate blocks (no false positives).",
+      "action": "Blocked is correct. If this is a real customer traveling, they should turn off VPN and retry.",
+      "customerCopy": "\"We couldn't verify the location of this payment. If you're using a VPN, please disable it and try again.\""
+    }
+  },
+  "default": {
+    "title": "No enrichment available for this event",
+    "diagnosis": "This event doesn't match a known pattern. In production, Payze would describe the cause from live rules metadata.",
+    "historical": "",
+    "action": "Review raw event detail above.",
+    "customerCopy": ""
+  }
+}

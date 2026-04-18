@@ -1,0 +1,20 @@
+{
+  "cadenceMs": 4200,
+  "events": [
+    { "icon": "teal", "text": "Zomato Foods · ₹7,800 routed via UPI after HDFC Visa declined · 3.8s" },
+    { "icon": "ink", "text": "Razorpay Technologies · ₹18,200 captured · Visa HDFC · auth in 1.2s" },
+    { "icon": "teal", "text": "Nykaa Beauty · €1,890 routed SEPA Instant after ACH timeout" },
+    { "icon": "ink", "text": "Settlement STL-9824 landed · ₹45,20,000 to Zomato Foods · NEFT HDFC" },
+    { "icon": "blocked", "text": "Cred Club · ₹42,500 attempt blocked · first-time buyer · velocity flag" },
+    { "icon": "ink", "text": "Urban Company · ₹22,400 captured · NetBanking HDFC · direct debit" },
+    { "icon": "teal", "text": "Routing Copilot · HDFC Visa decline rate dropped to baseline · anomaly resolved" },
+    { "icon": "ink", "text": "BookMyShow · ₹1,12,000 captured · UPI PayTM" },
+    { "icon": "ink", "text": "MakeMyTrip · $320 captured · Amex · cross-border FX applied" },
+    { "icon": "teal", "text": "Subscription sub_482a charged · Rohan Shankar · UPI Autopay · ₹4,500" },
+    { "icon": "blocked", "text": "Zomato Foods · card enumeration attempt blocked · 4 cards / 2 min" },
+    { "icon": "ink", "text": "Dispute dp_9010 won · ₹22,000 released · evidence pack auto-submitted" },
+    { "icon": "teal", "text": "Forecast alert · NPCI maintenance window Sunday 02:00–04:30 IST" },
+    { "icon": "ink", "text": "Nykaa Beauty · ₹3,450 captured · Mastercard ICICI" },
+    { "icon": "teal", "text": "Cred Club · quarterly NACH mandate collected · ₹9,999 × 8 members" }
+  ]
+}

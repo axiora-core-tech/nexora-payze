@@ -8,7 +8,8 @@ import { configService } from '../../services';
 
 export function Risk() {
   const { data, loading, error, refetch } = useAsync(() => configService.getRisk(), []);
-  const [tab, setTab] = useState<'signals' | 'rules' | 'disputes'>('signals');
+  const { data: forecast } = useAsync(() => configService.getForecast(), []);
+  const [tab, setTab] = useState<'forecast' | 'signals' | 'rules' | 'disputes'>('forecast');
 
   if (error) return <ErrorState message={`Couldn't load risk — ${error.message}`} onRetry={refetch} />;
   if (loading || !data) return <PageLoader label="Loading risk posture" />;
@@ -45,6 +46,7 @@ export function Risk() {
         <div style={{ padding: '16px 24px', borderBottom: `0.5px solid ${colors.border}` }}>
           <div style={{ display: 'flex', gap: '4px', background: colors.bg, padding: '4px', borderRadius: radius.pill, width: 'fit-content' }}>
             {[
+              { id: 'forecast', label: (<span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}><Icons.IconSparkle size={11} color={tab === 'forecast' ? colors.teal : colors.text2} />Pre-mortem</span>) },
               { id: 'signals', label: 'Live signals' },
               { id: 'rules', label: 'Rules engine' },
               { id: 'disputes', label: 'Disputes' },
@@ -59,6 +61,8 @@ export function Risk() {
             ))}
           </div>
         </div>
+
+        {tab === 'forecast' && <ForecastTab data={forecast} />}
 
         {tab === 'signals' && (
           <>
@@ -139,6 +143,89 @@ export function Risk() {
         )}
       </Card>
     </div>
+  );
+}
+
+function ForecastTab({ data }: { data: any }) {
+  if (!data) {
+    return (
+      <div style={{ padding: '60px 24px', textAlign: 'center', color: colors.text3, fontSize: '13px' }}>
+        Loading forecast…
+      </div>
+    );
+  }
+
+  const severityColor = (s: string) => s === 'high' ? colors.ink : s === 'medium' ? colors.text2 : colors.borderHover;
+
+  return (
+    <>
+      <div style={{ padding: '24px 24px 18px 24px', borderBottom: `0.5px solid ${colors.border}`, background: colors.bg }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '14px' }}>
+          <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: colors.ink, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <Icons.IconSparkle size={14} color={colors.teal} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: '11px', color: colors.teal, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, marginBottom: '2px' }}>{data.kicker}</div>
+            <div style={{ fontSize: '18px', fontWeight: 600, color: colors.ink, letterSpacing: '-0.01em', marginBottom: '4px' }}>{data.title}</div>
+            <div style={{ fontSize: '12px', color: colors.text2, lineHeight: 1.55 }}>{data.subtitle}</div>
+          </div>
+          <div style={{ flexShrink: 0, textAlign: 'right' }}>
+            <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500 }}>Confidence</div>
+            <div style={{ fontSize: '12px', color: colors.ink, fontWeight: 500, marginTop: '2px' }}>{data.confidence}</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ padding: '6px 24px' }}>
+        {data.events.map((e: any, i: number) => (
+          <div key={e.id} style={{ padding: '20px 0', borderBottom: i < data.events.length - 1 ? `0.5px solid ${colors.border}` : 'none' }}>
+            <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+              <div style={{ width: '3px', background: severityColor(e.severity), borderRadius: '2px', alignSelf: 'stretch', minHeight: '40px', flexShrink: 0 }} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '12px', marginBottom: '6px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px', flexWrap: 'wrap' }}>
+                    <span style={{ fontFamily: typography.family.mono, fontSize: '11px', color: colors.text2, fontWeight: 500 }}>{e.when}</span>
+                    <Pill tone={e.severity === 'high' ? 'ink' : e.severity === 'medium' ? 'outline' : 'neutral'}>{e.severity}</Pill>
+                    <span style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500 }}>{e.category}</span>
+                  </div>
+                </div>
+                <div style={{ fontSize: '14px', fontWeight: 600, color: colors.ink, marginBottom: '6px', letterSpacing: '-0.005em' }}>{e.title}</div>
+                <div style={{ fontSize: '12px', color: colors.text2, lineHeight: 1.6, marginBottom: '14px' }}>{e.detail}</div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '14px' }}>
+                  <div style={{ padding: '12px', background: colors.bg, borderRadius: radius.md }}>
+                    <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, marginBottom: '8px' }}>Affected merchants</div>
+                    {e.affected.map((a: any, j: number) => (
+                      <div key={j} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '4px 0', fontSize: '12px' }}>
+                        <span style={{ color: colors.ink }}>{a.merchant}</span>
+                        <span style={{ fontSize: '10px', color: a.fallbackReady ? colors.teal : colors.text2, fontFamily: typography.family.mono, letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 500 }}>
+                          {a.fallbackReady ? '✓ READY' : '! REVIEW'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div style={{ padding: '12px', background: colors.tealTint, borderRadius: radius.md }}>
+                    <div style={{ fontSize: '10px', color: colors.teal, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, marginBottom: '8px' }}>Recommended</div>
+                    {e.actions.map((a: string, j: number) => (
+                      <div key={j} style={{ display: 'flex', gap: '6px', padding: '3px 0', fontSize: '12px', color: colors.ink, lineHeight: 1.5 }}>
+                        <span style={{ color: colors.teal, flexShrink: 0 }}>·</span>
+                        <span>{a}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ padding: '16px 24px', borderTop: `0.5px solid ${colors.border}`, background: colors.bg, fontSize: '11px', color: colors.text2, lineHeight: 1.6, display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <Icons.IconChart size={14} color={colors.text2} />
+        {data.historicalMatch}
+      </div>
+    </>
   );
 }
 

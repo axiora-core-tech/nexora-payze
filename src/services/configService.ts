@@ -15,6 +15,11 @@ import onboardingData from '../assets/data/onboarding.json';
 import superAdminData from '../assets/data/superAdmin.json';
 import tenantsData from '../assets/data/tenants.json';
 import homeData from '../assets/data/home.json';
+import tickerData from '../assets/data/ticker.json';
+import copilotData from '../assets/data/copilot.json';
+import reconciliationData from '../assets/data/reconciliation.json';
+import forecastData from '../assets/data/forecast.json';
+import failureCodesData from '../assets/data/failureCodes.json';
 
 /**
  * configService — loads config/data JSON files with simulated network latency
@@ -40,6 +45,11 @@ export const configService = {
   getSuperAdmin: () => mockFetch(superAdminData),
   getTenantsPage: () => mockFetch(tenantsData),
   getHome: () => mockFetch(homeData),
+  getTicker: () => mockFetch(tickerData),
+  getCopilot: () => mockFetch(copilotData),
+  getReconciliation: () => mockFetch(reconciliationData),
+  getForecast: () => mockFetch(forecastData),
+  getFailureCodes: () => mockFetch(failureCodesData),
 };
 
 // Also export types for TypeScript consumers

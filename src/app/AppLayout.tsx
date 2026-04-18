@@ -3,6 +3,8 @@ import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router'
 import { colors, radius, typography } from '../design/tokens';
 import * as Icons from '../design/icons';
 import { useTenant } from './components/TenantContext';
+import { Copilot } from './components/Copilot';
+import { AmbientTicker } from './components/AmbientTicker';
 
 type NavItem = { to: string; label: string; Icon: React.FC<any>; matches: (path: string) => boolean; superAdmin?: boolean };
 
@@ -66,12 +68,14 @@ export function AppLayout() {
           notifOpen={notifOpen} setNotifOpen={setNotifOpen}
           onSignOut={() => navigate('/signin')}
         />
-        <main style={{ flex: 1, padding: '24px 40px 48px 24px', minWidth: 0 }}>
+        <main style={{ flex: 1, padding: '24px 40px 64px 24px', minWidth: 0 }}>
           <Outlet />
         </main>
       </div>
 
-      {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} />}
+      <AmbientTicker />
+
+      {searchOpen && <Copilot onClose={() => setSearchOpen(false)} />}
       {(profileOpen || notifOpen || currencyOpen) && (
         <div onClick={() => { setProfileOpen(false); setNotifOpen(false); setCurrencyOpen(false); }} style={{ position: 'fixed', inset: 0, zIndex: 40 }} />
       )}
@@ -168,10 +172,10 @@ function Header({ tenant, currency, setCurrency, currencyOpen, setCurrencyOpen, 
       </div>
 
       <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
-        <button onClick={() => setSearchOpen(true)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.pill, color: colors.text2, fontSize: '13px', cursor: 'pointer', minWidth: '220px', justifyContent: 'space-between', fontFamily: 'inherit' }}>
+        <button onClick={() => setSearchOpen(true)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.pill, color: colors.text2, fontSize: '13px', cursor: 'pointer', minWidth: '260px', justifyContent: 'space-between', fontFamily: 'inherit' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Icons.IconSearch size={14} color={colors.text2} />
-            Search or jump to…
+            <Icons.IconSparkle size={14} color={colors.teal} />
+            Ask Copilot or search…
           </span>
           <span style={{ fontFamily: typography.family.mono, fontSize: '10px', color: colors.text3, padding: '2px 6px', border: `0.5px solid ${colors.border}`, borderRadius: '4px' }}>⌘K</span>
         </button>
@@ -231,47 +235,6 @@ function Header({ tenant, currency, setCurrency, currencyOpen, setCurrencyOpen, 
         </div>
       </div>
     </header>
-  );
-}
-
-function SearchModal({ onClose }: { onClose: () => void }) {
-  const [q, setQ] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => { inputRef.current?.focus(); }, []);
-
-  const results = [
-    { type: 'Page', label: 'Dashboard', to: '/app' },
-    { type: 'Page', label: 'Transactions', to: '/app/transactions' },
-    { type: 'Page', label: 'Risk', to: '/app/risk' },
-    { type: 'Page', label: 'QR codes', to: '/app/qr' },
-    { type: 'Page', label: 'Checkout', to: '/app/pay' },
-    { type: 'Merchant', label: 'Zomato Foods', to: '/t/zomato' },
-    { type: 'Merchant', label: 'Razorpay Technologies', to: '/t/razorpay' },
-    { type: 'Invoice', label: 'INV-0228 · Razorpay Technologies', to: '/app/invoices' },
-  ].filter(r => !q || r.label.toLowerCase().includes(q.toLowerCase()));
-
-  return (
-    <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(26,26,26,0.35)', backdropFilter: 'blur(3px)', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '120px', zIndex: 100 }}>
-      <div onClick={e => e.stopPropagation()} style={{ width: '600px', maxWidth: '92vw', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.lg, boxShadow: '0 30px 60px -15px rgba(0,0,0,0.3)', overflow: 'hidden' }}>
-        <div style={{ padding: '16px 20px', borderBottom: `0.5px solid ${colors.border}`, display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Icons.IconSearch size={16} color={colors.text2} />
-          <input ref={inputRef} value={q} onChange={e => setQ(e.target.value)} placeholder="Search transactions, merchants, invoices…" style={{ flex: 1, border: 'none', outline: 'none', fontSize: '15px', background: 'transparent', color: colors.ink, fontFamily: 'inherit' }} />
-          <span style={{ fontFamily: typography.family.mono, fontSize: '10px', color: colors.text3, padding: '2px 6px', border: `0.5px solid ${colors.border}`, borderRadius: '4px' }}>ESC</span>
-        </div>
-        <div style={{ maxHeight: '380px', overflowY: 'auto', padding: '6px' }}>
-          {results.length === 0 ? (
-            <div style={{ padding: '40px', textAlign: 'center', color: colors.text3, fontSize: '13px' }}>No results</div>
-          ) : (
-            results.map((r, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', borderRadius: radius.sm, cursor: 'pointer', fontSize: '13px', color: colors.ink }} onMouseEnter={e => (e.currentTarget.style.background = colors.bg)} onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
-                <span>{r.label}</span>
-                <span style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{r.type}</span>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
-    </div>
   );
 }
 

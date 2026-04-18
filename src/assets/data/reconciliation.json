@@ -1,0 +1,118 @@
+{
+  "kicker": "Reconciliation Copilot",
+  "greeting": "Ask me anything about this batch. I've already cross-checked it against your bank statement and ledger.",
+  "quickPrompts": [
+    "Is this batch short?",
+    "Break down the fees",
+    "When will it actually land?",
+    "Show me the TDS calculation",
+    "What are the refund adjustments?"
+  ],
+  "batches": {
+    "STL-9824": {
+      "summary": "This batch matched your ledger perfectly. Net ₹45,20,000 landed at HDFC ••4821 at 06:30 IST.",
+      "scenarios": [
+        {
+          "triggers": ["short", "missing", "light", "difference", "mismatch"],
+          "answer": "STL-9824 is not short — it matches exactly. Your bank credit (₹45,20,000) equals net payable. Gross ₹45,41,523 minus processing fees ₹18,240, GST ₹3,283 = ₹45,20,000."
+        },
+        {
+          "triggers": ["fees", "fee breakdown", "processing", "charges"],
+          "answer": "Processing fees: ₹18,240. That's 1,284 transactions at effective 0.40%. Breakdown: 1,102 UPI (₹0/txn), 143 cards (avg ₹118), 39 NetBanking (avg ₹32)."
+        },
+        {
+          "triggers": ["tds", "tax deducted", "income tax"],
+          "answer": "No TDS on this batch — all transactions were domestic. Cross-border TDS applies only to Amex/SEPA/ACH paths."
+        },
+        {
+          "triggers": ["refund", "refund adjustment", "reversed"],
+          "answer": "₹0 refund adjustment in this cycle. Last refund adjustment was in STL-9817 (₹9,999, txn_00464 · Razorpay customer refund)."
+        },
+        {
+          "triggers": ["when", "arrival", "timing", "land"],
+          "answer": "Already landed. Posted at 06:30 IST. UTR HDFC25109824. Typical HDFC NEFT window is 06:00–07:00; you're in the normal band."
+        }
+      ]
+    },
+    "STL-9822": {
+      "summary": "STL-9822 is settling now. Expected ₹8,45,200 at HDFC ••1028 by 18:00 IST.",
+      "scenarios": [
+        {
+          "triggers": ["short", "missing", "delayed", "late"],
+          "answer": "Not short — still processing. NEFT batch submitted to RBI at 17:15, expected settlement 18:00 ± 20 min. Nothing unusual."
+        },
+        {
+          "triggers": ["when", "arrival", "timing", "land"],
+          "answer": "Expected by 18:00 IST. If not landed by 18:30, escalate — that's outside normal range."
+        },
+        {
+          "triggers": ["fees", "fee breakdown"],
+          "answer": "Estimated fees ₹3,381 + ₹609 GST. 412 transactions, mix 78% UPI / 18% cards / 4% wallet."
+        }
+      ]
+    },
+    "STL-9823": {
+      "summary": "STL-9823 landed ₹200 light of expected. TDS deduction on one cross-border transaction.",
+      "scenarios": [
+        {
+          "triggers": ["short", "missing", "light", "difference", "mismatch"],
+          "answer": "₹200 short of expected ₹1,12,40,200. Cause: 5% TDS on txn_00459 (MakeMyTrip · Heinrich Müller · SEPA €890). Post journal: Dr TDS Receivable ₹200 / Cr Revenue ₹200. Claim in Form 26B-1."
+        },
+        {
+          "triggers": ["tds", "tax deducted"],
+          "answer": "₹200 TDS on txn_00459. Heinrich Müller (Berlin) · SEPA · EUR 890 → INR 80,446 × 5% cross-border TDS = ₹4,022. Wait — that should be more. Let me recheck: actually only 0.25% applies for this counterparty class = ₹201, rounded to ₹200. Correct."
+        },
+        {
+          "triggers": ["fees", "fee breakdown"],
+          "answer": "Processing fees ₹44,960 (1.12% effective on cross-border weighted). GST ₹8,093. TDS ₹200 (cross-border). Net paid ₹1,12,40,000 vs gross ₹1,12,93,253."
+        },
+        {
+          "triggers": ["when", "arrival", "timing", "land"],
+          "answer": "Already landed. RTGS posted 05:45 IST. UTR ICIC25109823. Razorpay Technologies uses T+0 RTGS on Growth plan — faster than T+1 NEFT."
+        }
+      ]
+    },
+    "STL-9821": {
+      "summary": "STL-9821 is pending — ₹18,500 will land tomorrow 06:30 IST at Kotak ••7392.",
+      "scenarios": [
+        {
+          "triggers": ["when", "arrival", "timing", "land", "why pending"],
+          "answer": "Tomorrow 06:30 IST. It's pending because volume (₹18,500, 48 transactions) is under Cred Club's settlement threshold for same-day processing — they're on T+1 with min-batch of ₹25,000 for T+0."
+        },
+        {
+          "triggers": ["short", "missing"],
+          "answer": "Nothing short yet — still pending. Net expected ₹18,500 against gross ₹18,587. Fees ₹74, GST ₹13."
+        },
+        {
+          "triggers": ["why so small", "low volume"],
+          "answer": "Low day for Cred. Cred's 7-day average is ₹1.24 L/day. This batch covers just a few mid-day captures; rest will roll into tomorrow's batch."
+        }
+      ]
+    },
+    "STL-9818": {
+      "summary": "STL-9818 failed. RTGS rejected by SBI · incorrect beneficiary IFSC. Retry scheduled.",
+      "scenarios": [
+        {
+          "triggers": ["why failed", "failed", "rejected", "error"],
+          "answer": "SBI rejected the RTGS with error R42 — IFSC mismatch. The registered account is SBI ••4430 with IFSC SBIN0001234, but MakeMyTrip updated to SBIN0004321 two weeks ago and the change didn't propagate to the settlement config."
+        },
+        {
+          "triggers": ["fix", "what to do", "resolve"],
+          "answer": "Update IFSC in the merchant's banking config → retry. I can do both: (1) patch IFSC to SBIN0004321, (2) re-queue STL-9818 for next RTGS window. Say 'fix it' to proceed."
+        },
+        {
+          "triggers": ["fix it", "do it", "proceed"],
+          "answer": "Done. IFSC updated. STL-9818 re-queued. Expected landing: next RTGS window at 08:15 tomorrow. I've also flagged this pattern — if a merchant updates bank details via email instead of the banking page, changes don't sync. Recommend adding a validation hook."
+        },
+        {
+          "triggers": ["how long", "when"],
+          "answer": "Once retriggered, landing at 08:15 tomorrow. Customer has been auto-notified of the delay via email."
+        }
+      ]
+    }
+  },
+  "fallback": {
+    "message": "I don't have a scripted answer for that. In production I'd look up the live settlement report, bank statement, and ledger to answer precisely.",
+    "suggestion": "Try: 'Is this batch short?', 'Break down the fees', 'When will it land?', or 'Show me the TDS'."
+  }
+}
