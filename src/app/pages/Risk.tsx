@@ -303,7 +303,6 @@ function DisputeEvidenceDrawer({ dispute, evidence, fallback, onClose }: any) {
   const { data: collab } = useAsync(() => configService.getCollaboration(), []);
   const presence = collab?.presence?.[dispute.id] || [];
   const initialComments = collab?.commentsByDispute?.[dispute.id] || [];
-  const ghostCursors = collab?.ghostCursors?.[dispute.id] || [];
   const [comments, setComments] = useState<any[]>(initialComments);
   const [newComment, setNewComment] = useState('');
 
@@ -335,27 +334,6 @@ function DisputeEvidenceDrawer({ dispute, evidence, fallback, onClose }: any) {
         boxShadow: '-20px 0 60px rgba(0,0,0,0.15)',
         position: 'relative',
       }}>
-        {/* Ghost cursor decorations */}
-        {ghostCursors.map((g: any) => (
-          <div key={g.id} style={{
-            position: 'absolute', left: `${g.x}px`, top: `${g.y}px`,
-            pointerEvents: 'none', zIndex: 5,
-            animation: 'payze-pulse-dot 3s ease-in-out infinite',
-          }}>
-            <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
-              <path d="M0 0L0 12L4 9L7 16L10 15L6 8L12 8L0 0Z" fill={g.color} stroke={colors.card} strokeWidth="0.5" />
-            </svg>
-            <span style={{
-              position: 'absolute', top: '14px', left: '10px',
-              background: g.color, color: '#fff',
-              fontSize: '9px', fontWeight: 500,
-              padding: '2px 6px', borderRadius: radius.sm,
-              whiteSpace: 'nowrap',
-              letterSpacing: '0.04em',
-            }}>{g.label}</span>
-          </div>
-        ))}
-
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
@@ -401,10 +379,10 @@ function DisputeEvidenceDrawer({ dispute, evidence, fallback, onClose }: any) {
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: '12px', color: colors.ink, fontWeight: 500 }}>
-                You're viewing this with {presence.length} {presence.length === 1 ? 'other' : 'others'}
+                Viewing with {presence.map((p: any) => p.name.split(' ')[0]).join(' & ')}
               </div>
-              <div style={{ fontSize: '10px', color: colors.text3, fontStyle: 'italic' }}>
-                {collab?.prototypeNote}
+              <div style={{ fontSize: '10px', color: colors.text3 }}>
+                {presence.map((p: any) => p.status).join(' · ')}
               </div>
             </div>
           </div>

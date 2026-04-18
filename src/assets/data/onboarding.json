@@ -1,32 +1,213 @@
 {
+  "welcome": {
+    "kicker": "Welcome to Payze",
+    "title": "Let's bring your business online.",
+    "subtitle": "We'll get you taking payments in under 8 minutes. No boilerplate — we'll adapt to what kind of business you run.",
+    "assurances": [
+      "Every field autofills from your industry — override anything",
+      "KYC happens in parallel · your dashboard unlocks immediately",
+      "Your first test payment runs end-to-end before we activate"
+    ]
+  },
   "header": {
-    "kicker": "Onboarding",
-    "title": "Let's get this merchant live",
-    "subtitle": "Six steps, ~8 minutes. Everything can be edited later."
+    "kicker": "Set up",
+    "title": "A few questions to tailor everything",
+    "subtitle": "Your answers shape what we recommend — methods, settlement cadence, defaults."
   },
   "steps": [
-    { "id": "business", "label": "Business" },
-    { "id": "kyc", "label": "Identity & KYC" },
-    { "id": "banking", "label": "Banking" },
-    { "id": "webhooks", "label": "Webhooks" },
-    { "id": "branding", "label": "Branding" },
-    { "id": "review", "label": "Review & activate" }
+    { "id": "industry",  "label": "Your business", "short": "Business" },
+    { "id": "identity",  "label": "Identity", "short": "Identity" },
+    { "id": "banking",   "label": "Where funds land", "short": "Banking" },
+    { "id": "branding",  "label": "Your look", "short": "Branding" },
+    { "id": "activate",  "label": "Go live", "short": "Activate" }
   ],
-  "colors": ["#1C6F6B", "#1A1A1A", "#8B5CF6", "#F59E0B", "#EF4444", "#3B82F6", "#14B8A6", "#F97316"],
+  "industryPresets": [
+    {
+      "id": "saas",
+      "label": "SaaS · subscriptions",
+      "icon": "IconDeveloper",
+      "description": "Recurring billing, usage-based plans, global customers.",
+      "defaults": {
+        "methods": ["Cards", "UPI Autopay", "ACH", "SEPA"],
+        "settlementCadence": "T+1 (next business day)",
+        "webhookEvents": ["payment.succeeded", "payment.failed", "subscription.charged", "settlement.completed"],
+        "plan": "Growth",
+        "brandColor": "#1C6F6B",
+        "industry": "SaaS"
+      },
+      "recommendations": [
+        "Enable UPI Autopay — Indian SaaS customers convert 3× better with it vs cards",
+        "Set dunning on failed subscription charges with a 3-retry window",
+        "Offer annual plans with a 2-month discount — LTV jumps 40%"
+      ]
+    },
+    {
+      "id": "ecommerce",
+      "label": "E-commerce · physical goods",
+      "icon": "IconLedger",
+      "description": "Cart checkout, shipping, returns, COD if you need it.",
+      "defaults": {
+        "methods": ["UPI", "Cards", "NetBanking", "Wallets", "COD"],
+        "settlementCadence": "T+1 (next business day)",
+        "webhookEvents": ["payment.succeeded", "payment.failed", "payment.routed", "settlement.completed", "dispute.created"],
+        "plan": "Growth",
+        "brandColor": "#8B5CF6",
+        "industry": "E-commerce"
+      },
+      "recommendations": [
+        "Enable Cart Guard on high-value orders to reduce friendly fraud",
+        "Set up refund auto-policies by reason code — common patterns save support time",
+        "Brand your checkout — conversion lifts ~8% over generic"
+      ]
+    },
+    {
+      "id": "food",
+      "label": "Food · restaurants, delivery",
+      "icon": "IconTenants",
+      "description": "Fast checkout, small tickets, high volume, tip splits.",
+      "defaults": {
+        "methods": ["UPI", "Cards", "Wallets"],
+        "settlementCadence": "T+0 (same day)",
+        "webhookEvents": ["payment.succeeded", "payment.failed", "settlement.completed"],
+        "plan": "Growth",
+        "brandColor": "#F97316",
+        "industry": "Food & Delivery"
+      },
+      "recommendations": [
+        "T+0 settlement is important — most restaurant operators live on daily cash flow",
+        "Enable tips as a separate settlement account for clean staff payout",
+        "UPI + Wallets cover 90% of food orders — can defer card setup"
+      ]
+    },
+    {
+      "id": "creator",
+      "label": "Creator · services, courses",
+      "icon": "IconUser",
+      "description": "Per-session bookings, courses, subscriptions, small-batch selling.",
+      "defaults": {
+        "methods": ["UPI", "Cards", "Wallets"],
+        "settlementCadence": "T+1 (next business day)",
+        "webhookEvents": ["payment.succeeded", "payment.failed", "subscription.charged"],
+        "plan": "Starter",
+        "brandColor": "#B48C3C",
+        "industry": "Creative"
+      },
+      "recommendations": [
+        "Payment links are your best friend — no site needed to start",
+        "Enable subscriptions for cohort-based courses or monthly memberships",
+        "Your public Payze page (payze.app/@you) works as a landing page"
+      ]
+    },
+    {
+      "id": "education",
+      "label": "Education · classes, coaching",
+      "icon": "IconShield",
+      "description": "Course fees, installments, certifications, parent-facing receipts.",
+      "defaults": {
+        "methods": ["UPI", "Cards", "NetBanking", "UPI Autopay"],
+        "settlementCadence": "T+2",
+        "webhookEvents": ["payment.succeeded", "payment.failed", "subscription.charged"],
+        "plan": "Growth",
+        "brandColor": "#3B82F6",
+        "industry": "Services"
+      },
+      "recommendations": [
+        "Installment plans via UPI Autopay help parents with cash flow",
+        "Receipt templates can be customized for course + student name",
+        "Set up auto-refunds with 7-day window for course-withdrawal cases"
+      ]
+    },
+    {
+      "id": "services",
+      "label": "Professional services",
+      "icon": "IconInvoice",
+      "description": "Consulting, agencies, retainers, custom invoicing with GST.",
+      "defaults": {
+        "methods": ["NetBanking", "Cards", "UPI", "Wire"],
+        "settlementCadence": "T+1 (next business day)",
+        "webhookEvents": ["payment.succeeded", "payment.failed", "settlement.completed"],
+        "plan": "Growth",
+        "brandColor": "#1A1A1A",
+        "industry": "Services"
+      },
+      "recommendations": [
+        "Invoice-first workflow — ditch payment links for your use case",
+        "Configure GSTR-1 exports right away · saves 3 hours every month",
+        "Retainers work well as mandate-backed recurring — lower failures than manual invoicing"
+      ]
+    },
+    {
+      "id": "marketplace",
+      "label": "Marketplace · platform",
+      "icon": "IconSettlements",
+      "description": "Multiple sellers, split payouts, take rates, seller KYC.",
+      "defaults": {
+        "methods": ["UPI", "Cards", "NetBanking", "Wallets"],
+        "settlementCadence": "T+2",
+        "webhookEvents": ["payment.succeeded", "payment.failed", "settlement.completed", "dispute.created"],
+        "plan": "Scale",
+        "brandColor": "#14B8A6",
+        "industry": "E-commerce"
+      },
+      "recommendations": [
+        "Scale plan is required for programmatic seller payouts",
+        "Each seller needs their own KYC — we handle sub-merchant onboarding",
+        "Split settlement rules can be configured per-transaction or per-seller"
+      ]
+    },
+    {
+      "id": "other",
+      "label": "Something else",
+      "icon": "IconPlus",
+      "description": "Not in this list? No problem — start blank and configure manually.",
+      "defaults": {
+        "methods": ["UPI", "Cards", "NetBanking"],
+        "settlementCadence": "T+1 (next business day)",
+        "webhookEvents": ["payment.succeeded", "payment.failed", "settlement.completed"],
+        "plan": "Growth",
+        "brandColor": "#1C6F6B",
+        "industry": "Other"
+      },
+      "recommendations": [
+        "We'll default to a balanced configuration",
+        "You can customize anything from the dashboard later",
+        "Reach out to support@payze.app if you want setup help"
+      ]
+    }
+  ],
   "businessTypes": ["Private Limited", "LLP", "Proprietorship", "Partnership"],
-  "industries": ["SaaS", "E-commerce", "FinTech", "Travel", "Creative", "Food & Delivery", "Beauty & E-commerce", "Services", "Entertainment", "Other"],
-  "settlementCadences": ["T+1 (next business day)", "T+2", "Weekly", "Monthly"],
-  "plans": [
-    { "id": "Starter", "label": "Starter", "price": "₹499/mo" },
-    { "id": "Growth", "label": "Growth", "price": "₹2,499/mo" },
-    { "id": "Scale", "label": "Scale", "price": "₹9,999/mo" }
+  "settlementCadences": [
+    { "value": "T+0 (same day)",            "label": "T+0 — same day",           "fee": "+0.2% on volume" },
+    { "value": "T+1 (next business day)",   "label": "T+1 — next business day",  "fee": "Standard · included" },
+    { "value": "T+2",                        "label": "T+2 — 2 business days",    "fee": "Standard · included" },
+    { "value": "Weekly",                     "label": "Weekly rollup",             "fee": "-0.1% on volume" }
   ],
+  "plans": [
+    { "id": "Starter", "label": "Starter", "price": "₹499/mo",   "sub": "Under ₹5L / month",  "features": ["All methods", "Standard routing", "Email support"] },
+    { "id": "Growth",  "label": "Growth",  "price": "₹2,499/mo", "sub": "₹5L – ₹1 Cr / month", "features": ["Everything in Starter", "T+0 available", "Priority support", "Webhook retries"] },
+    { "id": "Scale",   "label": "Scale",   "price": "₹9,999/mo", "sub": "₹1 Cr+ / month",      "features": ["Everything in Growth", "Sub-merchant KYC", "Custom contracts", "Dedicated engineer"] }
+  ],
+  "colors": ["#1C6F6B", "#1A1A1A", "#8B5CF6", "#F59E0B", "#EF4444", "#3B82F6", "#14B8A6", "#F97316", "#B48C3C", "#EC4899"],
   "webhookEvents": [
-    { "id": "payment.succeeded", "defaultOn": true },
-    { "id": "payment.failed", "defaultOn": true },
-    { "id": "payment.routed", "defaultOn": true },
-    { "id": "settlement.completed", "defaultOn": true },
-    { "id": "dispute.created", "defaultOn": true },
-    { "id": "subscription.charged", "defaultOn": false }
-  ]
+    { "id": "payment.succeeded",    "defaultOn": true,  "description": "Fires when any payment is captured." },
+    { "id": "payment.failed",       "defaultOn": true,  "description": "Fires on declines and blocks — you see the reason code." },
+    { "id": "payment.routed",       "defaultOn": true,  "description": "Fires when fallback routing saves a payment." },
+    { "id": "settlement.completed", "defaultOn": true,  "description": "Fires when funds land in your bank account." },
+    { "id": "dispute.created",      "defaultOn": true,  "description": "Fires when a customer opens a chargeback." },
+    { "id": "subscription.charged", "defaultOn": false, "description": "Fires on every recurring charge · noisy if enabled." }
+  ],
+  "activation": {
+    "steps": [
+      { "label": "Creating workspace",          "detail": "/t/{slug}",                        "durationMs": 700 },
+      { "label": "Provisioning API keys",       "detail": "test + live · rotatable",          "durationMs": 600 },
+      { "label": "Configuring payment methods", "detail": "{methodCount} enabled",            "durationMs": 800 },
+      { "label": "Verifying bank account",      "detail": "penny drop · ₹1 sent to {bankTail}", "durationMs": 900 },
+      { "label": "Running first test payment",  "detail": "₹100 · UPI simulated",             "durationMs": 1100 },
+      { "label": "Payment captured",            "detail": "webhook delivered · 178ms",        "durationMs": 500 }
+    ],
+    "celebrationTitle": "You're live.",
+    "celebrationSubtitle": "First test payment landed in 2.3 seconds. Your workspace is ready.",
+    "ctaPrimary": "Open workspace",
+    "ctaSecondary": "Send real test"
+  }
 }
