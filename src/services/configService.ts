@@ -5,11 +5,10 @@ import riskData from '../assets/data/risk.json';
 import settlementsData from '../assets/data/settlements.json';
 import subscriptionsData from '../assets/data/subscriptions.json';
 import invoicesData from '../assets/data/invoices.json';
-import paymentLinksData from '../assets/data/paymentLinks.json';
+import collectData from '../assets/data/collect.json';
 import analyticsData from '../assets/data/analytics.json';
 import adminData from '../assets/data/admin.json';
 import developerData from '../assets/data/developer.json';
-import qrData from '../assets/data/qr.json';
 import payData from '../assets/data/pay.json';
 import onboardingData from '../assets/data/onboarding.json';
 import superAdminData from '../assets/data/superAdmin.json';
@@ -44,11 +43,10 @@ export const configService = {
   getSettlements: () => mockFetch(settlementsData),
   getSubscriptions: () => mockFetch(subscriptionsData),
   getInvoices: () => mockFetch(invoicesData),
-  getPaymentLinks: () => mockFetch(paymentLinksData),
+  getCollect: () => mockFetch(collectData),
   getAnalytics: () => mockFetch(analyticsData),
   getAdmin: () => mockFetch(adminData),
   getDeveloper: () => mockFetch(developerData),
-  getQR: () => mockFetch(qrData),
   getPay: () => mockFetch(payData),
   getOnboarding: () => mockFetch(onboardingData),
   getSuperAdmin: () => mockFetch(superAdminData),
@@ -77,11 +75,10 @@ export type RiskData = typeof riskData;
 export type SettlementsData = typeof settlementsData;
 export type SubscriptionsData = typeof subscriptionsData;
 export type InvoicesData = typeof invoicesData;
-export type PaymentLinksData = typeof paymentLinksData;
+export type CollectData = typeof collectData;
 export type AnalyticsData = typeof analyticsData;
 export type AdminData = typeof adminData;
 export type DeveloperData = typeof developerData;
-export type QRData = typeof qrData;
 export type PayData = typeof payData;
 export type OnboardingData = typeof onboardingData;
 export type SuperAdminData = typeof superAdminData;

@@ -13,8 +13,7 @@ import { Risk } from './pages/Risk';
 import { Settlements } from './pages/Settlements';
 import { Analytics } from './pages/Analytics';
 import { Invoices } from './pages/Invoices';
-import { PaymentLinks } from './pages/PaymentLinks';
-import { QRCodePage } from './pages/QRCodePage';
+import { Collect } from './pages/Collect';
 import { Pay } from './pages/Pay';
 import { Subscriptions } from './pages/Subscriptions';
 import { Developer } from './pages/Developer';
@@ -31,8 +30,7 @@ const appChildren = [
   { path: 'settlements', element: <Settlements /> },
   { path: 'analytics', element: <Analytics /> },
   { path: 'invoices', element: <Invoices /> },
-  { path: 'links', element: <PaymentLinks /> },
-  { path: 'qr', element: <QRCodePage /> },
+  { path: 'collect', element: <Collect /> },
   { path: 'pay', element: <Pay /> },
   { path: 'subscriptions', element: <Subscriptions /> },
   { path: 'developer', element: <Developer /> },

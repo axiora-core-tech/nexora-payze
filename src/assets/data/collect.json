@@ -1,0 +1,189 @@
+{
+  "header": {
+    "kicker": "Collect",
+    "title": "One surface, many ways to reach a customer",
+    "subtitle": "Every link, QR code, embedded button, and subscription offer — unified. Create once, distribute anywhere."
+  },
+  "stats": [
+    { "label": "Active surfaces", "value": "24",       "sub": "+4 this month" },
+    { "label": "Collected, 30d",  "value": "₹4.82 L",  "sub": "across all surfaces" },
+    { "label": "Best converting", "value": "LUMQ2",    "sub": "57% view-to-pay" },
+    { "label": "Needs attention", "value": "2",        "sub": "expired · refresh or archive" }
+  ],
+  "typeFilters": [
+    { "id": "all",       "label": "All" },
+    { "id": "fixed",     "label": "Fixed" },
+    { "id": "custom",    "label": "Pay what you want" },
+    { "id": "recurring", "label": "Recurring" }
+  ],
+  "statusFilters": ["all", "active", "paused", "expired", "draft"],
+  "surfaces": [
+    {
+      "id": "surf_lumq2",
+      "title": "Q2 Brand Identity · Studio Lumière",
+      "type": "fixed",
+      "amount": 450000, "currency": "INR",
+      "description": "Logo system, typography, color palette · 6-week engagement",
+      "customer": "Zomato Foods",
+      "status": "active", "created": "2 days ago", "expiresIn": "27 days",
+      "channels": {
+        "link":  { "enabled": true, "shortCode": "LUMQ2", "url": "payze.app/p/lumq2" },
+        "qr":    { "enabled": true },
+        "embed": { "enabled": false }
+      },
+      "analytics": { "views": 14, "payments": 1, "revenue": 450000, "conversionRate": 7.1 }
+    },
+    {
+      "id": "surf_rhea_month",
+      "title": "Monthly Yoga Membership",
+      "type": "recurring",
+      "amount": 4800, "currency": "INR",
+      "billingCycle": "monthly", "trialDays": 7,
+      "description": "Unlimited classes · Pause anytime",
+      "customer": "Rhea Yoga",
+      "status": "active", "created": "3 weeks ago", "expiresIn": null,
+      "channels": {
+        "link":  { "enabled": true, "shortCode": "RHEAMO", "url": "payze.app/p/rheamo" },
+        "qr":    { "enabled": true },
+        "embed": { "enabled": true }
+      },
+      "analytics": { "views": 284, "payments": 47, "revenue": 225600, "conversionRate": 16.5 }
+    },
+    {
+      "id": "surf_tip_jar",
+      "title": "Support Our Baristas",
+      "type": "custom",
+      "amount": null, "currency": "INR",
+      "suggestedAmounts": [50, 100, 200, 500],
+      "description": "Tips split evenly across baristas, settled weekly",
+      "customer": "Third Wave Coffee · Indiranagar",
+      "status": "active", "created": "6 weeks ago", "expiresIn": null,
+      "channels": {
+        "link":  { "enabled": true, "shortCode": "3WAVE", "url": "payze.app/p/3wave" },
+        "qr":    { "enabled": true },
+        "embed": { "enabled": false }
+      },
+      "analytics": { "views": 1842, "payments": 218, "revenue": 21400, "conversionRate": 11.8 }
+    },
+    {
+      "id": "surf_zomato_table14",
+      "title": "Table 14 · Zomato Foods",
+      "type": "custom",
+      "amount": null, "currency": "INR",
+      "description": "Scan to pay your bill · enter amount at checkout",
+      "customer": "Zomato Foods · Bengaluru Koramangala",
+      "status": "active", "created": "1 month ago", "expiresIn": null,
+      "channels": {
+        "link":  { "enabled": false },
+        "qr":    { "enabled": true },
+        "embed": { "enabled": false }
+      },
+      "analytics": { "views": 312, "payments": 287, "revenue": 184200, "conversionRate": 92.0 }
+    },
+    {
+      "id": "surf_razorpay_inv228",
+      "title": "Invoice INV-0228 · Razorpay Technologies",
+      "type": "fixed",
+      "amount": 18200, "currency": "INR",
+      "description": "Consulting services · March",
+      "customer": "Razorpay Technologies",
+      "status": "active", "created": "1 day ago", "expiresIn": "30 days",
+      "channels": {
+        "link":  { "enabled": true, "shortCode": "INV228", "url": "payze.app/p/inv228" },
+        "qr":    { "enabled": false },
+        "embed": { "enabled": false }
+      },
+      "analytics": { "views": 3, "payments": 1, "revenue": 18200, "conversionRate": 33.3 }
+    },
+    {
+      "id": "surf_cred_annual",
+      "title": "Cred Quarterly Membership",
+      "type": "recurring",
+      "amount": 9999, "currency": "INR",
+      "billingCycle": "quarterly", "trialDays": 0,
+      "description": "Cred Club access · billed every 3 months via NACH",
+      "customer": "Cred Club",
+      "status": "active", "created": "4 months ago", "expiresIn": null,
+      "channels": {
+        "link":  { "enabled": true, "shortCode": "CREDQ", "url": "payze.app/p/credq" },
+        "qr":    { "enabled": false },
+        "embed": { "enabled": true }
+      },
+      "analytics": { "views": 1240, "payments": 181, "revenue": 1809819, "conversionRate": 14.6 }
+    },
+    {
+      "id": "surf_nykaa_embed",
+      "title": "Nykaa Cart · Website Checkout Button",
+      "type": "custom",
+      "amount": null, "currency": "INR",
+      "description": "Embed snippet · triggers Payze modal on click",
+      "customer": "Nykaa Beauty",
+      "status": "active", "created": "2 months ago", "expiresIn": null,
+      "channels": {
+        "link":  { "enabled": false },
+        "qr":    { "enabled": false },
+        "embed": { "enabled": true }
+      },
+      "analytics": { "views": 18420, "payments": 1284, "revenue": 2842100, "conversionRate": 7.0 }
+    },
+    {
+      "id": "surf_bms_movie",
+      "title": "BookMyShow · Avengers: Secret Wars",
+      "type": "fixed",
+      "amount": 450, "currency": "INR",
+      "description": "IMAX · Prestige Forum · 21 Apr 9:45 PM",
+      "customer": "BookMyShow",
+      "status": "active", "created": "5 hours ago", "expiresIn": "3 days",
+      "channels": {
+        "link":  { "enabled": true, "shortCode": "AVGR4",  "url": "payze.app/p/avgr4" },
+        "qr":    { "enabled": true },
+        "embed": { "enabled": false }
+      },
+      "analytics": { "views": 2841, "payments": 412, "revenue": 185400, "conversionRate": 14.5 }
+    },
+    {
+      "id": "surf_workshop_expired",
+      "title": "Type Design Workshop · March Cohort",
+      "type": "fixed",
+      "amount": 12500, "currency": "INR",
+      "description": "4-week intensive · closed, archive after review",
+      "customer": "Studio Lumière",
+      "status": "expired", "created": "2 months ago", "expiresIn": "expired 4 days ago",
+      "channels": {
+        "link":  { "enabled": true, "shortCode": "TDWS3", "url": "payze.app/p/tdws3" },
+        "qr":    { "enabled": true },
+        "embed": { "enabled": false }
+      },
+      "analytics": { "views": 184, "payments": 22, "revenue": 275000, "conversionRate": 11.9 }
+    },
+    {
+      "id": "surf_draft_q3retainer",
+      "title": "Q3 Retainer · draft",
+      "type": "recurring",
+      "amount": 250000, "currency": "INR",
+      "billingCycle": "monthly", "trialDays": 0,
+      "description": "For Razorpay · awaiting contract sign",
+      "customer": "Razorpay Technologies",
+      "status": "draft", "created": "30 min ago", "expiresIn": null,
+      "channels": {
+        "link":  { "enabled": true, "shortCode": "Q3RET", "url": "payze.app/p/q3ret" },
+        "qr":    { "enabled": false },
+        "embed": { "enabled": false }
+      },
+      "analytics": { "views": 0, "payments": 0, "revenue": 0, "conversionRate": 0 }
+    }
+  ],
+  "createDefaults": {
+    "brandColor": "#1C6F6B",
+    "currency": "INR",
+    "enabledChannels": ["link", "qr", "embed"],
+    "billingCycles": ["monthly", "quarterly", "annual"],
+    "expiryPresets": [
+      { "label": "7 days",  "days": 7 },
+      { "label": "30 days", "days": 30 },
+      { "label": "90 days", "days": 90 },
+      { "label": "Never",   "days": null }
+    ]
+  },
+  "embedSnippetTemplate": "<script src=\"https://cdn.payze.com/checkout.js\" data-surface=\"{id}\" data-button-label=\"Pay now\"></script>"
+}
