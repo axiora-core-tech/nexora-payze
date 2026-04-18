@@ -73,6 +73,15 @@ export const IconShield = (p: IconProps) => (
   </svg>
 );
 
+export const IconCompliance = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M7 3h7l5 5v10a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
+    <polyline points="13 3 13 8 18 8" />
+    <circle cx="13.5" cy="16" r="3" />
+    <polyline points="12.3 16 13.2 16.9 14.8 15.3" />
+  </svg>
+);
+
 export const IconChart = (p: IconProps) => (
   <svg {...base(p)}>
     <path d="M3 3v18h18" />

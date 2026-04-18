@@ -36,6 +36,7 @@ export function AppLayout() {
     { to: '/subscriptions', label: 'Subscriptions', Icon: Icons.IconRecurring, matches: (p) => p.startsWith('/subscriptions') },
     { to: '/developer', label: 'Developer', Icon: Icons.IconDeveloper, matches: (p) => p.startsWith('/developer') },
     { to: '/admin', label: 'Team & admin', Icon: Icons.IconUser, matches: (p) => p.startsWith('/admin') },
+    { to: '/compliance', label: 'Compliance', Icon: Icons.IconCompliance, matches: (p) => p.startsWith('/compliance') },
   ];
 
   const superAdminItem: NavItem | null = !tenant

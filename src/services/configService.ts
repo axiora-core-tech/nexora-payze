@@ -28,6 +28,7 @@ import testScenariosData from '../assets/data/testScenarios.json';
 import timelineData from '../assets/data/timeline.json';
 import collaborationData from '../assets/data/collaboration.json';
 import publicPagesData from '../assets/data/publicPages.json';
+import complianceData from '../assets/data/compliance.json';
 
 /**
  * configService — loads config/data JSON files with simulated network latency
@@ -44,6 +45,7 @@ export const configService = {
   getSubscriptions: () => mockFetch(subscriptionsData),
   getInvoices: () => mockFetch(invoicesData),
   getCollect: () => mockFetch(collectData),
+  getCompliance: () => mockFetch(complianceData),
   getAnalytics: () => mockFetch(analyticsData),
   getAdmin: () => mockFetch(adminData),
   getDeveloper: () => mockFetch(developerData),

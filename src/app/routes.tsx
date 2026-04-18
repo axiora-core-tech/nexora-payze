@@ -18,6 +18,7 @@ import { Pay } from './pages/Pay';
 import { Subscriptions } from './pages/Subscriptions';
 import { Developer } from './pages/Developer';
 import { Admin } from './pages/Admin';
+import { Compliance } from './pages/Compliance';
 import { SuperAdmin } from './pages/SuperAdmin';
 import { Onboarding } from './pages/Onboarding';
 import { PublicMerchant } from './pages/PublicMerchant';
@@ -35,6 +36,7 @@ const appChildren = [
   { path: 'subscriptions', element: <Subscriptions /> },
   { path: 'developer', element: <Developer /> },
   { path: 'admin', element: <Admin /> },
+  { path: 'compliance', element: <Compliance /> },
   { path: 'super-admin', element: <SuperAdmin /> },
 ];
 

@@ -1,0 +1,346 @@
+{
+  "header": {
+    "kicker": "Compliance",
+    "title": "Regulatory posture at a glance",
+    "subtitle": "RBI PA/PG Guidelines · PMLA · Digital Payment Security Controls · Integrated Ombudsman Scheme 2021."
+  },
+  "posture": {
+    "overallScore": 87,
+    "band": "On track",
+    "asOf": "28 min ago",
+    "subtitle": "3 items need attention · 0 breaches · last external audit 14 Mar 2026",
+    "pillars": [
+      { "id": "escrow",         "name": "Escrow",              "status": "compliant", "score": 100, "detail": "Reconciled to HDFC nodal · delta ₹0 · last sync 4 min ago" },
+      { "id": "kyc",            "name": "KYC & merchant risk", "status": "attention", "score": 82,  "detail": "2 merchants pending re-KYC · 4 high-risk under monitoring" },
+      { "id": "reporting",      "name": "Regulatory reporting","status": "compliant", "score": 95,  "detail": "1 STR under 7-day review clock · next CTR filing 28 Apr" },
+      { "id": "grievance",      "name": "Grievance",           "status": "attention", "score": 78,  "detail": "1 ticket approaching 30-day SLA · avg resolution 4.2 days" },
+      { "id": "infrastructure", "name": "Data & infrastructure","status": "compliant", "score": 92,  "detail": "All systems in ap-south-1 · DR drill 7 days ago · RTO 1h 32m" },
+      { "id": "capital",        "name": "Capital",             "status": "compliant", "score": 88,  "detail": "Net worth ₹28.4 Cr · ₹3.4 Cr above RBI floor of ₹25 Cr" }
+    ]
+  },
+  "escrow": {
+    "account": {
+      "bank": "HDFC Bank",
+      "type": "Nodal / Escrow account",
+      "ifsc": "HDFC0000001",
+      "accountNumber": "•••• 8234",
+      "regulatorApprovalNumber": "DPSS.CO.PD.No.1810/02.14.008/2020-21",
+      "balance": 348234180,
+      "pendingSettlement": 142847000,
+      "settledToday": 452148290,
+      "currency": "INR"
+    },
+    "reconciliation": {
+      "lastReconciled": "4 min ago",
+      "bankStatementBalance": 348234180,
+      "ledgerBalance": 348234180,
+      "delta": 0,
+      "status": "matched",
+      "autoReconcileEnabled": true
+    },
+    "movements": [
+      { "time": "14:47:12", "type": "inbound",    "source": "Zomato Foods · UPI",       "amount": 7800,     "ref": "txn_00482" },
+      { "time": "14:45:33", "type": "inbound",    "source": "Razorpay · Card",          "amount": 18200,    "ref": "txn_00481" },
+      { "time": "14:42:18", "type": "inbound",    "source": "BookMyShow · UPI",         "amount": 450,      "ref": "txn_00480" },
+      { "time": "14:30:00", "type": "settlement", "source": "STL-9824 → Zomato",        "amount": -452148290, "ref": "STL-9824" },
+      { "time": "14:28:41", "type": "inbound",    "source": "Cred Club · NACH",         "amount": 9999,     "ref": "txn_00479" },
+      { "time": "14:15:00", "type": "settlement", "source": "STL-9823 → Rhea Yoga",     "amount": -225600,  "ref": "STL-9823" },
+      { "time": "14:08:22", "type": "refund",     "source": "Refund · Urban Company",   "amount": -3400,    "ref": "RFN-00412" },
+      { "time": "14:03:11", "type": "inbound",    "source": "Nykaa · NetBanking",       "amount": 2800,     "ref": "txn_00478" }
+    ],
+    "holdRules": [
+      { "tier": "low",    "settlement": "T+1 end-of-day",  "description": "Low-risk merchants (Zomato, Razorpay, BookMyShow) · KYC verified, low chargeback, >12mo history" },
+      { "tier": "medium", "settlement": "T+2",             "description": "Medium-risk merchants (Mumbai Street Kitchen, new onboards) · in first 90 days or higher-ticket" },
+      { "tier": "high",   "settlement": "T+3 + review",    "description": "High-risk merchants (Cred, cross-border) · manual review required before release" }
+    ],
+    "breaches": [],
+    "regulatoryNotes": "Escrow held with HDFC Bank per RBI PA/PG Guidelines (Mar 2020, para 5). All merchant funds segregated from Payze operational accounts. Scheduled commercial bank · Tier-I capital · RBI Annex A compliant."
+  },
+  "kyc": {
+    "summary": {
+      "totalMerchants": 47,
+      "kycPending": 2,
+      "reKycDueThisQuarter": 3,
+      "riskBreakdown": { "low": 38, "medium": 5, "high": 4 }
+    },
+    "queue": [
+      {
+        "id": "kyc_q01",
+        "merchant": "Mumbai Street Kitchen",
+        "slug": "mumbai-street-kitchen",
+        "industry": "Food & Delivery",
+        "status": "docs_submitted",
+        "riskCategory": "medium",
+        "submittedAt": "2 hours ago",
+        "reviewer": "Unassigned",
+        "documents": [
+          { "type": "PAN",        "status": "verified_nsdl",        "value": "AABCM8472G",          "verifiedAt": "1 hour ago" },
+          { "type": "GSTIN",      "status": "verified_gstn",        "value": "29AABCM8472G1Z8",     "verifiedAt": "58 min ago" },
+          { "type": "CIN",        "status": "pending",              "value": "U55101KA2024PTC142857","verifiedAt": null },
+          { "type": "Bank proof", "status": "verified_penny_drop",  "value": "HDFC ••••4821",       "verifiedAt": "45 min ago" },
+          { "type": "Video KYC",  "status": "pending",              "value": null,                  "verifiedAt": null }
+        ],
+        "screening": [
+          { "list": "OFAC SDN",      "result": "clear" },
+          { "list": "UN 1267/1988",  "result": "clear" },
+          { "list": "MHA UAPA",      "result": "clear" },
+          { "list": "RBI defaulter", "result": "clear" },
+          { "list": "PEP",           "result": "clear" }
+        ]
+      },
+      {
+        "id": "kyc_q02",
+        "merchant": "Aanya Films Productions",
+        "slug": "aanya-films",
+        "industry": "Entertainment",
+        "status": "docs_submitted",
+        "riskCategory": "medium",
+        "submittedAt": "6 hours ago",
+        "reviewer": "Meera Subramanian",
+        "documents": [
+          { "type": "PAN",        "status": "verified_nsdl",        "value": "AAJCA9281L",          "verifiedAt": "5 hours ago" },
+          { "type": "GSTIN",      "status": "verified_gstn",        "value": "27AAJCA9281L1Z2",     "verifiedAt": "5 hours ago" },
+          { "type": "CIN",        "status": "verified_mca",         "value": "U92190MH2023PTC384729","verifiedAt": "5 hours ago" },
+          { "type": "Bank proof", "status": "verified_penny_drop",  "value": "ICICI ••••1183",      "verifiedAt": "4 hours ago" },
+          { "type": "Video KYC",  "status": "scheduled",            "value": "Today 17:30 IST",     "verifiedAt": null }
+        ],
+        "screening": [
+          { "list": "OFAC SDN",      "result": "clear" },
+          { "list": "UN 1267/1988",  "result": "clear" },
+          { "list": "MHA UAPA",      "result": "clear" },
+          { "list": "RBI defaulter", "result": "clear" },
+          { "list": "PEP",           "result": "review · director Jaya Ahuja flagged as PEP (IAS, retired 2019)" }
+        ]
+      },
+      {
+        "id": "kyc_q03",
+        "merchant": "Crypto Arcadia Pvt Ltd",
+        "slug": "crypto-arcadia",
+        "industry": "FinTech · Virtual Digital Assets",
+        "status": "escalated",
+        "riskCategory": "high",
+        "submittedAt": "2 days ago",
+        "reviewer": "Arjun Reddy",
+        "documents": [
+          { "type": "PAN",        "status": "verified_nsdl",        "value": "AAFCC8293N",          "verifiedAt": "1 day ago" },
+          { "type": "GSTIN",      "status": "verified_gstn",        "value": "29AAFCC8293N1Z5",     "verifiedAt": "1 day ago" },
+          { "type": "CIN",        "status": "verified_mca",         "value": "U67190KA2024PTC392841","verifiedAt": "1 day ago" },
+          { "type": "Bank proof", "status": "verified_penny_drop",  "value": "HDFC ••••9472",       "verifiedAt": "1 day ago" },
+          { "type": "Video KYC",  "status": "completed",            "value": "2026-04-17 14:00 IST","verifiedAt": "1 day ago" }
+        ],
+        "screening": [
+          { "list": "OFAC SDN",      "result": "clear" },
+          { "list": "UN 1267/1988",  "result": "clear" },
+          { "list": "MHA UAPA",      "result": "clear" },
+          { "list": "RBI defaulter", "result": "clear" },
+          { "list": "PEP",           "result": "clear" }
+        ],
+        "escalationReason": "VDA-related merchant · requires enhanced due diligence per RBI advisory 2024-25/84 · awaiting compliance officer sign-off"
+      }
+    ],
+    "merchantRiskTiers": [
+      { "merchant": "Zomato Foods",           "tier": "low",    "score": 94, "factors": ["12mo+ history", "low ticket size", "0 disputes last 90d"] },
+      { "merchant": "Razorpay Technologies",  "tier": "low",    "score": 96, "factors": ["24mo history", "B2B consulting", "0 chargebacks"] },
+      { "merchant": "BookMyShow",             "tier": "low",    "score": 91, "factors": ["high volume", "low ticket", "0.02% dispute rate"] },
+      { "merchant": "Nykaa Beauty",           "tier": "low",    "score": 89, "factors": ["e-commerce", "stable volume", "0.18% dispute rate"] },
+      { "merchant": "Studio Lumière",         "tier": "low",    "score": 87, "factors": ["B2B services", "low volume", "0 disputes"] },
+      { "merchant": "Rhea Yoga",              "tier": "low",    "score": 85, "factors": ["subscription", "low ticket", "0 disputes"] },
+      { "merchant": "Mumbai Street Kitchen",  "tier": "medium", "score": 68, "factors": ["new (< 90d)", "F&B category", "KYC in progress"] },
+      { "merchant": "Aanya Films Productions","tier": "medium", "score": 64, "factors": ["new (< 90d)", "high-ticket project billing", "director PEP flag"] },
+      { "merchant": "Cred Club",              "tier": "high",   "score": 58, "factors": ["FinTech adjacency", "high ticket size", "2 disputes last 30d"] },
+      { "merchant": "Crypto Arcadia",         "tier": "high",   "score": 42, "factors": ["VDA category", "enhanced DD required", "under review"] }
+    ],
+    "reKycDue": [
+      { "merchant": "Urban Company",    "lastKyc": "Apr 2024", "due": "Apr 2026 · periodic (2y low-risk)",    "status": "due_this_month" },
+      { "merchant": "MakeMyTrip",       "lastKyc": "Mar 2024", "due": "Mar 2026 · periodic (2y low-risk)",    "status": "overdue" }
+    ]
+  },
+  "reporting": {
+    "obligations": [
+      { "type": "STR filing (PMLA)",              "frequency": "as detected · 7-day clock", "nextDue": "—",           "status": "1 in queue",  "authority": "FIU-IND" },
+      { "type": "CTR filing (PMLA)",              "frequency": "monthly · by 15th",         "nextDue": "15 May 2026", "status": "on track",    "authority": "FIU-IND" },
+      { "type": "MIS Q4 FY25-26",                 "frequency": "quarterly",                 "nextDue": "30 Apr 2026", "status": "in draft",    "authority": "RBI DPSS" },
+      { "type": "System Audit Report (SAR)",      "frequency": "annual",                    "nextDue": "30 Jun 2026", "status": "scheduled",   "authority": "RBI DPSS" },
+      { "type": "Cyber Security Audit",           "frequency": "annual",                    "nextDue": "31 Dec 2026", "status": "scheduled",   "authority": "RBI DPSS" },
+      { "type": "Returns under FEMA (PA-CB)",     "frequency": "monthly",                   "nextDue": "07 May 2026", "status": "on track",    "authority": "RBI FED" }
+    ],
+    "strQueue": [
+      {
+        "id": "STR-2026-00014",
+        "createdAt": "2 days ago",
+        "subject": "Cred Club · member_4821",
+        "merchantId": "cred-club",
+        "reason": "Rapid sequence of 7 high-value card attempts from different PANs within 4 minutes · suspected card testing or synthetic identity fraud",
+        "aggregateAmount": 284000,
+        "status": "pending_review",
+        "reviewer": "Arjun Reddy",
+        "slaTotal": 7,
+        "slaRemaining": 5,
+        "priority": "high"
+      },
+      {
+        "id": "STR-2026-00013",
+        "createdAt": "4 days ago",
+        "subject": "Crypto Arcadia · unusual settlement pattern",
+        "merchantId": "crypto-arcadia",
+        "reason": "Aggregate settlement volume exceeded 3× baseline over 24 hours · enhanced due diligence required for VDA merchant",
+        "aggregateAmount": 1820000,
+        "status": "under_investigation",
+        "reviewer": "Meera Subramanian",
+        "slaTotal": 7,
+        "slaRemaining": 3,
+        "priority": "high"
+      },
+      {
+        "id": "STR-2026-00012",
+        "createdAt": "6 days ago",
+        "subject": "Unknown beneficiary · refund pattern",
+        "merchantId": "aanya-films",
+        "reason": "4 refunds totalling ₹1,24,000 issued to accounts not matching original payment source · possible structuring",
+        "aggregateAmount": 124000,
+        "status": "filed",
+        "reviewer": "Kavya Venkatesh",
+        "filedAt": "1 hour ago",
+        "filingRef": "FIU-IND-STR-2026-084726"
+      }
+    ],
+    "ctrStats": {
+      "period": "April 2026",
+      "monthToDate": {
+        "digitalTxnsAbove10L": 47,
+        "digitalTxnsAbove50L": 8,
+        "aggregateVolume": 184200000
+      },
+      "priorMonth": {
+        "digitalTxnsAbove10L": 52,
+        "digitalTxnsAbove50L": 11,
+        "aggregateVolume": 214800000
+      },
+      "filingDueBy": "15 May 2026",
+      "status": "draft_prepared"
+    },
+    "recentFilings": [
+      { "ref": "FIU-IND-CTR-2026-043281", "type": "CTR", "filed": "15 Apr 2026", "period": "March 2026", "status": "accepted" },
+      { "ref": "FIU-IND-STR-2026-084726", "type": "STR", "filed": "1 hour ago",  "period": "—",          "status": "accepted" }
+    ]
+  },
+  "grievance": {
+    "nodalOfficer": {
+      "name": "Meera Subramanian",
+      "designation": "Principal Nodal Officer · Payze Technologies Pvt Ltd",
+      "email": "nodal@payze.com",
+      "phone": "+91 80 4123 8900",
+      "workingHours": "Monday–Friday · 10:00–18:00 IST",
+      "address": "Payze Technologies Pvt Ltd, Floor 4, 24 Ferns Icon, Doddanekundi, Bengaluru 560037, Karnataka",
+      "appointmentDate": "01 Jan 2024",
+      "publicDisclosureURL": "payze.com/nodal-officer"
+    },
+    "slaStats": {
+      "openTickets": 8,
+      "approachingSla": 1,
+      "breachedSla": 0,
+      "averageResolutionDays": 4.2,
+      "resolvedLast30d": 47,
+      "escalatedToRBIOmbudsmanYTD": 0
+    },
+    "escalationPath": [
+      { "step": 1, "level": "Merchant support",      "sla": "3 days",  "via": "In-app chat or support@payze.com" },
+      { "step": 2, "level": "Nodal Officer (Payze)", "sla": "30 days", "via": "nodal@payze.com" },
+      { "step": 3, "level": "RBI Integrated Ombudsman", "sla": "—",    "via": "cms.rbi.org.in · after 30 days from Nodal Officer" }
+    ],
+    "tickets": [
+      {
+        "id": "GR-2026-00284",
+        "subject": "Refund not received after 7 days",
+        "category": "Refund timeliness",
+        "customer": "Priya Venkataraman",
+        "merchant": "Zomato Foods",
+        "raisedAt": "9 days ago",
+        "daysOpen": 9,
+        "slaDaysRemaining": 21,
+        "status": "in_progress",
+        "assignedTo": "Kavya Venkatesh",
+        "priority": "medium",
+        "note": "Refund initiated from merchant side 4 days ago · awaiting bank confirmation"
+      },
+      {
+        "id": "GR-2026-00283",
+        "subject": "Unauthorized subscription charge",
+        "category": "Unauthorized charge",
+        "customer": "Rohan Malhotra",
+        "merchant": "Cred Club",
+        "raisedAt": "28 days ago",
+        "daysOpen": 28,
+        "slaDaysRemaining": 2,
+        "status": "escalation_warning",
+        "assignedTo": "Meera Subramanian",
+        "priority": "high",
+        "note": "Approaching 30-day SLA · escalate to Nodal Officer for resolution by EOD"
+      },
+      {
+        "id": "GR-2026-00281",
+        "subject": "Duplicate debit on UPI",
+        "category": "Duplicate charge",
+        "customer": "Ananya Krishnamurthy",
+        "merchant": "BookMyShow",
+        "raisedAt": "4 days ago",
+        "daysOpen": 4,
+        "slaDaysRemaining": 26,
+        "status": "in_progress",
+        "assignedTo": "Arjun Reddy",
+        "priority": "medium",
+        "note": "UDIR reference UDR-2026-482719 raised · awaiting NPCI confirmation"
+      },
+      {
+        "id": "GR-2026-00279",
+        "subject": "Merchant not honouring service",
+        "category": "Service not rendered",
+        "customer": "Karthik Narayanan",
+        "merchant": "Urban Company",
+        "raisedAt": "11 days ago",
+        "daysOpen": 11,
+        "slaDaysRemaining": 19,
+        "status": "merchant_response_awaited",
+        "assignedTo": "Kavya Venkatesh",
+        "priority": "medium",
+        "note": "Merchant ack received 3d ago · investigation in progress"
+      }
+    ]
+  },
+  "infrastructure": {
+    "dataLocalization": {
+      "status": "compliant",
+      "regulationRef": "RBI circular DPSS.CO.OD No 2785/06.08.005/2017-18 (06 Apr 2018)",
+      "regions": [
+        { "region": "ap-south-1 · Mumbai",     "role": "primary",          "dataTypes": ["customer PII", "merchant records", "transactions", "audit logs", "KYC documents"] },
+        { "region": "ap-south-1 · Hyderabad",  "role": "replica (hot DR)", "dataTypes": ["all · replicated within ap-south-1"] }
+      ],
+      "crossBorderFlows": [
+        { "flow": "SEPA transactions (Nykaa)",    "outboundData": "routing metadata only · no PII", "safeguard": "Tokenized customer refs · fully anonymized", "status": "compliant" },
+        { "flow": "USD ACH (MakeMyTrip)",         "outboundData": "routing metadata only · no PII", "safeguard": "Tokenized customer refs · fully anonymized", "status": "compliant" }
+      ],
+      "lastAudit": "14 Mar 2026",
+      "auditor": "SISA Information Security",
+      "nextAudit": "14 Sep 2026"
+    },
+    "disasterRecovery": {
+      "rto": { "required": "2h", "actualLastDrill": "1h 32m", "status": "within" },
+      "rpo": { "required": "30m", "actualLastDrill": "12m",   "status": "within" },
+      "lastDrill": "7 days ago · 14 Apr 2026",
+      "nextScheduledDrill": "23 days · 11 May 2026",
+      "lastIncident": "No production incidents affecting SLA last 90 days",
+      "drReadiness": "green"
+    },
+    "pciDss": {
+      "certificationLevel": "Level 1",
+      "certifiedBy": "Control Case",
+      "validFrom": "01 Jan 2026",
+      "validThrough": "31 Dec 2026",
+      "lastQuarterlyScan": "4 days ago · 14 Apr 2026",
+      "scanResult": "passed · 0 critical · 0 high · 2 informational",
+      "tokenizationCoverage": 100,
+      "keyRotationLastDone": "01 Apr 2026",
+      "nextKeyRotation": "01 Jul 2026"
+    }
+  }
+}
