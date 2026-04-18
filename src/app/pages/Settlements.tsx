@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { useAsync } from '../../hooks/useAsync';
 import { configService } from '../../services';
 
-type ReconMessage = { role: 'user'; text: string } | { role: 'copilot'; text: string; thinking?: boolean };
+type NexoraMessage = { role: 'user'; text: string } | { role: 'nexora'; text: string; thinking?: boolean };
 
 export function Settlements() {
   const { data, loading, error, refetch } = useAsync(() => configService.getSettlements(), []);
@@ -108,7 +108,7 @@ export function Settlements() {
 }
 
 function ReconciliationDrawer({ batch, onClose }: { batch: any; onClose: () => void }) {
-  const [tab, setTab] = useState<'breakdown' | 'copilot'>('breakdown');
+  const [tab, setTab] = useState<'breakdown' | 'nexora'>('breakdown');
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(26,26,26,0.35)', backdropFilter: 'blur(3px)', zIndex: 100, display: 'flex', justifyContent: 'flex-end' }}>
       <div onClick={e => e.stopPropagation()} style={{
@@ -138,10 +138,10 @@ function ReconciliationDrawer({ batch, onClose }: { batch: any; onClose: () => v
             <button onClick={() => setTab('breakdown')} style={tabBtnStyle(tab === 'breakdown')}>
               Breakdown
             </button>
-            <button onClick={() => setTab('copilot')} style={tabBtnStyle(tab === 'copilot')}>
+            <button onClick={() => setTab('nexora')} style={tabBtnStyle(tab === 'nexora')}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                <Icons.IconSparkle size={11} color={tab === 'copilot' ? colors.teal : colors.text2} />
-                Ask Copilot
+                <Icons.IconSparkle size={11} color={tab === 'nexora' ? colors.teal : colors.text2} />
+                Ask Nexora
               </span>
             </button>
           </div>
@@ -150,7 +150,7 @@ function ReconciliationDrawer({ batch, onClose }: { batch: any; onClose: () => v
         {tab === 'breakdown' ? (
           <BreakdownTab batch={batch} />
         ) : (
-          <CopilotTab batch={batch} />
+          <NexoraTab batch={batch} />
         )}
       </div>
     </div>
@@ -195,9 +195,9 @@ function BreakdownTab({ batch }: { batch: any }) {
   );
 }
 
-function CopilotTab({ batch }: { batch: any }) {
+function NexoraTab({ batch }: { batch: any }) {
   const { data: recon } = useAsync(() => configService.getReconciliation(), []);
-  const [messages, setMessages] = useState<ReconMessage[]>([]);
+  const [messages, setMessages] = useState<NexoraMessage[]>([]);
   const [input, setInput] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -228,14 +228,14 @@ function CopilotTab({ batch }: { batch: any }) {
 
   const submit = async (q: string) => {
     if (!q.trim() || submitting) return;
-    setMessages(m => [...m, { role: 'user', text: q }, { role: 'copilot', text: '', thinking: true }]);
+    setMessages(m => [...m, { role: 'user', text: q }, { role: 'nexora', text: '', thinking: true }]);
     setInput('');
     setSubmitting(true);
     await new Promise(r => setTimeout(r, 600 + Math.random() * 400));
     const answer = findAnswer(q);
     setMessages(m => {
       const next = m.slice(0, -1);
-      next.push({ role: 'copilot', text: answer });
+      next.push({ role: 'nexora', text: answer });
       return next;
     });
     setSubmitting(false);
@@ -273,7 +273,7 @@ function CopilotTab({ batch }: { batch: any }) {
       <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: '16px 28px', display: 'flex', flexDirection: 'column', gap: '12px', minHeight: 0 }}>
         {messages.map((m, i) => (
           <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
-            {m.role === 'copilot' && (
+            {m.role === 'nexora' && (
               <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: colors.ink, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginRight: '10px', marginTop: '2px' }}>
                 <Icons.IconSparkle size={11} color={colors.teal} />
               </div>

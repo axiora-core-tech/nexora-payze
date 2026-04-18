@@ -290,7 +290,7 @@ function TxnDetailDrawer({ txn, onClose, fxRate, toInr, formatSource, enrichEven
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
                         <Icons.IconSparkle size={11} color={colors.teal} />
-                        <div style={{ fontSize: '10px', color: colors.teal, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600 }}>Plain English</div>
+                        <div style={{ fontSize: '10px', color: colors.teal, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600 }}>What this means</div>
                       </div>
                       <div style={{ fontSize: '12px', fontWeight: 600, color: colors.ink, marginBottom: '6px', lineHeight: 1.5 }}>{enrichment.title}</div>
                       <div style={{ fontSize: '12px', color: colors.text2, lineHeight: 1.55, marginBottom: '10px' }}>{enrichment.diagnosis}</div>

@@ -415,6 +415,10 @@ export function GlobalStyles() {
         0%, 100% { opacity: 0.4; }
         50% { opacity: 1; }
       }
+      @keyframes nexora-slide-up {
+        from { opacity: 0; transform: translateY(16px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
       body, html, #root {
         background: ${colors.bg};
         color: ${colors.ink};

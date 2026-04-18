@@ -3,7 +3,7 @@ import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router'
 import { colors, radius, typography } from '../design/tokens';
 import * as Icons from '../design/icons';
 import { useTenant } from './components/TenantContext';
-import { Copilot } from './components/Copilot';
+import { Nexora } from './components/Nexora';
 import { AmbientTicker } from './components/AmbientTicker';
 
 type NavItem = { to: string; label: string; Icon: React.FC<any>; matches: (path: string) => boolean; superAdmin?: boolean };
@@ -46,8 +46,16 @@ export function AppLayout() {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); setSearchOpen(true); }
-      if (e.key === 'Escape') { setSearchOpen(false); setProfileOpen(false); setNotifOpen(false); setCurrencyOpen(false); }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen(prev => !prev);
+      }
+      if (e.key === 'Escape') {
+        setSearchOpen(false);
+        setProfileOpen(false);
+        setNotifOpen(false);
+        setCurrencyOpen(false);
+      }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
@@ -75,7 +83,11 @@ export function AppLayout() {
 
       <AmbientTicker />
 
-      {searchOpen && <Copilot onClose={() => setSearchOpen(false)} />}
+      <Nexora
+        open={searchOpen}
+        onOpen={() => setSearchOpen(true)}
+        onClose={() => setSearchOpen(false)}
+      />
       {(profileOpen || notifOpen || currencyOpen) && (
         <div onClick={() => { setProfileOpen(false); setNotifOpen(false); setCurrencyOpen(false); }} style={{ position: 'fixed', inset: 0, zIndex: 40 }} />
       )}
@@ -175,7 +187,7 @@ function Header({ tenant, currency, setCurrency, currencyOpen, setCurrencyOpen, 
         <button onClick={() => setSearchOpen(true)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.pill, color: colors.text2, fontSize: '13px', cursor: 'pointer', minWidth: '260px', justifyContent: 'space-between', fontFamily: 'inherit' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Icons.IconSparkle size={14} color={colors.teal} />
-            Ask Copilot or search…
+            Ask Nexora or search…
           </span>
           <span style={{ fontFamily: typography.family.mono, fontSize: '10px', color: colors.text3, padding: '2px 6px', border: `0.5px solid ${colors.border}`, borderRadius: '4px' }}>⌘K</span>
         </button>
