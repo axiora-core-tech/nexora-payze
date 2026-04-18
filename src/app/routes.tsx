@@ -38,7 +38,6 @@ const appChildren = [
   { path: 'developer', element: <Developer /> },
   { path: 'admin', element: <Admin /> },
   { path: 'super-admin', element: <SuperAdmin /> },
-  { path: 'onboarding', element: <Onboarding /> },
 ];
 
 export const router = createBrowserRouter([
@@ -46,6 +45,7 @@ export const router = createBrowserRouter([
   { path: '/signin', element: <SignIn /> },
   { path: '/book-demo', element: <BookDemo /> },
   { path: '/@:handle', element: <PublicMerchant /> },
+  { path: '/app/onboarding', element: <Onboarding /> },
   { path: '/app', element: <AppLayout />, children: appChildren },
   {
     path: '/t/:slug',

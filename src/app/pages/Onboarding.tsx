@@ -91,41 +91,46 @@ export function Onboarding() {
   // ── Stage 3: Activation sequence ──────────────────────────────────
   if (stage === 'activating') {
     return (
-      <ActivationStage
-        data={data.activation}
-        slug={slug || 'your-slug'}
-        methodCount={methods.length}
-        bankTail={accountNumber.slice(-4) || '••••'}
-        onComplete={finalizeAndRedirect}
-      />
+      <OnboardingShell>
+        <ActivationStage
+          data={data.activation}
+          slug={slug || 'your-slug'}
+          methodCount={methods.length}
+          bankTail={accountNumber.slice(-4) || '••••'}
+          onComplete={finalizeAndRedirect}
+        />
+      </OnboardingShell>
     );
   }
 
   // ── Stage 4: Celebration ──────────────────────────────────────────
   if (stage === 'celebration') {
     return (
-      <CelebrationStage
-        data={data.activation}
-        name={name}
-        slug={slug}
-        brandColor={brandColor}
-        onOpen={() => navigate(`/t/${slug}`)}
-        onTest={() => {
-          toast.success('Test payment sent to your dashboard');
-          navigate(`/t/${slug}`);
-        }}
-      />
+      <OnboardingShell>
+        <CelebrationStage
+          data={data.activation}
+          name={name}
+          slug={slug}
+          brandColor={brandColor}
+          onOpen={() => navigate(`/t/${slug}`)}
+          onTest={() => {
+            toast.success('Test payment sent to your dashboard');
+            navigate(`/t/${slug}`);
+          }}
+        />
+      </OnboardingShell>
     );
   }
 
   // ── Stage 2: Wizard ───────────────────────────────────────────────
   return (
-    <div style={{ animation: 'payze-fadein 0.4s ease-out', maxWidth: '920px' }}>
-      <div style={{ marginBottom: '24px' }}>
-        <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>{data.header.kicker}</Kicker>
-        <div style={{ ...typography.pageTitle, color: colors.ink }}>{data.header.title}</div>
-        <div style={{ fontSize: '13px', color: colors.text2, marginTop: '2px' }}>{data.header.subtitle}</div>
-      </div>
+    <OnboardingShell>
+      <div style={{ animation: 'payze-fadein 0.4s ease-out', maxWidth: '920px', margin: '0 auto' }}>
+        <div style={{ marginBottom: '24px' }}>
+          <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>{data.header.kicker}</Kicker>
+          <div style={{ ...typography.pageTitle, color: colors.ink }}>{data.header.title}</div>
+          <div style={{ fontSize: '13px', color: colors.text2, marginTop: '2px' }}>{data.header.subtitle}</div>
+        </div>
 
       {/* Progress rail */}
       <div style={{ display: 'flex', gap: '6px', marginBottom: '24px', flexWrap: 'wrap' }}>
@@ -399,19 +404,67 @@ export function Onboarding() {
           )}
         </div>
       </Card>
+      </div>
+    </OnboardingShell>
+  );
+}
+
+// ── Shared shell for non-welcome stages ─────────────────────────────
+// Minimal app chrome: dot-grid background + top-left Payze wordmark.
+// Used for wizard, activation, and celebration stages — NOT welcome,
+// which has its own centered Payze mark as the hero.
+function OnboardingShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{
+      minHeight: '100vh', background: colors.bg,
+      position: 'relative',
+    }}>
+      {/* Dot-grid background */}
+      <div style={{
+        position: 'fixed', inset: 0, pointerEvents: 'none',
+        backgroundImage: `radial-gradient(circle, rgba(30,30,30,0.04) 1px, transparent 1px)`,
+        backgroundSize: '26px 26px', zIndex: 0,
+      }} />
+
+      {/* Minimal top-left brand */}
+      <header style={{
+        position: 'sticky', top: 0, zIndex: 10,
+        padding: '20px 32px', background: colors.bg,
+        borderBottom: `0.5px solid ${colors.border}`,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', animation: 'payze-fadein 0.4s ease-out' }}>
+          <Icons.PayzeMark size={18} color={colors.ink} />
+          <span style={{ fontSize: '15px', fontWeight: 600, color: colors.ink, letterSpacing: '-0.01em' }}>Payze</span>
+        </div>
+      </header>
+
+      <main style={{ position: 'relative', zIndex: 1, padding: '40px 32px 64px 32px' }}>
+        {children}
+      </main>
     </div>
   );
 }
 
 // ── Welcome stage ────────────────────────────────────────────────────
+// Full-viewport cinematic moment. Big centered Payze mark is the hero —
+// no top-left logo needed here (that would be redundant branding).
 function WelcomeStage({ data, onBegin }: { data: any; onBegin: () => void }) {
   return (
     <div style={{
-      minHeight: 'calc(100vh - 140px)',
+      minHeight: '100vh', background: colors.bg,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       animation: 'payze-fadein 0.6s ease-out',
+      position: 'relative',
+      padding: '40px 20px',
     }}>
-      <div style={{ maxWidth: '620px', textAlign: 'center', padding: '20px' }}>
+      {/* Dot-grid background */}
+      <div style={{
+        position: 'fixed', inset: 0, pointerEvents: 'none',
+        backgroundImage: `radial-gradient(circle, rgba(30,30,30,0.04) 1px, transparent 1px)`,
+        backgroundSize: '26px 26px',
+      }} />
+
+      <div style={{ maxWidth: '620px', textAlign: 'center', position: 'relative', zIndex: 1 }}>
         <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
           <div style={{
             width: '68px', height: '68px', borderRadius: radius.lg,
@@ -495,11 +548,11 @@ function ActivationStage({ data, slug, methodCount, bankTail, onComplete }: any)
 
   return (
     <div style={{
-      minHeight: 'calc(100vh - 140px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       animation: 'payze-fadein 0.4s ease-out',
+      minHeight: 'calc(100vh - 180px)',
     }}>
-      <div style={{ maxWidth: '480px', width: '100%', padding: '20px' }}>
+      <div style={{ maxWidth: '480px', width: '100%' }}>
         <div style={{ textAlign: 'center', marginBottom: '36px' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 14px', background: colors.tealTint, borderRadius: radius.pill, marginBottom: '16px' }}>
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: colors.teal, animation: 'payze-pulse-dot 1.4s ease-in-out infinite' }} />
@@ -557,11 +610,11 @@ function ActivationStage({ data, slug, methodCount, bankTail, onComplete }: any)
 function CelebrationStage({ data, name, slug, brandColor, onOpen, onTest }: any) {
   return (
     <div style={{
-      minHeight: 'calc(100vh - 140px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       animation: 'payze-fadein 0.6s ease-out',
+      minHeight: 'calc(100vh - 180px)',
     }}>
-      <div style={{ maxWidth: '540px', width: '100%', textAlign: 'center', padding: '20px' }}>
+      <div style={{ maxWidth: '540px', width: '100%', textAlign: 'center' }}>
         {/* Success badge */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
           <div style={{
