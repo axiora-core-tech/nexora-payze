@@ -5,6 +5,7 @@ import * as Icons from '../../design/icons';
 import { toast } from 'sonner';
 import { useAsync } from '../../hooks/useAsync';
 import { configService } from '../../services';
+import { TimelineView } from '../components/TimelineView';
 
 type Txn = {
   id: string; time: string; merchant: string; customer: string; method: string;
@@ -363,6 +364,7 @@ function TxnRow({ txn, isLast, onClick, inr, formatInr, formatSource }: any) {
 }
 
 function TxnDetailDrawer({ txn, onClose, fxRate, toInr, formatSource, enrichEvent }: any) {
+  const [showTimeline, setShowTimeline] = useState(false);
   const inr = toInr(txn.sourceAmount, txn.sourceCurrency);
   const isCrossBorder = txn.sourceCurrency !== 'INR';
 
@@ -455,10 +457,13 @@ function TxnDetailDrawer({ txn, onClose, fxRate, toInr, formatSource, enrichEven
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           {txn.status === 'succeeded' && <Button variant="secondary" size="sm" onClick={() => toast.success('Refund initiated')}>Refund</Button>}
           {txn.status === 'blocked' && <Button variant="secondary" size="sm" onClick={() => toast.success('Released to retry')}>Release</Button>}
+          <Button variant="secondary" size="sm" icon={<Icons.IconClock size={12} />} onClick={() => setShowTimeline(true)}>View timeline</Button>
           <Button variant="ghost" size="sm" icon={<Icons.IconDownload size={12} />}>Download receipt</Button>
           <Button variant="ghost" size="sm" icon={<Icons.IconCopy size={12} />} onClick={() => { navigator.clipboard.writeText(txn.id); toast.success('ID copied'); }}>Copy id</Button>
         </div>
       </div>
+
+      {showTimeline && <TimelineView txnId={txn.id} onClose={() => setShowTimeline(false)} />}
     </div>
   );
 }

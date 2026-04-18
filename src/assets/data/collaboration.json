@@ -1,0 +1,42 @@
+{
+  "kicker": "Live collaboration",
+  "banner": "You're viewing this with 2 others. Comments and cursors sync in real time.",
+  "prototypeNote": "Preview · multiplayer is faked in this prototype — comments persist in memory only.",
+  "presence": {
+    "dp_9012": [
+      { "id": "arjun",  "initials": "AR", "name": "Arjun Reddy",      "color": "#1C6F6B", "status": "viewing evidence · 2s ago" },
+      { "id": "saurabh","initials": "SG", "name": "Saurabh Gupta",    "color": "#B48C3C", "status": "reading narrative · 18s ago" }
+    ],
+    "dp_9011": [
+      { "id": "arjun",  "initials": "AR", "name": "Arjun Reddy",      "color": "#1C6F6B", "status": "considering refund · 12s ago" }
+    ]
+  },
+  "commentsByDispute": {
+    "dp_9012": [
+      { "id": "c1", "author": "Saurabh Gupta",   "initials": "SG", "color": "#B48C3C",
+        "time": "23m ago",
+        "text": "Delivery confirmation is the strongest piece. Shiprocket signature came through at 14:32 on 06 Apr.",
+        "highlight": null },
+      { "id": "c2", "author": "Arjun Reddy",     "initials": "AR", "color": "#1C6F6B",
+        "time": "19m ago",
+        "text": "Agree. I'd also attach the 14-day pattern showing customer opened 3 support tickets after delivery but none mentioned size until chargeback.",
+        "highlight": null },
+      { "id": "c3", "author": "Kavya Venkatesh", "initials": "KV", "color": "#1A1A1A",
+        "time": "8m ago",
+        "text": "Good catch. The customer's tone in those tickets was friendly — that's an unusual shift into a dispute. Worth including a timeline comparison.",
+        "highlight": null }
+    ],
+    "dp_9011": [
+      { "id": "c1", "author": "Arjun Reddy",     "initials": "AR", "color": "#1C6F6B",
+        "time": "3m ago",
+        "text": "31% win probability. Cost-benefit says refund. I think we accept and move on.",
+        "highlight": null }
+    ]
+  },
+  "ghostCursors": {
+    "dp_9012": [
+      { "id": "arjun",   "x": 68, "y": 180, "label": "Arjun", "color": "#1C6F6B" },
+      { "id": "saurabh", "x": 240, "y": 340, "label": "Saurabh", "color": "#B48C3C" }
+    ]
+  }
+}

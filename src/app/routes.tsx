@@ -21,6 +21,7 @@ import { Developer } from './pages/Developer';
 import { Admin } from './pages/Admin';
 import { SuperAdmin } from './pages/SuperAdmin';
 import { Onboarding } from './pages/Onboarding';
+import { PublicMerchant } from './pages/PublicMerchant';
 
 const appChildren = [
   { index: true, element: <Dashboard /> },
@@ -44,6 +45,7 @@ export const router = createBrowserRouter([
   { path: '/', element: <Home /> },
   { path: '/signin', element: <SignIn /> },
   { path: '/book-demo', element: <BookDemo /> },
+  { path: '/@:handle', element: <PublicMerchant /> },
   { path: '/app', element: <AppLayout />, children: appChildren },
   {
     path: '/t/:slug',

@@ -26,6 +26,9 @@ import disputeEvidenceData from '../assets/data/disputeEvidence.json';
 import subIntelligenceData from '../assets/data/subIntelligence.json';
 import taxRulesData from '../assets/data/taxRules.json';
 import testScenariosData from '../assets/data/testScenarios.json';
+import timelineData from '../assets/data/timeline.json';
+import collaborationData from '../assets/data/collaboration.json';
+import publicPagesData from '../assets/data/publicPages.json';
 
 /**
  * configService — loads config/data JSON files with simulated network latency
@@ -62,6 +65,9 @@ export const configService = {
   getSubIntelligence: () => mockFetch(subIntelligenceData),
   getTaxRules: () => mockFetch(taxRulesData),
   getTestScenarios: () => mockFetch(testScenariosData),
+  getTimeline: () => mockFetch(timelineData),
+  getCollaboration: () => mockFetch(collaborationData),
+  getPublicPages: () => mockFetch(publicPagesData),
 };
 
 // Also export types for TypeScript consumers

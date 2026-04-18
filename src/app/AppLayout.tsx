@@ -110,8 +110,18 @@ function Dock({ mainItems, superAdminItem, basePath, isActive, dockOpen, setDock
         zIndex: 20,
       }}
     >
-      <Link to={basePath} style={{ width: '40px', height: '40px', borderRadius: radius.md, background: colors.ink, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px', flexShrink: 0, textDecoration: 'none' }}>
-        <Icons.PayzeMark size={20} color="#F6F6F2" />
+      <Link to={basePath} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', flexShrink: 0, textDecoration: 'none', width: '100%', justifyContent: dockOpen ? 'flex-start' : 'center', paddingLeft: dockOpen ? '4px' : 0 }}>
+        <div style={{ width: '40px', height: '40px', borderRadius: radius.md, background: colors.ink, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <Icons.PayzeMark size={20} color="#F6F6F2" />
+        </div>
+        {dockOpen && (
+          <span style={{
+            fontSize: '17px', fontWeight: 600, color: colors.ink,
+            letterSpacing: '-0.01em',
+            whiteSpace: 'nowrap',
+            animation: 'payze-fadein 0.25s ease-out',
+          }}>Payze</span>
+        )}
       </Link>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%', alignItems: dockOpen ? 'stretch' : 'center' }}>
@@ -172,14 +182,21 @@ function Header({ tenant, currency, setCurrency, currencyOpen, setCurrencyOpen, 
   return (
     <header style={{ padding: '20px 40px 20px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', position: 'sticky', top: 0, background: colors.bg, zIndex: 30 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: 1 }}>
+        <Link to={tenant ? `/t/${tenant.slug}` : '/app'} style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', flexShrink: 0 }}>
+          <Icons.PayzeMark size={18} color={colors.ink} />
+          <span style={{ fontSize: '16px', fontWeight: 600, color: colors.ink, letterSpacing: '-0.01em' }}>Payze</span>
+        </Link>
         {tenant && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 12px 6px 6px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.pill }}>
-            <div style={{ width: '24px', height: '24px', borderRadius: radius.sm, background: tenant.brandColor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 600 }}>
-              {tenant.name.charAt(0)}
+          <>
+            <span style={{ color: colors.borderHover, fontSize: '14px', fontWeight: 300 }}>/</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 12px 6px 6px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.pill }}>
+              <div style={{ width: '24px', height: '24px', borderRadius: radius.sm, background: tenant.brandColor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 600 }}>
+                {tenant.name.charAt(0)}
+              </div>
+              <div style={{ fontSize: '12px', fontWeight: 500, color: colors.ink }}>{tenant.name}</div>
+              <div style={{ fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono }}>/t/{tenant.slug}</div>
             </div>
-            <div style={{ fontSize: '12px', fontWeight: 500, color: colors.ink }}>{tenant.name}</div>
-            <div style={{ fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono }}>/t/{tenant.slug}</div>
-          </div>
+          </>
         )}
       </div>
 

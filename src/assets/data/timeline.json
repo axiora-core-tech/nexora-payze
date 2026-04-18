@@ -1,0 +1,74 @@
+{
+  "kicker": "Timeline view",
+  "subtitle": "See the full story of a payment — every attempt, every system, every decision.",
+  "tracesByTxnId": {
+    "txn_00482": {
+      "title": "Priya Venkataraman · ₹7,800 via Zomato Foods",
+      "startedAt": "14:47:08",
+      "endedAt": "14:47:12",
+      "duration": "3.8s",
+      "outcome": "succeeded",
+      "lanes": [
+        { "id": "customer", "label": "Customer", "color": "ink" },
+        { "id": "payze",    "label": "Payze",    "color": "teal" },
+        { "id": "hdfc",     "label": "HDFC Bank", "color": "text2" },
+        { "id": "npci",     "label": "NPCI · UPI", "color": "text2" }
+      ],
+      "events": [
+        { "t": 0,    "lane": "customer", "label": "Tapped 'Pay'",              "detail": "Cart: ₹7,800 · Visa ending 4242 saved", "kind": "neutral" },
+        { "t": 180,  "lane": "payze",    "label": "Auth request assembled",    "detail": "Routed HDFC Visa first · per policy",   "kind": "ink" },
+        { "t": 420,  "lane": "hdfc",     "label": "Decline · code 05",         "detail": "Do not honor — bank rejected",          "kind": "blocked" },
+        { "t": 640,  "lane": "payze",    "label": "Fallback decision",         "detail": "Offered UPI to customer · pattern match 84% recovery", "kind": "teal" },
+        { "t": 920,  "lane": "customer", "label": "Accepted UPI · GPay opened", "detail": "Device unlocked, PIN entered",          "kind": "neutral" },
+        { "t": 2840, "lane": "npci",     "label": "UPI auth received",         "detail": "NPCI accepted · account debited",       "kind": "ink" },
+        { "t": 3120, "lane": "npci",     "label": "Debit confirmation",        "detail": "UPI ref 4827341092",                    "kind": "ink" },
+        { "t": 3780, "lane": "payze",    "label": "Captured",                  "detail": "Zomato credited · webhook fired",       "kind": "teal" }
+      ]
+    },
+    "txn_00480": {
+      "title": "First-time buyer · ₹42,500 on Cred Club · BLOCKED",
+      "startedAt": "14:42:05",
+      "endedAt": "14:42:07",
+      "duration": "2.1s",
+      "outcome": "blocked",
+      "lanes": [
+        { "id": "customer", "label": "Attempt",      "color": "ink" },
+        { "id": "payze",    "label": "Payze",        "color": "teal" },
+        { "id": "risk",     "label": "Risk engine",  "color": "text2" }
+      ],
+      "events": [
+        { "t": 0,    "lane": "customer", "label": "Checkout started",         "detail": "Visa ending 1234 · billing mismatch with IP", "kind": "neutral" },
+        { "t": 310,  "lane": "payze",    "label": "Pre-auth enrichment",      "detail": "Account age: 7 days · first attempt · high amount", "kind": "ink" },
+        { "t": 680,  "lane": "risk",     "label": "Rule: first_time_high_value", "detail": "Score 87/100 · velocity anomaly signal",    "kind": "blocked" },
+        { "t": 940,  "lane": "risk",     "label": "Rule: billing_mismatch",    "detail": "IP geolocation differs from billing country", "kind": "blocked" },
+        { "t": 1320, "lane": "payze",    "label": "Composite decision",       "detail": "Blocked · 2 hard rules triggered",           "kind": "blocked" },
+        { "t": 1680, "lane": "customer", "label": "Customer saw block screen",  "detail": "Shown 'Contact support to verify'",         "kind": "neutral" },
+        { "t": 2100, "lane": "payze",    "label": "Audit log written",        "detail": "R.047 · available in Risk register",        "kind": "ink" }
+      ]
+    },
+    "txn_00479": {
+      "title": "Amélie Dubois (Paris) · €1,890 on Nykaa Beauty · ROUTED",
+      "startedAt": "14:41:11",
+      "endedAt": "14:41:19",
+      "duration": "8.1s",
+      "outcome": "routed",
+      "lanes": [
+        { "id": "customer", "label": "Customer",  "color": "ink" },
+        { "id": "payze",    "label": "Payze",     "color": "teal" },
+        { "id": "ach",      "label": "ACH",       "color": "text2" },
+        { "id": "sepa",     "label": "SEPA Instant", "color": "text2" }
+      ],
+      "events": [
+        { "t": 0,    "lane": "customer", "label": "Checkout submitted",        "detail": "€1,890 · bank account via Plaid", "kind": "neutral" },
+        { "t": 240,  "lane": "payze",    "label": "Rail selection",            "detail": "ACH chosen · primary route for EU bank",       "kind": "ink" },
+        { "t": 460,  "lane": "ach",      "label": "ACH sent to bank",          "detail": "Deutsche Bank endpoint · awaiting ACK",         "kind": "ink" },
+        { "t": 3000, "lane": "ach",      "label": "Timeout · no response",     "detail": "30s SLA exceeded · rail unhealthy",            "kind": "blocked" },
+        { "t": 3180, "lane": "payze",    "label": "Fallback triggered",        "detail": "SEPA Instant · same bank, different endpoint", "kind": "teal" },
+        { "t": 5400, "lane": "sepa",     "label": "SEPA Instant accepted",     "detail": "Payment committed · SEPA ref RF8912MN",        "kind": "ink" },
+        { "t": 7900, "lane": "sepa",     "label": "Funds cleared",             "detail": "Net of FX · INR 1,70,856 at rate 90.4",        "kind": "ink" },
+        { "t": 8100, "lane": "payze",    "label": "Captured · customer notified", "detail": "Email receipt sent · webhook fired",        "kind": "teal" }
+      ]
+    }
+  },
+  "fallback": "Timeline isn't available for this transaction. In production we'd assemble it from the event log."
+}

@@ -300,14 +300,63 @@ const iconMap: Record<string, any> = {
 };
 
 function DisputeEvidenceDrawer({ dispute, evidence, fallback, onClose }: any) {
+  const { data: collab } = useAsync(() => configService.getCollaboration(), []);
+  const presence = collab?.presence?.[dispute.id] || [];
+  const initialComments = collab?.commentsByDispute?.[dispute.id] || [];
+  const ghostCursors = collab?.ghostCursors?.[dispute.id] || [];
+  const [comments, setComments] = useState<any[]>(initialComments);
+  const [newComment, setNewComment] = useState('');
+
+  // Keep comments in sync when collab data arrives
+  React.useEffect(() => {
+    if (collab && initialComments.length && comments.length === 0) {
+      setComments(initialComments);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collab]);
+
+  const sendComment = () => {
+    if (!newComment.trim()) return;
+    setComments([...comments, {
+      id: `c_local_${Date.now()}`,
+      author: 'Kavya Venkatesh', initials: 'KV', color: colors.ink,
+      time: 'just now',
+      text: newComment,
+    }]);
+    setNewComment('');
+    toast.success('Comment posted · 2 others notified');
+  };
+
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(26,26,26,0.35)', backdropFilter: 'blur(3px)', zIndex: 100, display: 'flex', justifyContent: 'flex-end' }}>
       <div onClick={(e) => e.stopPropagation()} style={{
-        width: '640px', maxWidth: '100%', height: '100%', background: colors.card,
+        width: '680px', maxWidth: '100%', height: '100%', background: colors.card,
         borderLeft: `0.5px solid ${colors.border}`, padding: '28px 32px', overflowY: 'auto',
         boxShadow: '-20px 0 60px rgba(0,0,0,0.15)',
+        position: 'relative',
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+        {/* Ghost cursor decorations */}
+        {ghostCursors.map((g: any) => (
+          <div key={g.id} style={{
+            position: 'absolute', left: `${g.x}px`, top: `${g.y}px`,
+            pointerEvents: 'none', zIndex: 5,
+            animation: 'payze-pulse-dot 3s ease-in-out infinite',
+          }}>
+            <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
+              <path d="M0 0L0 12L4 9L7 16L10 15L6 8L12 8L0 0Z" fill={g.color} stroke={colors.card} strokeWidth="0.5" />
+            </svg>
+            <span style={{
+              position: 'absolute', top: '14px', left: '10px',
+              background: g.color, color: '#fff',
+              fontSize: '9px', fontWeight: 500,
+              padding: '2px 6px', borderRadius: radius.sm,
+              whiteSpace: 'nowrap',
+              letterSpacing: '0.04em',
+            }}>{g.label}</span>
+          </div>
+        ))}
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
               <Icons.IconSparkle size={12} color={colors.teal} />
@@ -320,6 +369,46 @@ function DisputeEvidenceDrawer({ dispute, evidence, fallback, onClose }: any) {
             <Icons.IconX size={18} />
           </button>
         </div>
+
+        {/* Collab presence strip */}
+        {presence.length > 0 && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '12px',
+            padding: '10px 14px', marginBottom: '20px',
+            background: colors.bg, border: `0.5px solid ${colors.border}`,
+            borderRadius: radius.md,
+          }}>
+            <div style={{ display: 'flex', marginLeft: '4px' }}>
+              {presence.map((p: any, i: number) => (
+                <div key={p.id} title={`${p.name} · ${p.status}`} style={{
+                  width: '24px', height: '24px', borderRadius: '50%',
+                  background: p.color, color: '#fff',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '10px', fontWeight: 600,
+                  marginLeft: i === 0 ? 0 : '-6px',
+                  border: `2px solid ${colors.bg}`,
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
+                  position: 'relative',
+                }}>{p.initials}
+                  <span style={{
+                    position: 'absolute', right: '-1px', bottom: '-1px',
+                    width: '7px', height: '7px', borderRadius: '50%',
+                    background: colors.teal, border: `1.5px solid ${colors.bg}`,
+                    animation: 'payze-pulse-dot 2s ease-in-out infinite',
+                  }} />
+                </div>
+              ))}
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: '12px', color: colors.ink, fontWeight: 500 }}>
+                You're viewing this with {presence.length} {presence.length === 1 ? 'other' : 'others'}
+              </div>
+              <div style={{ fontSize: '10px', color: colors.text3, fontStyle: 'italic' }}>
+                {collab?.prototypeNote}
+              </div>
+            </div>
+          </div>
+        )}
 
         {!evidence ? (
           <div style={{ padding: '20px', background: colors.bg, borderRadius: radius.md, fontSize: '13px', color: colors.text2, lineHeight: 1.6, marginBottom: '20px' }}>
@@ -430,6 +519,78 @@ function DisputeEvidenceDrawer({ dispute, evidence, fallback, onClose }: any) {
               </Button>
             </div>
           </>
+        )}
+
+        {/* Comments thread */}
+        {presence.length > 0 && (
+          <div style={{ marginTop: '28px', paddingTop: '24px', borderTop: `0.5px solid ${colors.border}` }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '14px' }}>
+              <Kicker style={{ margin: 0 }}>Team comments</Kicker>
+              <span style={{ fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono }}>{comments.length} messages</span>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '16px' }}>
+              {comments.map((c: any) => (
+                <div key={c.id} style={{ display: 'flex', gap: '10px' }}>
+                  <div style={{
+                    width: '28px', height: '28px', borderRadius: '50%',
+                    background: c.color || colors.ink, color: '#fff',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '10px', fontWeight: 600,
+                    flexShrink: 0, marginTop: '2px',
+                  }}>{c.initials}</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '12px', fontWeight: 600, color: colors.ink }}>{c.author}</span>
+                      <span style={{ fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono }}>{c.time}</span>
+                    </div>
+                    <div style={{ fontSize: '12px', color: colors.ink, lineHeight: 1.55 }}>{c.text}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Composer */}
+            <div style={{
+              display: 'flex', alignItems: 'flex-end', gap: '10px',
+              padding: '10px 12px',
+              background: colors.bg, border: `0.5px solid ${colors.border}`,
+              borderRadius: radius.md,
+            }}>
+              <div style={{
+                width: '24px', height: '24px', borderRadius: '50%',
+                background: colors.ink, color: '#fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '10px', fontWeight: 600, flexShrink: 0,
+              }}>KV</div>
+              <textarea
+                value={newComment}
+                onChange={e => setNewComment(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendComment(); } }}
+                placeholder="Add a comment… (Enter to post, Shift+Enter for newline)"
+                rows={1}
+                style={{
+                  flex: 1, border: 'none', outline: 'none',
+                  background: 'transparent', color: colors.ink,
+                  fontSize: '12px', fontFamily: 'inherit',
+                  resize: 'none', padding: '4px 0', minHeight: '18px', maxHeight: '80px', lineHeight: 1.5,
+                }}
+              />
+              <button
+                onClick={sendComment}
+                disabled={!newComment.trim()}
+                style={{
+                  width: '26px', height: '26px', borderRadius: '50%',
+                  background: newComment.trim() ? colors.ink : colors.borderHover,
+                  color: '#fff', border: 'none',
+                  cursor: newComment.trim() ? 'pointer' : 'default',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                }}
+              >
+                <Icons.IconArrowRight size={11} color="#fff" />
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>

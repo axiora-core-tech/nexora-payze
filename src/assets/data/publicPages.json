@@ -1,0 +1,70 @@
+{
+  "merchants": {
+    "studio-lumiere": {
+      "handle": "studio-lumiere",
+      "name": "Studio Lumière",
+      "tagline": "Brand identity and type design · Paris / Bengaluru",
+      "about": "We're a two-person studio building identities for culture-shaping companies. Work ranges from brand systems to custom type families.",
+      "brandColor": "#1C6F6B",
+      "verified": true,
+      "metrics": [
+        { "label": "Payments accepted", "value": "₹84.2 L" },
+        { "label": "Clients worldwide",  "value": "47" },
+        { "label": "Years on Payze",     "value": "3" }
+      ],
+      "methods": ["UPI", "Cards", "NetBanking", "SEPA", "ACH", "Wire"],
+      "currencies": ["INR", "EUR", "USD", "GBP"],
+      "offerings": [
+        { "title": "Brand identity · full",         "price": "₹4,50,000 / 6 weeks",  "description": "Logo system, type, color palette, guidelines document. Includes 2 rounds of revisions and 8 weeks of post-launch support." },
+        { "title": "Landing page design",           "price": "₹1,20,000 / 2 weeks",  "description": "Single high-conversion page. Wireframes to production-ready React or HTML. Figma file included." },
+        { "title": "Custom type design",            "price": "From ₹6,00,000",        "description": "Single weight typeface, tailored for your brand voice. Licensing included for 10 years." },
+        { "title": "Consultation hour",             "price": "₹8,000",                "description": "One hour with a senior designer. Strategy, critique, or direction." }
+      ],
+      "testimonials": [
+        { "quote": "Studio Lumière turned our brand from forgettable to magnetic. Six months later, we still hear 'great logo' in investor meetings.",
+          "name": "Vikram Kothari", "role": "Head of Payments, Zomato Foods" },
+        { "quote": "They push back. On the best ideas, and on the lazy ones. That's what we needed.",
+          "name": "Priya Nair", "role": "Founder, Rhea Studios" }
+      ],
+      "socials": [
+        { "label": "Instagram", "url": "https://instagram.com/studiolumiere" },
+        { "label": "Website",   "url": "https://studiolumiere.design" },
+        { "label": "Behance",   "url": "https://behance.net/studiolumiere" }
+      ],
+      "ctaPrimary": "Book a consultation",
+      "ctaSecondary": "Pay invoice"
+    },
+    "rhea-yoga": {
+      "handle": "rhea-yoga",
+      "name": "Rhea Yoga",
+      "tagline": "Weekly classes and retreats · Koramangala, Bengaluru",
+      "about": "Small-group yoga, breathwork, and mindfulness classes. Led by Rhea Menon, E-RYT 500.",
+      "brandColor": "#B48C3C",
+      "verified": true,
+      "metrics": [
+        { "label": "Members",          "value": "284" },
+        { "label": "Classes / month",  "value": "62" },
+        { "label": "Years on Payze",   "value": "1.5" }
+      ],
+      "methods": ["UPI", "Cards", "NetBanking"],
+      "currencies": ["INR"],
+      "offerings": [
+        { "title": "Monthly unlimited",   "price": "₹4,800 / month",   "description": "All classes, all levels. Pause anytime." },
+        { "title": "10-class pack",       "price": "₹5,500",           "description": "Use within 90 days. Sharable between two people." },
+        { "title": "Private session",     "price": "₹3,500 / session", "description": "One-on-one, tailored to your practice. Held at the studio or on Zoom." },
+        { "title": "Weekend retreat",     "price": "₹18,000",          "description": "2 days · Coorg · all meals and stay included. Quarterly." }
+      ],
+      "testimonials": [
+        { "quote": "Rhea's classes changed how I move through a workday. And the teacher training was the best thing I did for myself last year.",
+          "name": "Ankita Desai", "role": "Product Lead, Bengaluru" }
+      ],
+      "socials": [
+        { "label": "Instagram", "url": "https://instagram.com/rheayoga" },
+        { "label": "Website",   "url": "https://rheayoga.in" }
+      ],
+      "ctaPrimary": "Book a class",
+      "ctaSecondary": "Buy a pack"
+    }
+  },
+  "defaultHandle": "studio-lumiere"
+}
