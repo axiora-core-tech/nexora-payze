@@ -8,7 +8,9 @@ import { configService } from '../../services';
 
 export function Developer() {
   const { data, loading, error, refetch } = useAsync(() => configService.getDeveloper(), []);
+  const { data: testData } = useAsync(() => configService.getTestScenarios(), []);
   const [env, setEnv] = useState('test');
+  const [activeCategory, setActiveCategory] = useState<string>('routing');
 
   if (error) return <ErrorState message={`Couldn't load developer console — ${error.message}`} onRetry={refetch} />;
   if (loading || !data) return <PageLoader label="Loading developer console" />;
@@ -20,6 +22,8 @@ export function Developer() {
     navigator.clipboard.writeText(text);
     toast.success(`${label} copied`);
   };
+
+  const activeCategoryData = testData?.categories?.find((c: any) => c.id === activeCategory);
 
   return (
     <div style={{ animation: 'payze-fadein 0.4s ease-out' }}>
@@ -106,6 +110,79 @@ export function Developer() {
           ))}
         </Card>
       </div>
+
+      {testData && (
+        <Card padded={false} style={{ marginTop: '20px' }}>
+          <div style={{ padding: '18px 24px', borderBottom: `0.5px solid ${colors.border}`, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+            <div>
+              <Kicker color={colors.teal} style={{ marginBottom: '4px' }}>{testData.kicker}</Kicker>
+              <div style={{ fontSize: '15px', fontWeight: 600, color: colors.ink, marginBottom: '2px' }}>Scenario library · {testData.categories.reduce((a: number, c: any) => a + c.scenarios.length, 0)} scripted scenarios</div>
+              <div style={{ fontSize: '12px', color: colors.text2, lineHeight: 1.5 }}>{testData.introline}</div>
+            </div>
+            <Pill tone="outline">test mode · {env === 'test' ? 'active' : 'switch env'}</Pill>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 200px) minmax(0, 1fr)', minHeight: '360px' }}>
+            {/* Category rail */}
+            <div style={{ borderRight: `0.5px solid ${colors.border}`, background: colors.bg, padding: '10px 0' }}>
+              {testData.categories.map((c: any) => (
+                <button
+                  key={c.id}
+                  onClick={() => setActiveCategory(c.id)}
+                  style={{
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    width: '100%', padding: '10px 20px',
+                    background: activeCategory === c.id ? colors.card : 'transparent',
+                    border: 'none',
+                    borderLeft: `2px solid ${activeCategory === c.id ? colors.teal : 'transparent'}`,
+                    fontSize: '12px', fontWeight: 500,
+                    color: activeCategory === c.id ? colors.ink : colors.text2,
+                    textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit',
+                  }}
+                >
+                  <span>{c.label}</span>
+                  <span style={{ fontFamily: typography.family.mono, fontSize: '10px', color: colors.text3 }}>{c.scenarios.length}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Scenarios */}
+            <div style={{ padding: '14px 20px', overflowY: 'auto' }}>
+              {activeCategoryData?.scenarios.map((s: any, i: number) => (
+                <div key={s.id} style={{
+                  display: 'grid', gridTemplateColumns: '1fr auto',
+                  gap: '16px', alignItems: 'center',
+                  padding: '14px 0',
+                  borderBottom: i < activeCategoryData.scenarios.length - 1 ? `0.5px solid ${colors.border}` : 'none',
+                }}>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: '13px', fontWeight: 500, color: colors.ink, marginBottom: '3px' }}>{s.title}</div>
+                    <div style={{ fontSize: '11px', color: colors.text2, lineHeight: 1.5, marginBottom: '6px' }}>{s.description}</div>
+                    <code style={{ fontFamily: typography.family.mono, fontSize: '10px', color: colors.text3, padding: '3px 8px', background: colors.bg, borderRadius: radius.sm, border: `0.5px solid ${colors.border}`, display: 'inline-block' }}>
+                      {s.trigger}
+                    </code>
+                  </div>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => toast.success(`Replaying "${s.title}" — deterministic response in 0.3s`)}
+                    icon={<Icons.IconSend size={12} />}
+                  >
+                    Replay
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ padding: '12px 24px', borderTop: `0.5px solid ${colors.border}`, background: colors.bg, fontSize: '11px', color: colors.text2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+            <span>{testData.replay.hint}</span>
+            <a href={testData.replay.docsLink} style={{ fontSize: '11px', color: colors.ink, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              Testing docs <Icons.IconArrowUpRight size={11} />
+            </a>
+          </div>
+        </Card>
+      )}
     </div>
   );
 }

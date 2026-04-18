@@ -1,0 +1,68 @@
+{
+  "placeholder": "Search by id, customer, or ask in plain English…",
+  "hint": "Try: \"zomato refunds over 1000\" · \"blocked upi last hour\" · \"cross-border this week\"",
+  "suggestions": [
+    { "label": "Blocked today", "query": "blocked today" },
+    { "label": "Cross-border this week", "query": "cross border" },
+    { "label": "UPI over ₹1,000", "query": "upi over 1000" },
+    { "label": "Zomato refunds", "query": "zomato refunds" },
+    { "label": "Failed cards", "query": "failed cards" }
+  ],
+  "parsers": [
+    {
+      "id": "merchant_filter",
+      "patterns": ["zomato", "razorpay", "nykaa", "cred", "urban", "bookmyshow", "makemytrip"],
+      "meta": { "type": "merchant" }
+    },
+    {
+      "id": "status_blocked",
+      "patterns": ["blocked", "declined", "rejected", "failed"],
+      "filter": { "status": "blocked" },
+      "label": "status = blocked"
+    },
+    {
+      "id": "status_routed",
+      "patterns": ["routed", "fallback", "recovered", "saved"],
+      "filter": { "status": "routed" },
+      "label": "status = routed"
+    },
+    {
+      "id": "status_refunded",
+      "patterns": ["refund", "refunded"],
+      "filter": { "status": "refunded" },
+      "label": "status = refunded"
+    },
+    {
+      "id": "status_succeeded",
+      "patterns": ["succeeded", "success", "successful", "captured"],
+      "filter": { "status": "succeeded" },
+      "label": "status = succeeded"
+    },
+    {
+      "id": "method_upi",
+      "patterns": ["upi", "gpay", "phonepe", "paytm", "bhim"],
+      "filter": { "methodSubstr": "UPI" },
+      "label": "method contains UPI"
+    },
+    {
+      "id": "method_card",
+      "patterns": ["card", "cards", "visa", "mastercard", "amex", "rupay"],
+      "filter": { "methodSubstr": "card" },
+      "label": "method is card"
+    },
+    {
+      "id": "method_sepa",
+      "patterns": ["sepa", "ach", "cross border", "international", "cross-border"],
+      "filter": { "crossBorder": true },
+      "label": "cross-border only"
+    }
+  ],
+  "amountRegex": [
+    { "match": "over ([0-9,]+)",       "op": ">"  },
+    { "match": "above ([0-9,]+)",      "op": ">"  },
+    { "match": "more than ([0-9,]+)",  "op": ">"  },
+    { "match": "under ([0-9,]+)",      "op": "<"  },
+    { "match": "below ([0-9,]+)",      "op": "<"  },
+    { "match": "less than ([0-9,]+)",  "op": "<"  }
+  ]
+}

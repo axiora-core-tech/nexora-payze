@@ -1,0 +1,136 @@
+{
+  "kicker": "Merchant Health",
+  "subtitle": "Honest diagnostics we see that you might not.",
+  "legend": {
+    "thriving": { "min": 85, "label": "Thriving", "tone": "teal" },
+    "steady":   { "min": 65, "label": "Steady",   "tone": "ink" },
+    "attention":{ "min": 45, "label": "Needs attention", "tone": "outline" },
+    "risk":     { "min": 0,  "label": "At risk",  "tone": "outline" }
+  },
+  "merchants": [
+    {
+      "slug": "zomato-foods",
+      "name": "Zomato Foods",
+      "score": 91,
+      "trend": "up",
+      "trendDelta": "+4",
+      "trendWindow": "vs last month",
+      "summary": "Best-performing merchant on the platform. UPI Autopay adoption is ahead of peers by 18 points.",
+      "strengths": [
+        "94.8% success rate · +0.8pts MoM, best in class",
+        "Fraud rate 0.08% · 4× below platform average",
+        "Refund rate 1.2% · healthy for food delivery"
+      ],
+      "concerns": [],
+      "observations": [
+        "UPI Autopay mandate growth is 3× their peer set. Worth a case study.",
+        "Still on T+1 settlement — they qualify for T+0 on current plan."
+      ]
+    },
+    {
+      "slug": "razorpay-technologies",
+      "name": "Razorpay Technologies",
+      "score": 86,
+      "trend": "flat",
+      "trendDelta": "—",
+      "trendWindow": "vs last month",
+      "summary": "Strong fundamentals. Volume growth outpacing infrastructure headroom on ICICI Tuesday windows.",
+      "strengths": [
+        "Highest AOV on the platform · ₹12,400 median",
+        "98.2% card success rate",
+        "0 disputes in 90 days"
+      ],
+      "concerns": [
+        "ICICI NetBanking weekly maintenance is costing ~₹42k/month in missed conversions"
+      ],
+      "observations": [
+        "Consider switching ICICI-first routing to card-first on Tuesday 15:00–16:00"
+      ]
+    },
+    {
+      "slug": "nykaa-beauty",
+      "name": "Nykaa Beauty",
+      "score": 58,
+      "trend": "down",
+      "trendDelta": "−7",
+      "trendWindow": "vs last month",
+      "summary": "Refund rate has climbed 3× in 14 days. Pattern suggests a catalog issue, not a payments issue.",
+      "strengths": [
+        "Cross-border SEPA success 94% · ahead of peers",
+        "Good international BIN coverage"
+      ],
+      "concerns": [
+        "Refund rate 8.4% vs 2.6% platform average — 3× spike in 14 days",
+        "Refund reasons cluster: 62% 'wrong size/color' on new skincare sets",
+        "First-time customer retention down from 34% to 22%"
+      ],
+      "observations": [
+        "Check size-chart coverage on SKUs added since 1 April.",
+        "Consider holding new-customer orders for manual QC until catalog is cleaned."
+      ]
+    },
+    {
+      "slug": "cred-club",
+      "name": "Cred Club",
+      "score": 72,
+      "trend": "up",
+      "trendDelta": "+2",
+      "trendWindow": "vs last month",
+      "summary": "Recovering from late-March promo abuse. Velocity rules are working; base rate is healthy.",
+      "strengths": [
+        "NACH mandate success 96.2%",
+        "Dispute win rate 89% · strong evidence practice",
+        "Member LTV up 12% QoQ"
+      ],
+      "concerns": [
+        "Velocity rule triggers elevated 2.4× baseline — promo bot activity suspected",
+        "4% of new accounts flagged in first 7 days — up from 1.6%"
+      ],
+      "observations": [
+        "Promo-abuse pattern will likely recede after 30 April.",
+        "Current velocity threshold (4 attempts / 10 min) may be too permissive — recommend tightening to 3 / 10."
+      ]
+    },
+    {
+      "slug": "urban-company",
+      "name": "Urban Company",
+      "score": 67,
+      "trend": "flat",
+      "trendDelta": "+1",
+      "trendWindow": "vs last month",
+      "summary": "Steady business but routing is UPI-only. One NPCI outage away from material revenue loss.",
+      "strengths": [
+        "NACH collection 94% · reliable mandates",
+        "Low dispute rate"
+      ],
+      "concerns": [
+        "UPI-only routing — no fallback configured",
+        "Sunday NPCI maintenance window will hit 6% of next week's volume"
+      ],
+      "observations": [
+        "Enable NetBanking fallback before Sunday. Estimated recovery: ₹42,000 on that window alone.",
+        "Considering card fallback for amounts above ₹5,000 would also help."
+      ]
+    },
+    {
+      "slug": "bookmyshow",
+      "name": "BookMyShow",
+      "score": 79,
+      "trend": "up",
+      "trendDelta": "+3",
+      "trendWindow": "vs last month",
+      "summary": "Event-driven volume is spiky but well-managed. Capacity holds through peak drops.",
+      "strengths": [
+        "Handles 18× volume spikes without degradation",
+        "Event-day success rate matches baseline (93%)",
+        "Low refund rate for entertainment category"
+      ],
+      "concerns": [
+        "Amex checkout flow has a 14% dropoff at card input — UX issue, not payments"
+      ],
+      "observations": [
+        "Amex drop-off is pure UX — field validation runs too aggressively, flagging Amex 4-digit CID as invalid."
+      ]
+    }
+  ]
+}

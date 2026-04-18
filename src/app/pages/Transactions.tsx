@@ -26,10 +26,12 @@ const PAGE_SIZE = 10;
 export function Transactions() {
   const { data, loading, error, refetch } = useAsync(() => configService.getTransactions(), []);
   const { data: failureCodes } = useAsync(() => configService.getFailureCodes(), []);
+  const { data: searchCfg } = useAsync(() => configService.getTxnSearch(), []);
   const [filter, setFilter] = useState<string>('all');
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<Txn | null>(null);
   const [page, setPage] = useState(0);
+  const [searchFocused, setSearchFocused] = useState(false);
 
   if (error) return <ErrorState message={`Couldn't load transactions — ${error.message}`} onRetry={refetch} />;
   if (loading || !data) return <PageLoader label="Loading ledger" />;
@@ -42,9 +44,86 @@ export function Transactions() {
     return (sym[cur] || '') + amount.toLocaleString('en-IN');
   };
 
+  // Parse the search query into structured filters. Returns:
+  //   - chips: what Nexora understood (shown to user)
+  //   - residual: words not matched to any rule (used as free-text fallback)
+  //   - predicates: functions that each row must pass
+  type ParsedQuery = { chips: { label: string; kind: string }[]; predicates: ((t: Txn, inr: number) => boolean)[]; residual: string };
+
+  const parseQuery = (q: string): ParsedQuery => {
+    const chips: { label: string; kind: string }[] = [];
+    const predicates: ((t: Txn, inr: number) => boolean)[] = [];
+    if (!q.trim() || !searchCfg) return { chips, predicates, residual: q.trim() };
+
+    let remaining = ' ' + q.toLowerCase() + ' ';
+    const strike = (pattern: string) => {
+      const re = new RegExp(`\\b${pattern.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
+      remaining = remaining.replace(re, ' ');
+    };
+
+    // amount regex (e.g. "over 1000")
+    for (const rule of searchCfg.amountRegex) {
+      const re = new RegExp(rule.match, 'i');
+      const m = remaining.match(re);
+      if (m) {
+        const num = parseInt(m[1].replace(/,/g, ''), 10);
+        if (!isNaN(num)) {
+          if (rule.op === '>') {
+            predicates.push((_t, inr) => inr > num);
+            chips.push({ label: `amount > ₹${num.toLocaleString('en-IN')}`, kind: 'amount' });
+          } else {
+            predicates.push((_t, inr) => inr < num);
+            chips.push({ label: `amount < ₹${num.toLocaleString('en-IN')}`, kind: 'amount' });
+          }
+          strike(m[0]);
+        }
+      }
+    }
+
+    // parsers (merchant / status / method / cross-border)
+    for (const parser of searchCfg.parsers) {
+      for (const pattern of parser.patterns) {
+        const re = new RegExp(`\\b${pattern.toLowerCase()}\\b`);
+        if (re.test(remaining)) {
+          if (parser.meta?.type === 'merchant') {
+            const merchantToken = pattern;
+            predicates.push(t => t.merchant.toLowerCase().includes(merchantToken));
+            chips.push({ label: `merchant · ${pattern}`, kind: 'merchant' });
+          } else if (parser.filter) {
+            const f = parser.filter;
+            if (f.status) {
+              predicates.push(t => t.status === f.status);
+            }
+            if (f.methodSubstr) {
+              const s = f.methodSubstr.toLowerCase();
+              predicates.push(t => t.method.toLowerCase().includes(s));
+            }
+            if (f.crossBorder) {
+              predicates.push(t => t.sourceCurrency !== 'INR');
+            }
+            chips.push({ label: parser.label || parser.id, kind: parser.id });
+          }
+          strike(pattern);
+          break;
+        }
+      }
+    }
+
+    const residual = remaining.trim();
+    return { chips, predicates, residual };
+  };
+
+  const parsed = parseQuery(search);
+
   const filtered = (data.transactions as Txn[]).filter(t => {
     if (filter !== 'all' && t.status !== filter) return false;
-    if (search && !(t.merchant + t.customer + t.id).toLowerCase().includes(search.toLowerCase())) return false;
+    const inr = toInr(t.sourceAmount, t.sourceCurrency);
+    for (const pred of parsed.predicates) {
+      if (!pred(t, inr)) return false;
+    }
+    if (parsed.residual) {
+      if (!(t.merchant + ' ' + t.customer + ' ' + t.id).toLowerCase().includes(parsed.residual)) return false;
+    }
     return true;
   });
 
@@ -99,15 +178,77 @@ export function Transactions() {
               }}>{f}</button>
             ))}
           </div>
-          <div style={{ position: 'relative' }}>
-            <Icons.IconSearch size={14} color={colors.text2} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
-            <input value={search} onChange={(e) => setSearchReset(e.target.value)} placeholder="Search id, merchant, customer…" style={{
-              background: colors.bg, border: `0.5px solid ${colors.border}`, borderRadius: radius.pill,
-              padding: '8px 14px 8px 36px', fontSize: '12px', width: '320px', outline: 'none',
-              color: colors.ink, fontFamily: typography.family.sans,
-            }} />
+          <div style={{ position: 'relative', minWidth: '380px', flex: 1, maxWidth: '560px' }}>
+            <Icons.IconSparkle size={14} color={colors.teal} style={{ position: 'absolute', left: '14px', top: '13px', zIndex: 1 }} />
+            <input
+              value={search}
+              onChange={(e) => setSearchReset(e.target.value)}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setTimeout(() => setSearchFocused(false), 180)}
+              placeholder={searchCfg?.placeholder || 'Search id, merchant, customer…'}
+              style={{
+                background: colors.bg, border: `0.5px solid ${parsed.chips.length > 0 ? colors.teal : colors.border}`, borderRadius: radius.pill,
+                padding: '9px 14px 9px 36px', fontSize: '12px', width: '100%', outline: 'none',
+                color: colors.ink, fontFamily: typography.family.sans,
+                transition: 'border-color 0.15s',
+              }}
+            />
+
+            {/* Suggestions dropdown */}
+            {searchFocused && !search && searchCfg && (
+              <div style={{
+                position: 'absolute', top: 'calc(100% + 6px)', left: 0, right: 0, zIndex: 20,
+                background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.md,
+                boxShadow: colors.shadowMd, padding: '10px 12px',
+              }}>
+                <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Icons.IconSparkle size={10} color={colors.teal} />
+                  Try asking in plain English
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginBottom: '8px' }}>
+                  {searchCfg.suggestions.map((s: any) => (
+                    <button
+                      key={s.query}
+                      onMouseDown={(e) => { e.preventDefault(); setSearchReset(s.query); }}
+                      style={{ padding: '4px 10px', background: colors.bg, border: `0.5px solid ${colors.border}`, borderRadius: radius.pill, fontSize: '11px', color: colors.ink, cursor: 'pointer', fontFamily: 'inherit' }}
+                    >{s.label}</button>
+                  ))}
+                </div>
+                <div style={{ fontSize: '10px', color: colors.text3, lineHeight: 1.5 }}>{searchCfg.hint}</div>
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Parsed filter chips */}
+        {parsed.chips.length > 0 && (
+          <div style={{ padding: '10px 24px', borderBottom: `0.5px solid ${colors.border}`, background: colors.tealTint, display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '10px', color: colors.teal, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <Icons.IconSparkle size={10} color={colors.teal} />
+              Nexora understood
+            </span>
+            {parsed.chips.map((chip, i) => (
+              <span key={i} style={{
+                fontSize: '11px',
+                padding: '3px 9px',
+                background: colors.card,
+                border: `0.5px solid ${colors.teal}`,
+                borderRadius: radius.pill,
+                color: colors.ink,
+                fontFamily: chip.kind === 'amount' || chip.kind === 'merchant' ? typography.family.mono : typography.family.sans,
+                fontWeight: 500,
+              }}>{chip.label}</span>
+            ))}
+            {parsed.residual && (
+              <span style={{ fontSize: '11px', color: colors.text2 }}>
+                + free-text <span style={{ fontFamily: typography.family.mono, color: colors.ink }}>"{parsed.residual}"</span>
+              </span>
+            )}
+            <button onClick={() => setSearchReset('')} style={{ marginLeft: 'auto', background: 'none', border: 'none', fontSize: '11px', color: colors.text2, cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}>
+              Clear
+            </button>
+          </div>
+        )}
 
         <div style={{ display: 'grid', gridTemplateColumns: '0.8fr 0.7fr 1.4fr 1fr 1.1fr 0.9fr 0.3fr', gap: '16px', padding: '12px 24px', background: colors.bg, fontSize: '10px', fontWeight: 500, color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
           <div>ID</div><div>Time</div><div>Merchant · Customer</div><div>Method</div>

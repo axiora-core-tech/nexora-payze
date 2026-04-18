@@ -1,0 +1,58 @@
+{
+  "kicker": "Evidence Autopilot",
+  "introline": "Nexora has pre-assembled an evidence package for this dispute. Review before submitting.",
+  "evidenceByDispute": {
+    "dp_9012": {
+      "reason": "Product not as described",
+      "winProbability": 72,
+      "winProbabilityNote": "Historical win rate for this reason code on your merchant: 78%",
+      "submitBy": "24 Apr · 23:59 IST",
+      "items": [
+        { "icon": "IconInvoice", "label": "Itemized invoice INV-0224",           "sub": "Delivered to customer email · 04 Apr 14:22", "source": "Invoices", "attached": true },
+        { "icon": "IconLink",    "label": "Product listing snapshot at time of purchase", "sub": "Includes description, photos, and specifications", "source": "Web archive", "attached": true },
+        { "icon": "IconMail",    "label": "Customer communication thread",       "sub": "6 messages · support@[merchant] · resolution declined by customer", "source": "Zendesk", "attached": true },
+        { "icon": "IconShield",  "label": "Device fingerprint + billing match",  "sub": "Payment device matches 4 prior successful orders in 18 months", "source": "Payze risk log", "attached": true },
+        { "icon": "IconDownload","label": "Shipping proof-of-delivery",          "sub": "Shiprocket AWB #81249218 · signed by recipient",           "source": "Shiprocket API", "attached": false, "action": "Auto-fetch" },
+        { "icon": "IconUser",    "label": "Customer account history",            "sub": "22 months as customer · 14 prior orders · no prior disputes", "source": "Payze customer record", "attached": true }
+      ],
+      "narrativeDraft": "Customer ordered a size-M cotton shirt on 04 Apr, confirmed at checkout via saved payment. Item shipped same day (Shiprocket AWB #81249218), delivered to registered address 06 Apr, signed for on delivery. Customer contacted support on 11 Apr claiming the item was smaller than expected. Support offered replacement or refund per published return policy; customer declined both and filed chargeback. Device fingerprint matches 4 prior successful orders from same customer; account in good standing for 22 months. We maintain the product was delivered as described."
+    },
+    "dp_9009": {
+      "reason": "Service not rendered",
+      "winProbability": 54,
+      "winProbabilityNote": "Historical win rate for 'service not rendered' is lower · 48% across platform",
+      "submitBy": "16 Apr · 23:59 IST",
+      "items": [
+        { "icon": "IconInvoice", "label": "Service agreement signed by customer", "sub": "E-signed 11 Apr · scope and duration explicit",  "source": "Invoices", "attached": true },
+        { "icon": "IconClock",   "label": "Service delivery log",                 "sub": "3 session timestamps · 45 min each · customer joined all three", "source": "Meeting system", "attached": true },
+        { "icon": "IconMail",    "label": "Customer feedback after session 1",    "sub": "\"Loved today's session — looking forward to next one\"",   "source": "Email archive", "attached": true },
+        { "icon": "IconMail",    "label": "Customer-initiated messages",          "sub": "14 messages exchanged during engagement period",          "source": "Support CRM", "attached": true }
+      ],
+      "narrativeDraft": "Customer signed service agreement on 11 Apr for a three-session engagement at ₹8,600. All three sessions were delivered as scheduled (session logs attached). Customer provided positive feedback after session 1 (email attached) and engaged actively via support channel (14 messages during engagement). Dispute filed 14 days after final session. We provided what was contracted and can document full delivery."
+    },
+    "dp_9011": {
+      "reason": "Duplicate charge",
+      "winProbability": 31,
+      "winProbabilityNote": "Duplicate charge disputes are hard to win. Recommend refunding and preserving customer relationship.",
+      "submitBy": "20 Apr · 23:59 IST",
+      "items": [
+        { "icon": "IconInvoice", "label": "Transaction log showing single charge", "sub": "Only txn_00189 matches customer/date/amount",         "source": "Payze ledger", "attached": true },
+        { "icon": "IconShield",  "label": "Customer's other recent charges",       "sub": "1 prior charge 18 days earlier · clearly separate event", "source": "Payze ledger", "attached": true }
+      ],
+      "narrativeDraft": "Transaction log shows a single charge of ₹4,800 on 06 Apr. No other charge of the same amount exists in the customer's account for a 45-day window around this event. Customer's prior charge was on 19 Mar for ₹2,200 — a different item, different amount, different merchant line item. Likely a statement-reading error by the customer.",
+      "recommendation": "Consider refunding to preserve relationship. Win probability is 31%; refund cost is ₹4,800, representment fee if lost is ₹1,500 on top."
+    },
+    "dp_9008": {
+      "reason": "Fraudulent — customer claim",
+      "winProbability": 8,
+      "winProbabilityNote": "Already lost. Marked for reference.",
+      "submitBy": "Past due",
+      "items": [],
+      "narrativeDraft": "Dispute lost 12 Apr. Funds returned to customer. Represented with device fingerprint, 3D-secure evidence, and delivery confirmation, but card-issuer ruled against us.",
+      "recommendation": "Post-mortem: this customer had used our platform 3 times before. Their account was compromised after our transaction — the stolen card pattern fits. Not preventable from our side."
+    }
+  },
+  "fallback": {
+    "message": "Nexora hasn't assembled evidence for this dispute yet. Click 'Assemble evidence' and we'll pull delivery records, customer history, and communication logs."
+  }
+}

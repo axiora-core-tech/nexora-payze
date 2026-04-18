@@ -13,9 +13,11 @@ const iconMap: Record<string, any> = {
 
 export function Invoices() {
   const { data, loading, error, refetch } = useAsync(() => configService.getInvoices(), []);
+  const { data: taxRules } = useAsync(() => configService.getTaxRules(), []);
   const [showBuilder, setShowBuilder] = useState(false);
   const [viewing, setViewing] = useState<any>(null);
   const [actionsFor, setActionsFor] = useState<string | null>(null);
+  const [gstrOpen, setGstrOpen] = useState(false);
 
   if (error) return <ErrorState message={`Couldn't load invoices — ${error.message}`} onRetry={refetch} />;
   if (loading || !data) return <PageLoader label="Loading invoices" />;
@@ -31,6 +33,9 @@ export function Invoices() {
           <div style={{ fontSize: '13px', color: colors.text2, marginTop: '2px' }}>{header.subtitle}</div>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
+          <Button variant="secondary" icon={<Icons.IconShield size={14} />} onClick={() => setGstrOpen(true)}>
+            GSTR-1 · {taxRules?.gstrPreview?.period || 'April 2026'}
+          </Button>
           <Button variant="secondary" icon={<Icons.IconDownload size={14} />} onClick={() => toast.success('Exporting as CSV')}>Export</Button>
           <Button variant="primary" icon={<Icons.IconPlus size={14} />} onClick={() => setShowBuilder(true)}>New invoice</Button>
         </div>
@@ -97,22 +102,131 @@ export function Invoices() {
         ))}
       </Card>
 
-      {showBuilder && <InvoiceBuilder onClose={() => setShowBuilder(false)} />}
+      {showBuilder && <InvoiceBuilder onClose={() => setShowBuilder(false)} taxRules={taxRules} />}
       {viewing && <InvoicePreview invoice={viewing} onClose={() => setViewing(null)} />}
+      {gstrOpen && taxRules && <GstrDrawer preview={taxRules.gstrPreview} onClose={() => setGstrOpen(false)} />}
     </div>
   );
 }
 
-function InvoiceBuilder({ onClose }: { onClose: () => void }) {
-  const [items, setItems] = useState([{ desc: 'Professional services', qty: 1, price: 50000 }]);
+function GstrDrawer({ preview, onClose }: any) {
+  const summary = preview.summary;
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(26,26,26,0.35)', backdropFilter: 'blur(3px)', zIndex: 100, display: 'flex', justifyContent: 'flex-end' }}>
+      <div onClick={e => e.stopPropagation()} style={{
+        width: '560px', maxWidth: '100%', height: '100%', background: colors.card,
+        borderLeft: `0.5px solid ${colors.border}`, padding: '28px 32px', overflowY: 'auto',
+        boxShadow: '-20px 0 60px rgba(0,0,0,0.15)',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+          <div>
+            <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>GSTR-1 preview</Kicker>
+            <div style={{ fontSize: '22px', fontWeight: 600, color: colors.ink, letterSpacing: '-0.015em' }}>{preview.period}</div>
+            <div style={{ fontSize: '12px', color: colors.text2, marginTop: '2px' }}>Filing due by {preview.dueBy}</div>
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.text2, padding: '4px' }}>
+            <Icons.IconX size={18} />
+          </button>
+        </div>
+
+        <div style={{ padding: '18px', background: colors.bg, borderRadius: radius.md, marginBottom: '20px', fontFamily: typography.family.mono, fontSize: '13px' }}>
+          <GstrRow label="Total invoices" value={summary.totalInvoices.toString()} />
+          <GstrRow label="Taxable value" value={summary.taxableValue} />
+          <GstrRow label="CGST" value={summary.cgst} />
+          <GstrRow label="SGST" value={summary.sgst} />
+          <GstrRow label="IGST" value={summary.igst} />
+          <GstrRow label="Total GST" value={summary.totalGst} bold isLast />
+        </div>
+
+        <Kicker style={{ marginBottom: '12px' }}>Filing readiness</Kicker>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
+          {preview.readiness.map((r: any, i: number) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', gap: '10px',
+              padding: '10px 14px',
+              background: r.status === 'pass' ? colors.bg : 'rgba(180,140,60,0.06)',
+              border: `0.5px solid ${r.status === 'pass' ? colors.border : 'rgba(180,140,60,0.25)'}`,
+              borderRadius: radius.md,
+            }}>
+              <div style={{
+                width: '18px', height: '18px', borderRadius: '50%',
+                background: r.status === 'pass' ? colors.teal : 'rgba(180,140,60,0.9)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              }}>
+                {r.status === 'pass' ? (
+                  <Icons.IconCheck size={10} color="#fff" strokeWidth={2.5} />
+                ) : (
+                  <span style={{ color: '#fff', fontSize: '11px', fontWeight: 700, fontFamily: 'Inter' }}>!</span>
+                )}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: '12px', color: colors.ink, fontWeight: 500 }}>{r.label}</div>
+                {r.detail && <div style={{ fontSize: '11px', color: colors.text2, marginTop: '2px' }}>{r.detail}</div>}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <Button variant="primary" icon={<Icons.IconDownload size={14} />} onClick={() => toast.success('GSTR-1 JSON downloaded · ready to upload to GST portal')}>
+            Download GSTR-1 JSON
+          </Button>
+          <Button variant="secondary" icon={<Icons.IconDownload size={14} />} onClick={() => toast.success('Detailed Excel generated')}>
+            Excel report
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GstrRow({ label, value, bold, isLast }: any) {
+  return (
+    <div style={{
+      display: 'flex', justifyContent: 'space-between',
+      padding: '8px 0',
+      borderBottom: isLast ? 'none' : `0.5px solid ${colors.border}`,
+      borderTop: bold ? `0.5px solid ${colors.ink}` : 'none',
+      marginTop: bold ? '4px' : 0,
+      paddingTop: bold ? '10px' : '8px',
+    }}>
+      <span style={{ color: colors.text2, fontWeight: bold ? 600 : 400 }}>{label}</span>
+      <span style={{ color: colors.ink, fontWeight: bold ? 600 : 500 }}>{value}</span>
+    </div>
+  );
+}
+
+function InvoiceBuilder({ onClose, taxRules }: { onClose: () => void; taxRules?: any }) {
+  const [items, setItems] = useState([{ desc: 'Professional services', qty: 1, price: 50000, hsn: '998313', gstRate: 18 }]);
   const [customer, setCustomer] = useState('');
   const [email, setEmail] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [notes, setNotes] = useState('');
+  const [customerGstin, setCustomerGstin] = useState('');
+  const [intraState, setIntraState] = useState(true); // CGST+SGST vs IGST
 
   const subtotal = items.reduce((sum, i) => sum + i.qty * i.price, 0);
-  const gst = Math.round(subtotal * 0.18);
-  const total = subtotal + gst;
+
+  // Compute per-rate GST
+  const gstByRate: Record<number, number> = {};
+  items.forEach(i => {
+    const tax = (i.qty * i.price) * (i.gstRate / 100);
+    gstByRate[i.gstRate] = (gstByRate[i.gstRate] || 0) + tax;
+  });
+  const totalGst = Object.values(gstByRate).reduce((a, b) => a + b, 0);
+  const cgst = intraState ? Math.round(totalGst / 2) : 0;
+  const sgst = intraState ? Math.round(totalGst / 2) : 0;
+  const igst = intraState ? 0 : Math.round(totalGst);
+  const total = subtotal + Math.round(totalGst);
+
+  // GSTIN validation
+  const gstinPattern = taxRules?.validationRules?.find((r: any) => r.id === 'gstin_format')?.pattern;
+  const gstinValid = !customerGstin || (gstinPattern && new RegExp(gstinPattern).test(customerGstin));
+
+  // HSN required check
+  const hsnRule = taxRules?.validationRules?.find((r: any) => r.id === 'hsn_required');
+  const hsnRequired = hsnRule && subtotal >= hsnRule.threshold;
+  const hsnValid = !hsnRequired || items.every(i => i.hsn && i.hsn.length >= 4);
 
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(26,26,26,0.35)', backdropFilter: 'blur(3px)', zIndex: 100, display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '40px 20px', overflowY: 'auto' }}>
@@ -129,35 +243,90 @@ function InvoiceBuilder({ onClose }: { onClose: () => void }) {
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.text2, padding: '4px' }}><Icons.IconX size={18} /></button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
           <Field label="Customer name"><input style={inputStyle} value={customer} onChange={e => setCustomer(e.target.value)} placeholder="Studio Lumière" /></Field>
           <Field label="Email"><input style={inputStyle} value={email} onChange={e => setEmail(e.target.value)} placeholder="finance@customer.com" /></Field>
+          <Field label="Customer GSTIN (optional)">
+            <input
+              style={{ ...inputStyle, fontFamily: typography.family.mono, borderColor: gstinValid ? colors.border : '#B48C3C' }}
+              value={customerGstin}
+              onChange={e => setCustomerGstin(e.target.value.toUpperCase())}
+              placeholder="29ABCDE1234F1Z5"
+              maxLength={15}
+            />
+            {!gstinValid && (
+              <div style={{ fontSize: '10px', color: '#B48C3C', marginTop: '4px' }}>
+                {taxRules?.validationRules?.find((r: any) => r.id === 'gstin_format')?.errorMessage}
+              </div>
+            )}
+          </Field>
           <Field label="Due date"><input type="date" style={inputStyle} value={dueDate} onChange={e => setDueDate(e.target.value)} /></Field>
           <Field label="Currency"><select style={inputStyle}><option>INR</option><option>USD</option><option>EUR</option></select></Field>
+          <Field label="Place of supply">
+            <select style={inputStyle} value={intraState ? 'intra' : 'inter'} onChange={e => setIntraState(e.target.value === 'intra')}>
+              <option value="intra">Same state (CGST + SGST)</option>
+              <option value="inter">Different state (IGST)</option>
+            </select>
+          </Field>
         </div>
 
         <Kicker style={{ marginBottom: '10px' }}>Line items</Kicker>
-        <div style={{ padding: '12px', background: colors.bg, borderRadius: radius.md, marginBottom: '16px' }}>
+        <div style={{ padding: '12px', background: colors.bg, borderRadius: radius.md, marginBottom: '10px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 0.6fr 0.7fr 0.6fr 0.3fr', gap: '8px', fontSize: '10px', color: colors.text3, letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 500, padding: '0 4px 8px 4px' }}>
+            <div>Description</div><div>HSN</div><div>Qty</div><div>Price</div><div>GST</div><div></div>
+          </div>
           {items.map((item, i) => (
-            <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 0.5fr 0.8fr 0.4fr', gap: '8px', alignItems: 'center', marginBottom: i < items.length - 1 ? '8px' : 0 }}>
+            <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 0.6fr 0.7fr 0.6fr 0.3fr', gap: '8px', alignItems: 'center', marginBottom: i < items.length - 1 ? '8px' : 0 }}>
               <input style={{ ...inputStyle, fontSize: '12px' }} value={item.desc} onChange={e => {
                 const next = [...items]; next[i].desc = e.target.value; setItems(next);
               }} placeholder="Description" />
+              <select
+                style={{ ...inputStyle, fontSize: '11px', fontFamily: typography.family.mono, padding: '8px 10px' }}
+                value={item.hsn}
+                onChange={e => {
+                  const next = [...items];
+                  next[i].hsn = e.target.value;
+                  const match = taxRules?.hsnCodes?.find((h: any) => h.code === e.target.value);
+                  if (match) next[i].gstRate = match.defaultRate;
+                  setItems(next);
+                }}
+              >
+                <option value="">—</option>
+                {taxRules?.hsnCodes?.map((h: any) => (
+                  <option key={h.code} value={h.code} title={h.label}>{h.code}</option>
+                ))}
+              </select>
               <input style={{ ...inputStyle, fontSize: '12px', fontFamily: typography.family.mono }} type="number" value={item.qty} onChange={e => {
                 const next = [...items]; next[i].qty = +e.target.value; setItems(next);
               }} />
               <input style={{ ...inputStyle, fontSize: '12px', fontFamily: typography.family.mono }} type="number" value={item.price} onChange={e => {
                 const next = [...items]; next[i].price = +e.target.value; setItems(next);
               }} />
+              <select
+                style={{ ...inputStyle, fontSize: '11px', fontFamily: typography.family.mono, padding: '8px 10px' }}
+                value={item.gstRate}
+                onChange={e => { const next = [...items]; next[i].gstRate = +e.target.value; setItems(next); }}
+              >
+                {taxRules?.gstRates?.map((r: any) => (
+                  <option key={r.rate} value={r.rate}>{r.rate}%</option>
+                ))}
+              </select>
               <button onClick={() => setItems(items.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.text3, padding: '4px' }}>
                 <Icons.IconTrash size={12} />
               </button>
             </div>
           ))}
-          <button onClick={() => setItems([...items, { desc: '', qty: 1, price: 0 }])} style={{ background: 'none', border: `0.5px dashed ${colors.borderHover}`, borderRadius: radius.sm, padding: '8px', fontSize: '11px', color: colors.text2, cursor: 'pointer', width: '100%', marginTop: '8px', fontFamily: 'inherit' }}>
+          <button onClick={() => setItems([...items, { desc: '', qty: 1, price: 0, hsn: '998313', gstRate: 18 }])} style={{ background: 'none', border: `0.5px dashed ${colors.borderHover}`, borderRadius: radius.sm, padding: '8px', fontSize: '11px', color: colors.text2, cursor: 'pointer', width: '100%', marginTop: '8px', fontFamily: 'inherit' }}>
             + Add line
           </button>
         </div>
+
+        {hsnRequired && !hsnValid && (
+          <div style={{ padding: '10px 14px', background: 'rgba(180,140,60,0.08)', border: '0.5px solid rgba(180,140,60,0.25)', borderRadius: radius.sm, fontSize: '11px', color: colors.ink, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Icons.IconSparkle size={11} color="#B48C3C" />
+            {hsnRule.errorMessage}
+          </div>
+        )}
 
         <Field label="Notes (optional)" style={{ marginBottom: '20px' }}>
           <textarea style={{ ...inputStyle, resize: 'vertical' }} rows={2} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Payment terms, PO number, or a thank you" />
@@ -165,7 +334,14 @@ function InvoiceBuilder({ onClose }: { onClose: () => void }) {
 
         <div style={{ padding: '16px', background: colors.bg, borderRadius: radius.md, marginBottom: '24px', fontFamily: typography.family.mono, fontSize: '13px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}><span style={{ color: colors.text2 }}>Subtotal</span><span>₹{subtotal.toLocaleString('en-IN')}</span></div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}><span style={{ color: colors.text2 }}>GST (18%)</span><span>₹{gst.toLocaleString('en-IN')}</span></div>
+          {intraState ? (
+            <>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}><span style={{ color: colors.text2 }}>CGST</span><span>₹{cgst.toLocaleString('en-IN')}</span></div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}><span style={{ color: colors.text2 }}>SGST</span><span>₹{sgst.toLocaleString('en-IN')}</span></div>
+            </>
+          ) : (
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}><span style={{ color: colors.text2 }}>IGST</span><span>₹{igst.toLocaleString('en-IN')}</span></div>
+          )}
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0 0 0', borderTop: `0.5px solid ${colors.ink}`, marginTop: '6px', fontWeight: 600 }}>
             <span>Total</span><span>₹{total.toLocaleString('en-IN')}</span>
           </div>

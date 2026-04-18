@@ -20,6 +20,12 @@ import copilotData from '../assets/data/copilot.json';
 import reconciliationData from '../assets/data/reconciliation.json';
 import forecastData from '../assets/data/forecast.json';
 import failureCodesData from '../assets/data/failureCodes.json';
+import healthData from '../assets/data/health.json';
+import txnSearchData from '../assets/data/txnSearch.json';
+import disputeEvidenceData from '../assets/data/disputeEvidence.json';
+import subIntelligenceData from '../assets/data/subIntelligence.json';
+import taxRulesData from '../assets/data/taxRules.json';
+import testScenariosData from '../assets/data/testScenarios.json';
 
 /**
  * configService — loads config/data JSON files with simulated network latency
@@ -50,6 +56,12 @@ export const configService = {
   getReconciliation: () => mockFetch(reconciliationData),
   getForecast: () => mockFetch(forecastData),
   getFailureCodes: () => mockFetch(failureCodesData),
+  getHealth: () => mockFetch(healthData),
+  getTxnSearch: () => mockFetch(txnSearchData),
+  getDisputeEvidence: () => mockFetch(disputeEvidenceData),
+  getSubIntelligence: () => mockFetch(subIntelligenceData),
+  getTaxRules: () => mockFetch(taxRulesData),
+  getTestScenarios: () => mockFetch(testScenariosData),
 };
 
 // Also export types for TypeScript consumers

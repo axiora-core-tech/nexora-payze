@@ -6,6 +6,7 @@ import * as Icons from '../../design/icons';
 import { useAsync } from '../../hooks/useAsync';
 import { tenantService, configService, Tenant } from '../../services';
 import { toast } from 'sonner';
+import { MerchantHealthPanel, HealthScoreBadge } from '../components/MerchantHealth';
 
 export function Tenants() {
   const [tenants, setTenants] = useState<Tenant[] | null>(null);
@@ -62,6 +63,10 @@ export function Tenants() {
         <StatCard label="Avg per merchant" value={`₹${Math.round(totalGmv / tenants.length / 1000)}k`} sub="monthly" />
       </div>
 
+      <div style={{ marginBottom: '20px' }}>
+        <MerchantHealthPanel />
+      </div>
+
       <Card padded={false}>
         <div style={{ padding: '16px 24px', borderBottom: `0.5px solid ${colors.border}`, display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ position: 'relative' }}>
@@ -82,13 +87,13 @@ export function Tenants() {
           <div style={{ marginLeft: 'auto', fontSize: '12px', color: colors.text2 }}>{filtered.length} results</div>
         </div>
 
-        <div style={{ padding: '12px 24px', display: 'grid', gridTemplateColumns: '1.6fr 1.4fr 1fr 1fr 0.6fr', gap: '16px', background: colors.bg, fontSize: '10px', fontWeight: 500, color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-          <div>Merchant</div><div>Workspace URL</div><div>30d GMV</div><div>Status</div><div></div>
+        <div style={{ padding: '12px 24px', display: 'grid', gridTemplateColumns: '1.6fr 1.3fr 0.9fr 0.9fr 1.2fr 0.4fr', gap: '16px', background: colors.bg, fontSize: '10px', fontWeight: 500, color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+          <div>Merchant</div><div>Workspace URL</div><div>30d GMV</div><div>Status</div><div>Health</div><div></div>
         </div>
 
         {filtered.map((t, i) => (
           <div key={t.id} style={{
-            display: 'grid', gridTemplateColumns: '1.6fr 1.4fr 1fr 1fr 0.6fr', gap: '16px',
+            display: 'grid', gridTemplateColumns: '1.6fr 1.3fr 0.9fr 0.9fr 1.2fr 0.4fr', gap: '16px',
             padding: '16px 24px',
             borderBottom: i < filtered.length - 1 ? `0.5px solid ${colors.border}` : 'none',
             alignItems: 'center',
@@ -106,6 +111,7 @@ export function Tenants() {
             </div>
             <div style={{ fontSize: '13px', fontWeight: 600, color: colors.ink }}>₹{t.gmv30d.toLocaleString('en-IN')}</div>
             <div><Pill tone={t.status === 'Active' ? 'teal' : t.status === 'Pending' ? 'outline' : 'neutral'}>{t.status}</Pill></div>
+            <div><HealthScoreBadge slug={t.slug} /></div>
             <div style={{ textAlign: 'right' }}>
               <Link to={`/t/${t.slug}`} style={{ color: colors.text2 }}><Icons.IconArrowUpRight size={14} /></Link>
             </div>

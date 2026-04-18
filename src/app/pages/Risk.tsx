@@ -9,7 +9,9 @@ import { configService } from '../../services';
 export function Risk() {
   const { data, loading, error, refetch } = useAsync(() => configService.getRisk(), []);
   const { data: forecast } = useAsync(() => configService.getForecast(), []);
+  const { data: evidenceLib } = useAsync(() => configService.getDisputeEvidence(), []);
   const [tab, setTab] = useState<'forecast' | 'signals' | 'rules' | 'disputes'>('forecast');
+  const [selectedDispute, setSelectedDispute] = useState<any>(null);
 
   if (error) return <ErrorState message={`Couldn't load risk — ${error.message}`} onRetry={refetch} />;
   if (loading || !data) return <PageLoader label="Loading risk posture" />;
@@ -126,22 +128,49 @@ export function Risk() {
 
         {tab === 'disputes' && (
           <div style={{ padding: '18px 24px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '0.9fr 0.9fr 1.5fr 0.9fr 0.9fr 1fr', gap: '16px', padding: '10px 0', borderBottom: `0.5px solid ${colors.border}`, fontSize: '10px', fontWeight: 500, color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-              <div>Dispute</div><div>Txn</div><div>Reason</div><div>Amount</div><div>Evidence by</div><div>Status</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px', marginBottom: '12px', background: colors.tealTint, borderRadius: radius.md }}>
+              <Icons.IconSparkle size={12} color={colors.teal} />
+              <div style={{ fontSize: '12px', color: colors.ink, lineHeight: 1.5 }}>
+                Click any dispute — Nexora has pre-assembled the evidence package.
+              </div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '0.9fr 0.9fr 1.5fr 0.9fr 0.9fr 1fr 0.3fr', gap: '16px', padding: '10px 0', borderBottom: `0.5px solid ${colors.border}`, fontSize: '10px', fontWeight: 500, color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              <div>Dispute</div><div>Txn</div><div>Reason</div><div>Amount</div><div>Evidence by</div><div>Status</div><div></div>
             </div>
             {disputes.map((d: any, i: number) => (
-              <div key={d.id} style={{ display: 'grid', gridTemplateColumns: '0.9fr 0.9fr 1.5fr 0.9fr 0.9fr 1fr', gap: '16px', padding: '16px 0', borderBottom: i < disputes.length - 1 ? `0.5px solid ${colors.border}` : 'none', alignItems: 'center', fontSize: '13px' }}>
+              <div
+                key={d.id}
+                onClick={() => setSelectedDispute(d)}
+                style={{
+                  display: 'grid', gridTemplateColumns: '0.9fr 0.9fr 1.5fr 0.9fr 0.9fr 1fr 0.3fr', gap: '16px',
+                  padding: '16px 0', borderBottom: i < disputes.length - 1 ? `0.5px solid ${colors.border}` : 'none',
+                  alignItems: 'center', fontSize: '13px', cursor: 'pointer', transition: 'background 0.15s',
+                  marginLeft: '-24px', marginRight: '-24px', paddingLeft: '24px', paddingRight: '24px',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.background = colors.bg)}
+                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+              >
                 <div style={{ fontFamily: typography.family.mono, fontSize: '11px', color: colors.ink }}>{d.id}</div>
                 <div style={{ fontFamily: typography.family.mono, fontSize: '11px', color: colors.text2 }}>{d.txn}</div>
                 <div style={{ color: colors.ink }}>{d.reason}</div>
                 <div style={{ color: colors.ink, fontWeight: 600 }}>{d.amount}</div>
                 <div style={{ color: colors.text2 }}>{d.due}</div>
                 <div><Pill tone={d.status === 'Won' ? 'teal' : d.status === 'Evidence needed' ? 'outline' : 'neutral'}>{d.status}</Pill></div>
+                <div style={{ textAlign: 'right' }}><Icons.IconArrowUpRight size={13} color={colors.text3} /></div>
               </div>
             ))}
           </div>
         )}
       </Card>
+
+      {selectedDispute && (
+        <DisputeEvidenceDrawer
+          dispute={selectedDispute}
+          evidence={evidenceLib?.evidenceByDispute?.[selectedDispute.id]}
+          fallback={evidenceLib?.fallback?.message}
+          onClose={() => setSelectedDispute(null)}
+        />
+      )}
     </div>
   );
 }
@@ -261,5 +290,148 @@ function MetricCard({ label, value, sub }: any) {
       <div style={{ fontSize: '28px', fontWeight: 600, color: colors.ink, letterSpacing: '-0.02em', marginBottom: '4px' }}>{value}</div>
       <div style={{ fontSize: '11px', color: colors.text2 }}>{sub}</div>
     </Card>
+  );
+}
+
+const iconMap: Record<string, any> = {
+  IconInvoice: Icons.IconInvoice, IconLink: Icons.IconLink, IconMail: Icons.IconMail,
+  IconShield: Icons.IconShield, IconDownload: Icons.IconDownload, IconUser: Icons.IconUser,
+  IconClock: Icons.IconClock,
+};
+
+function DisputeEvidenceDrawer({ dispute, evidence, fallback, onClose }: any) {
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(26,26,26,0.35)', backdropFilter: 'blur(3px)', zIndex: 100, display: 'flex', justifyContent: 'flex-end' }}>
+      <div onClick={(e) => e.stopPropagation()} style={{
+        width: '640px', maxWidth: '100%', height: '100%', background: colors.card,
+        borderLeft: `0.5px solid ${colors.border}`, padding: '28px 32px', overflowY: 'auto',
+        boxShadow: '-20px 0 60px rgba(0,0,0,0.15)',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+              <Icons.IconSparkle size={12} color={colors.teal} />
+              <Kicker color={colors.teal} style={{ margin: 0 }}>Evidence Autopilot</Kicker>
+            </div>
+            <div style={{ fontSize: '16px', fontWeight: 600, color: colors.ink, fontFamily: typography.family.mono }}>{dispute.id}</div>
+            <div style={{ fontSize: '12px', color: colors.text2, marginTop: '2px' }}>{dispute.reason} · {dispute.amount}</div>
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.text2, padding: '4px' }}>
+            <Icons.IconX size={18} />
+          </button>
+        </div>
+
+        {!evidence ? (
+          <div style={{ padding: '20px', background: colors.bg, borderRadius: radius.md, fontSize: '13px', color: colors.text2, lineHeight: 1.6, marginBottom: '20px' }}>
+            {fallback}
+            <div style={{ marginTop: '14px' }}>
+              <Button variant="primary" icon={<Icons.IconSparkle size={14} color="#fff" />} onClick={() => toast.success('Nexora is assembling evidence…')}>
+                Assemble evidence
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Win probability card */}
+            <div style={{ padding: '18px', background: colors.bg, borderRadius: radius.md, marginBottom: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '12px', marginBottom: '8px' }}>
+                <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>Win probability</div>
+                <div style={{ fontSize: '11px', color: colors.text3, fontFamily: typography.family.mono }}>Submit by {evidence.submitBy}</div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '10px' }}>
+                <div style={{
+                  fontSize: '40px', fontWeight: 600, letterSpacing: '-0.03em', lineHeight: 1, fontFamily: typography.family.mono,
+                  color: evidence.winProbability >= 60 ? colors.teal : evidence.winProbability >= 40 ? colors.ink : colors.text2,
+                }}>{evidence.winProbability}</div>
+                <div style={{ fontSize: '14px', color: colors.text3 }}>%</div>
+              </div>
+              <div style={{ height: '4px', background: 'rgba(26,26,26,0.08)', borderRadius: '2px', overflow: 'hidden', marginBottom: '10px' }}>
+                <div style={{
+                  width: `${evidence.winProbability}%`, height: '100%',
+                  background: evidence.winProbability >= 60 ? colors.teal : evidence.winProbability >= 40 ? colors.ink : colors.text2,
+                  borderRadius: '2px',
+                }} />
+              </div>
+              <div style={{ fontSize: '12px', color: colors.text2, lineHeight: 1.5 }}>{evidence.winProbabilityNote}</div>
+              {evidence.recommendation && (
+                <div style={{ marginTop: '12px', padding: '10px 12px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.sm, fontSize: '12px', color: colors.ink, lineHeight: 1.55 }}>
+                  <span style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, display: 'block', marginBottom: '4px' }}>Nexora's recommendation</span>
+                  {evidence.recommendation}
+                </div>
+              )}
+            </div>
+
+            {/* Evidence items */}
+            {evidence.items.length > 0 && (
+              <>
+                <Kicker style={{ marginBottom: '12px' }}>Evidence package · {evidence.items.length} items</Kicker>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
+                  {evidence.items.map((item: any, i: number) => {
+                    const Icon = iconMap[item.icon] || Icons.IconShield;
+                    return (
+                      <div key={i} style={{
+                        display: 'flex', alignItems: 'flex-start', gap: '12px',
+                        padding: '12px 14px',
+                        background: item.attached ? colors.bg : colors.card,
+                        border: `0.5px solid ${item.attached ? colors.border : colors.borderHover}`,
+                        borderStyle: item.attached ? 'solid' : 'dashed',
+                        borderRadius: radius.md,
+                      }}>
+                        <div style={{
+                          width: '28px', height: '28px', borderRadius: radius.sm,
+                          background: item.attached ? colors.card : 'transparent',
+                          border: item.attached ? `0.5px solid ${colors.border}` : `0.5px dashed ${colors.borderHover}`,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                        }}>
+                          <Icon size={14} color={item.attached ? colors.ink : colors.text3} />
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: '13px', color: colors.ink, fontWeight: 500, marginBottom: '2px' }}>{item.label}</div>
+                          <div style={{ fontSize: '11px', color: colors.text2, lineHeight: 1.5 }}>{item.sub}</div>
+                          <div style={{ fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono, marginTop: '4px' }}>
+                            source · {item.source}
+                          </div>
+                        </div>
+                        <div style={{ flexShrink: 0 }}>
+                          {item.attached ? (
+                            <Pill tone="teal">✓ attached</Pill>
+                          ) : (
+                            <Button variant="secondary" size="sm" onClick={() => toast.success(`Fetching ${item.label}…`)}>
+                              {item.action || 'Fetch'}
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+
+            {/* Narrative draft */}
+            <Kicker style={{ marginBottom: '10px' }}>Cover narrative · draft</Kicker>
+            <div style={{ padding: '14px 16px', background: colors.bg, borderRadius: radius.md, marginBottom: '20px', fontSize: '12px', color: colors.ink, lineHeight: 1.7, fontStyle: 'italic' }}>
+              "{evidence.narrativeDraft}"
+            </div>
+
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {evidence.winProbability >= 20 ? (
+                <Button variant="primary" icon={<Icons.IconSend size={14} />} onClick={() => toast.success(`Evidence submitted for ${dispute.id}`)}>
+                  Submit to card network
+                </Button>
+              ) : (
+                <Button variant="secondary" disabled>Already submitted</Button>
+              )}
+              <Button variant="secondary" icon={<Icons.IconDownload size={14} />} onClick={() => toast.success('Draft downloaded as PDF')}>
+                Download draft PDF
+              </Button>
+              <Button variant="ghost" onClick={() => toast.success('Narrative copied')} icon={<Icons.IconCopy size={14} />}>
+                Copy narrative
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
   );
 }

@@ -1,0 +1,57 @@
+{
+  "kicker": "GST-aware",
+  "gstRates": [
+    { "rate": 0,  "label": "0% · Exempt" },
+    { "rate": 5,  "label": "5% · Essentials" },
+    { "rate": 12, "label": "12% · Standard" },
+    { "rate": 18, "label": "18% · Most services" },
+    { "rate": 28, "label": "28% · Luxury" }
+  ],
+  "hsnCodes": [
+    { "code": "998313", "label": "Management consultancy services",       "defaultRate": 18 },
+    { "code": "998314", "label": "IT design and development",              "defaultRate": 18 },
+    { "code": "998399", "label": "Other professional services",           "defaultRate": 18 },
+    { "code": "998596", "label": "Events, promotions, trade-show support", "defaultRate": 18 },
+    { "code": "998431", "label": "Digital content and subscriptions",      "defaultRate": 18 },
+    { "code": "996713", "label": "Couriers and shipping",                  "defaultRate": 18 },
+    { "code": "9983",   "label": "Support services (generic)",             "defaultRate": 18 }
+  ],
+  "validationRules": [
+    {
+      "id": "gstin_format",
+      "description": "GSTIN must be 15 alphanumeric characters following the state-PAN-entity format",
+      "pattern": "^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$",
+      "errorMessage": "GSTIN format looks off. Example: 29ABCDE1234F1Z5"
+    },
+    {
+      "id": "hsn_required",
+      "description": "Invoices ≥ ₹50,000 require an HSN code",
+      "threshold": 50000,
+      "errorMessage": "HSN code is required for invoices ≥ ₹50,000"
+    },
+    {
+      "id": "intrastate_vs_interstate",
+      "description": "If merchant and customer GSTIN state codes differ, use IGST. Otherwise CGST + SGST split 9/9.",
+      "errorMessage": "GST split needs adjustment based on buyer/seller state"
+    }
+  ],
+  "gstrPreview": {
+    "period": "April 2026",
+    "dueBy": "11 May 2026",
+    "summary": {
+      "totalInvoices": 142,
+      "taxableValue": "₹48,20,000",
+      "cgst": "₹3,85,600",
+      "sgst": "₹3,85,600",
+      "igst": "₹1,42,400",
+      "totalGst": "₹9,13,600"
+    },
+    "readiness": [
+      { "label": "All invoices have HSN codes", "status": "pass" },
+      { "label": "All customer GSTINs validated", "status": "pass" },
+      { "label": "Interstate/intrastate split correct", "status": "pass" },
+      { "label": "Credit notes linked to original invoices", "status": "warning", "detail": "1 credit note (CN-0042) not yet linked" },
+      { "label": "Reverse charge supplies identified", "status": "pass" }
+    ]
+  }
+}

@@ -184,14 +184,6 @@ function Header({ tenant, currency, setCurrency, currencyOpen, setCurrencyOpen, 
       </div>
 
       <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
-        <button onClick={() => setSearchOpen(true)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.pill, color: colors.text2, fontSize: '13px', cursor: 'pointer', minWidth: '260px', justifyContent: 'space-between', fontFamily: 'inherit' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Icons.IconSparkle size={14} color={colors.teal} />
-            Ask Nexora or search…
-          </span>
-          <span style={{ fontFamily: typography.family.mono, fontSize: '10px', color: colors.text3, padding: '2px 6px', border: `0.5px solid ${colors.border}`, borderRadius: '4px' }}>⌘K</span>
-        </button>
-
         <div style={{ position: 'relative' }}>
           <button onClick={() => setCurrencyOpen(!currencyOpen)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 12px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.pill, fontSize: '13px', fontWeight: 500, color: colors.ink, cursor: 'pointer', fontFamily: 'inherit' }}>
             <span style={{ fontFamily: typography.family.mono, fontSize: '11px', letterSpacing: '0.05em' }}>{currency}</span>

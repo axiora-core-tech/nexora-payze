@@ -1,0 +1,59 @@
+{
+  "kicker": "Test-mode parity",
+  "introline": "Every failure mode, every rail, every edge case — deterministic and replayable.",
+  "categories": [
+    {
+      "id": "routing",
+      "label": "Routing scenarios",
+      "scenarios": [
+        { "id": "happy",          "title": "Payment succeeds immediately",       "description": "Clean first-attempt success on Visa HDFC.",                               "trigger": "amount: 1000" },
+        { "id": "retry_upi",      "title": "Card declines → UPI fallback wins",  "description": "Simulate the classic routing save. 2.8s total latency.",                  "trigger": "amount: 7800" },
+        { "id": "retry_sepa",     "title": "ACH timeout → SEPA Instant fallback","description": "Cross-border fallback path with 6.1s total latency.",                    "trigger": "amount: 89000 · currency EUR" },
+        { "id": "all_declined",   "title": "All rails decline",                  "description": "Stolen card on a blocked BIN. Every fallback refuses.",                   "trigger": "amount: 42500 · card: 4000 0000 0000 0002" }
+      ]
+    },
+    {
+      "id": "decline",
+      "label": "Decline reasons",
+      "scenarios": [
+        { "id": "do_not_honor",   "title": "05 — do not honor",                 "description": "Bank rejects without reason. Most common decline in production.",         "trigger": "card: 4000 0000 0000 0069" },
+        { "id": "insufficient",   "title": "51 — insufficient funds",           "description": "Customer account balance too low.",                                      "trigger": "card: 4000 0000 0000 9995" },
+        { "id": "expired",        "title": "54 — expired card",                 "description": "Expiry date in the past.",                                              "trigger": "card: 4000 0000 0000 0069 · exp 12/23" },
+        { "id": "cvv_fail",       "title": "N7 — CVV check failure",            "description": "CVV mismatch. Returns without capture.",                                "trigger": "cvv: 999" }
+      ]
+    },
+    {
+      "id": "risk",
+      "label": "Risk scenarios",
+      "scenarios": [
+        { "id": "velocity",       "title": "Velocity anomaly",                  "description": "Simulate 4 attempts from one device in 2 minutes.",                       "trigger": "repeat: 4 · within: 120s" },
+        { "id": "enumeration",    "title": "Card enumeration",                  "description": "Different cards, same device, same BIN.",                                "trigger": "pattern: enumeration" },
+        { "id": "geo_block",      "title": "Geo restriction",                   "description": "IP from blocked region.",                                                "trigger": "ip: 77.88.99.100" },
+        { "id": "first_time_hi",  "title": "First-time high-value",             "description": "New customer (7-day account) attempting 3× average ticket.",            "trigger": "account_age: 7d · amount: 42500" }
+      ]
+    },
+    {
+      "id": "webhooks",
+      "label": "Webhook behavior",
+      "scenarios": [
+        { "id": "wh_succeeded",   "title": "payment.succeeded",                 "description": "Standard success event.",                                                "trigger": "event: payment.succeeded" },
+        { "id": "wh_routed",      "title": "payment.routed",                    "description": "Fired when routing fallback is used.",                                   "trigger": "event: payment.routed" },
+        { "id": "wh_retry",       "title": "Webhook retry cascade",             "description": "Your endpoint returns 500; we retry at 1m, 5m, 15m, 1h, 4h.",            "trigger": "endpoint: failing" },
+        { "id": "wh_sig",         "title": "Signature verification fail",       "description": "Webhook sent with intentionally wrong signature.",                       "trigger": "signature: invalid" }
+      ]
+    },
+    {
+      "id": "settlements",
+      "label": "Settlement scenarios",
+      "scenarios": [
+        { "id": "stl_ok",         "title": "Normal T+1 settlement",             "description": "Standard NEFT settlement, arrives 06:30 next day.",                      "trigger": "cadence: t+1" },
+        { "id": "stl_fail",       "title": "Settlement fails (IFSC mismatch)",  "description": "RTGS rejected by beneficiary bank. Triggers retry flow.",                "trigger": "beneficiary: invalid_ifsc" },
+        { "id": "stl_split",      "title": "Split settlement",                  "description": "Funds split across two accounts by pre-configured rule.",                "trigger": "split: 70/30" }
+      ]
+    }
+  ],
+  "replay": {
+    "hint": "Every scenario is deterministic. Same trigger = same response, every time.",
+    "docsLink": "https://docs.payze.com/testing"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "kicker": "Subscription Intelligence",
+  "summary": "Nexora has flagged 6 mandates at elevated churn risk. 3 are saveable with timely action.",
+  "intelligence": [
+    {
+      "label": "At-risk mandates, next 30 days",
+      "value": "6 of 1,842",
+      "sub": "based on engagement decay + payment-signal model",
+      "tone": "outline"
+    },
+    {
+      "label": "Predicted recoverable",
+      "value": "₹1,24,500/mo",
+      "sub": "3 of 6 flagged accounts have retention pattern match",
+      "tone": "teal"
+    },
+    {
+      "label": "Mandate refresh due",
+      "value": "14 mandates",
+      "sub": "expiring in 14 days · 11 have valid fallback",
+      "tone": "ink"
+    },
+    {
+      "label": "Involuntary churn rate",
+      "value": "1.4%",
+      "sub": "below platform avg (2.8%) · mandate health strong",
+      "tone": "teal"
+    }
+  ],
+  "subscriptionRisk": {
+    "sub_479d": {
+      "risk": "high",
+      "churnProbability": 87,
+      "reason": "Payment paused 19 days ago. Typical recovery window is 14 days — we're past it.",
+      "signals": [
+        "App engagement dropped 72% in 30 days prior to pause",
+        "Support ticket filed 22 days ago · unresolved to customer's satisfaction",
+        "Plan is 'Starter' — lowest stickiness tier"
+      ],
+      "action": "Offer 20% off next 3 months with an annual upgrade path. Customers matching this signal pattern accept this offer 41% of the time.",
+      "template": "retention_offer_starter"
+    },
+    "sub_469n": {
+      "risk": "medium",
+      "churnProbability": 54,
+      "reason": "Paused 3 weeks ago. Cinema engagement historically predictive — ticket bookings down 60%.",
+      "signals": [
+        "Event attendance dropped from 2.1/mo to 0.3/mo",
+        "Last event watched was low-engagement horror title",
+        "Similar customers paused within 90 days of resumption 48% of the time"
+      ],
+      "action": "Send curated picks for their genre preference (thriller + drama). Retention acceptance for this cohort: 38%.",
+      "template": "content_curation_bookmyshow"
+    },
+    "sub_473j": {
+      "risk": "low",
+      "churnProbability": 18,
+      "reason": "31 successful collections — strongest loyalty signal. Churn risk is normal background only.",
+      "signals": [
+        "Consistent monthly usage since day 1",
+        "Never missed a payment"
+      ],
+      "action": "No action required. Consider upsell to Scale in Q3.",
+      "template": null
+    }
+  },
+  "mandateRefresh": [
+    { "sub": "sub_470m", "customer": "Farah Khan", "expires": "02 May", "fallback": true, "action": "Auto-refresh will attempt 01 May" },
+    { "sub": "sub_468o", "customer": "Digital Ventures", "expires": "01 May", "fallback": true, "action": "Auto-refresh scheduled" },
+    { "sub": "sub_476g", "customer": "Studio Lumière", "expires": "01 May", "fallback": false, "action": "Manual outreach recommended — no fallback payment method" }
+  ]
+}
