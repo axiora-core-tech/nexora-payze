@@ -1,0 +1,23 @@
+{
+  "header": {
+    "kicker": "Checkout",
+    "title": "Pay",
+    "subtitle": "Branded checkout for your merchants. This is what customers see."
+  },
+  "checkout": {
+    "amount": 1200,
+    "recipient": "Acme Corporation",
+    "reference": "Invoice INV-0228"
+  },
+  "fxToInr": { "INR": 1, "USD": 83.2, "EUR": 90.4, "GBP": 105.8, "AED": 22.65 },
+  "methods": [
+    { "id": "upi", "label": "UPI", "sub": "GPay, PhonePe, Paytm", "icon": "IconQR" },
+    { "id": "card", "label": "Credit or debit card", "sub": "Visa, Mastercard, Amex, RuPay", "icon": "IconSettlements" },
+    { "id": "netbanking", "label": "Net banking", "sub": "All major Indian banks", "icon": "IconGlobe" },
+    { "id": "wallet", "label": "Wallet", "sub": "Amazon Pay, Mobikwik, Freecharge", "icon": "IconLink" },
+    { "id": "sepa", "label": "SEPA / international", "sub": "For EU & global customers", "icon": "IconRoute" },
+    { "id": "emi", "label": "Pay in EMI", "sub": "3, 6, 9, 12 months", "icon": "IconRecurring" }
+  ],
+  "banks": ["HDFC", "ICICI", "SBI", "Axis", "Kotak", "Yes Bank", "IndusInd", "Other"],
+  "wallets": ["Amazon Pay", "Mobikwik", "Freecharge", "JioMoney", "Ola Money", "Airtel Money"]
+}

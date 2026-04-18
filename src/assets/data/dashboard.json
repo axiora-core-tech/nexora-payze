@@ -1,0 +1,52 @@
+{
+  "header": {
+    "kicker": "Overview",
+    "title": "Today",
+    "subtitle": "Thursday, 17 April · 14:47 IST"
+  },
+  "balance": {
+    "label": "Available platform balance",
+    "amount": "8,42,16,950",
+    "currency": "₹",
+    "accentDigits": "950",
+    "supportingStats": [
+      { "label": "Settling today", "value": "₹64,80,200" },
+      { "label": "In transit", "value": "₹18,42,100" },
+      { "label": "Active merchants", "value": "47", "extra": "+3 this week" },
+      { "label": "Today vs yesterday", "value": "↗ +3.2%", "extraMuted": "(₹26.4L)" }
+    ],
+    "trendBars": [42, 55, 48, 65, 52, 70, 58, 78, 65, 82, 88, 75, 92, 100],
+    "trendLabel": "Balance, last 14 days",
+    "trendChange": "+18.4%",
+    "trendRange": "2w"
+  },
+  "activity": [
+    { "time": "14:47", "sec": ":12", "merchant": "Zomato Foods", "desc": "payment via UPI after card retry", "sub": "Customer: Priya Venkataraman · Succeeded in 3.8s", "amount": "+ ₹7,800", "tone": "teal", "tag": "routed" },
+    { "time": "14:45", "sec": ":33", "merchant": "Razorpay Technologies", "desc": "invoice paid", "sub": "INV-0228 · Visa · HDFC · Auth in 1.2s", "amount": "+ ₹18,200", "tone": "neutral", "tag": null },
+    { "time": "14:42", "sec": ":07", "merchant": "Cred Club", "desc": "declined at bank", "sub": "First-time buyer · velocity flag · will not retry", "amount": "₹42,500", "tone": "blocked", "tag": "blocked" },
+    { "time": "14:41", "sec": ":19", "merchant": "Nykaa Beauty", "desc": "SEPA routed after ACH timeout", "sub": "International customer · Amélie Dubois Paris · 6.1s", "amount": "+ €1,890", "tone": "teal", "tag": "routed" },
+    { "time": "14:38", "sec": ":56", "merchant": "Zomato Foods", "desc": "quarterly mandate collected", "sub": "UPI Autopay · Rohan Shankar · renewal cycle", "amount": "+ ₹4,500", "tone": "neutral", "tag": null },
+    { "time": "14:35", "sec": ":44", "merchant": "Urban Company", "desc": "direct debit settled", "sub": "Kavya Rao · NetBanking · HDFC", "amount": "+ ₹22,400", "tone": "neutral", "tag": null },
+    { "time": "14:32", "sec": ":11", "merchant": "BookMyShow", "desc": "event ticket purchase", "sub": "Rajiv Mehta · UPI · PayTM", "amount": "+ ₹1,12,000", "tone": "neutral", "tag": null },
+    { "time": "14:29", "sec": ":02", "merchant": "MakeMyTrip", "desc": "international card accepted", "sub": "Emma Dawson (NYC) · Amex ending 1001 · USD 320", "amount": "+ ₹26,624", "tone": "neutral", "tag": null }
+  ],
+  "acceptance": [
+    { "name": "UPI", "rate": 97.1 },
+    { "name": "Cards — Visa/Mastercard", "rate": 91.3 },
+    { "name": "NetBanking", "rate": 88.7 },
+    { "name": "Wallets", "rate": 94.5 },
+    { "name": "International — SEPA/ACH", "rate": 82.4 }
+  ],
+  "routing": {
+    "amount": "3,48,200",
+    "payments": "142 payments",
+    "median": "4.2s"
+  },
+  "topMerchants": [
+    { "initial": "Z", "name": "Zomato", "gmv": "₹12.4L", "change": "+8.4%", "up": true, "path": "M 0 20 L 15 18 L 30 15 L 45 16 L 60 10 L 75 8 L 90 4 L 100 3" },
+    { "initial": "R", "name": "Razorpay", "gmv": "₹9.8L", "change": "+4.1%", "up": true, "path": "M 0 15 L 15 12 L 30 18 L 45 14 L 60 8 L 75 12 L 90 6 L 100 5" },
+    { "initial": "N", "name": "Nykaa", "gmv": "₹6.2L", "change": "−1.8%", "up": false, "path": "M 0 10 L 15 14 L 30 11 L 45 17 L 60 14 L 75 19 L 90 15 L 100 18" },
+    { "initial": "C", "name": "Cred", "gmv": "₹4.1L", "change": "+12.3%", "up": true, "path": "M 0 18 L 15 16 L 30 14 L 45 12 L 60 10 L 75 9 L 90 8 L 100 7" },
+    { "initial": "U", "name": "Urban Co.", "gmv": "₹3.7L", "change": "+0.4%", "up": false, "path": "M 0 12 L 15 13 L 30 10 L 45 11 L 60 9 L 75 11 L 90 8 L 100 10" }
+  ]
+}

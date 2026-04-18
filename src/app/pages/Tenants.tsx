@@ -1,20 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { colors, radius, typography } from '../../design/tokens';
-import { Card, Kicker, Button, Pill, PageLoader } from '../../design/primitives';
+import { Card, Kicker, Button, Pill, PageLoader, ErrorState } from '../../design/primitives';
 import * as Icons from '../../design/icons';
-import { tenantService, Tenant } from '../../services';
+import { useAsync } from '../../hooks/useAsync';
+import { tenantService, configService, Tenant } from '../../services';
 import { toast } from 'sonner';
 
 export function Tenants() {
   const [tenants, setTenants] = useState<Tenant[] | null>(null);
+  const [tenantsError, setTenantsError] = useState<string | null>(null);
+  const { data: cfg, loading: cfgLoading, error: cfgError, refetch } = useAsync(() => configService.getTenantsPage(), []);
   const [query, setQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'Active' | 'Pending' | 'Suspended'>('all');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
   const navigate = useNavigate();
 
-  useEffect(() => { tenantService.list().then(setTenants); }, []);
+  useEffect(() => {
+    tenantService.list().then(setTenants).catch(e => setTenantsError(e.message));
+  }, []);
 
-  if (!tenants) return <PageLoader label="Loading tenants" />;
+  if (cfgError || tenantsError) return <ErrorState message={`Couldn't load tenants — ${cfgError?.message || tenantsError}`} onRetry={refetch} />;
+  if (cfgLoading || !cfg || !tenants) return <PageLoader label="Loading tenants" />;
+
+  const { header, statusFilters } = cfg;
 
   const filtered = tenants.filter(t => {
     if (query && !(t.name.toLowerCase().includes(query.toLowerCase()) || t.slug.includes(query.toLowerCase()))) return false;
@@ -27,14 +35,16 @@ export function Tenants() {
     toast.success('Workspace URL copied');
   };
 
+  const totalGmv = tenants.reduce((a, t) => a + t.gmv30d, 0);
+
   return (
     <div style={{ animation: 'payze-fadein 0.4s ease-out' }}>
       <div style={{ marginBottom: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '16px', flexWrap: 'wrap' }}>
         <div>
-          <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>Clients</Kicker>
-          <div style={{ ...typography.pageTitle, color: colors.ink }}>Tenants</div>
+          <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>{header.kicker}</Kicker>
+          <div style={{ ...typography.pageTitle, color: colors.ink }}>{header.title}</div>
           <div style={{ fontSize: '13px', color: colors.text2, marginTop: '2px' }}>
-            {tenants.length} merchant workspaces on the platform.
+            {header.subtitleTemplate.replace('{count}', String(tenants.length))}
           </div>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
@@ -48,8 +58,8 @@ export function Tenants() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '20px' }}>
         <StatCard label="Total merchants" value={tenants.length.toString()} sub="on the platform" />
         <StatCard label="Active" value={tenants.filter(t => t.status === 'Active').length.toString()} sub="processing live" />
-        <StatCard label="Platform GMV, 30d" value={`₹${(tenants.reduce((a, t) => a + t.gmv30d, 0) / 1_00_000).toFixed(1)} L`} sub="combined" />
-        <StatCard label="Avg per merchant" value={`₹${Math.round(tenants.reduce((a, t) => a + t.gmv30d, 0) / tenants.length / 1000)}k`} sub="monthly" />
+        <StatCard label="Platform GMV, 30d" value={`₹${(totalGmv / 1_00_000).toFixed(1)} L`} sub="combined" />
+        <StatCard label="Avg per merchant" value={`₹${Math.round(totalGmv / tenants.length / 1000)}k`} sub="monthly" />
       </div>
 
       <Card padded={false}>
@@ -59,8 +69,8 @@ export function Tenants() {
             <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search merchant name or slug…" style={{ background: colors.bg, border: `0.5px solid ${colors.border}`, borderRadius: radius.pill, padding: '8px 14px 8px 36px', fontSize: '12px', width: '320px', outline: 'none', color: colors.ink, fontFamily: 'inherit' }} />
           </div>
           <div style={{ display: 'flex', gap: '4px', background: colors.bg, padding: '4px', borderRadius: radius.pill }}>
-            {['all', 'Active', 'Pending', 'Suspended'].map(s => (
-              <button key={s} onClick={() => setStatusFilter(s as any)} style={{
+            {statusFilters.map((s: string) => (
+              <button key={s} onClick={() => setStatusFilter(s)} style={{
                 padding: '6px 12px', borderRadius: radius.pill, fontSize: '11px', fontWeight: 500,
                 background: statusFilter === s ? colors.card : 'transparent',
                 color: statusFilter === s ? colors.ink : colors.text2,

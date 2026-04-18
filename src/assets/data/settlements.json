@@ -1,0 +1,37 @@
+{
+  "header": {
+    "kicker": "Settlement",
+    "title": "Settlements",
+    "subtitle": "Batches settled to merchant bank accounts."
+  },
+  "stats": [
+    { "label": "Settled today", "value": "₹64,80,200", "sub": "142 batches" },
+    { "label": "Settling now", "value": "₹8,45,200", "sub": "expected 18:00" },
+    { "label": "Pending", "value": "₹18,500", "sub": "tomorrow 06:30" },
+    { "label": "Total, month", "value": "₹18.4 Cr", "sub": "across 47 merchants" }
+  ],
+  "statusFilters": ["all", "settled", "settling", "pending", "failed"],
+  "dateRanges": [
+    { "value": "7d", "label": "Last 7 days" },
+    { "value": "30d", "label": "Last 30 days" },
+    { "value": "90d", "label": "Last 90 days" },
+    { "value": "custom", "label": "Custom…" }
+  ],
+  "batches": [
+    { "id": "STL-9824", "merchant": "Zomato Foods", "amount": "₹45,20,000", "method": "NEFT", "status": "Settled", "arrived": "Today 06:30", "count": 1284, "account": "HDFC ••4821", "utr": "HDFC25109824", "fee": "₹18,240", "tax": "₹3,283" },
+    { "id": "STL-9823", "merchant": "Razorpay Technologies", "amount": "₹1,12,40,000", "method": "RTGS", "status": "Settled", "arrived": "Today 05:45", "count": 3891, "account": "ICICI ••2938", "utr": "ICIC25109823", "fee": "₹44,960", "tax": "₹8,093" },
+    { "id": "STL-9822", "merchant": "Nykaa Beauty", "amount": "₹8,45,200", "method": "NEFT", "status": "Settling", "arrived": "Expected 18:00", "count": 412, "account": "HDFC ••1028", "utr": "Pending", "fee": "₹3,381", "tax": "₹609" },
+    { "id": "STL-9821", "merchant": "Cred Club", "amount": "₹18,500", "method": "NEFT", "status": "Pending", "arrived": "Tomorrow 06:30", "count": 48, "account": "Kotak ••7392", "utr": "Pending", "fee": "₹74", "tax": "₹13" },
+    { "id": "STL-9820", "merchant": "Urban Company", "amount": "₹22,40,000", "method": "RTGS", "status": "Settled", "arrived": "Yesterday 08:15", "count": 672, "account": "Axis ••3820", "utr": "UTIB25089820", "fee": "₹8,960", "tax": "₹1,613" },
+    { "id": "STL-9819", "merchant": "BookMyShow", "amount": "₹12,00,000", "method": "RTGS", "status": "Settled", "arrived": "Yesterday 06:30", "count": 528, "account": "ICICI ••9021", "utr": "ICIC25089819", "fee": "₹4,800", "tax": "₹864" },
+    { "id": "STL-9818", "merchant": "MakeMyTrip", "amount": "₹34,80,000", "method": "RTGS", "status": "Failed", "arrived": "Retry scheduled", "count": 912, "account": "SBI ••4430", "utr": "Pending", "fee": "—", "tax": "—" },
+    { "id": "STL-9817", "merchant": "Zomato Foods", "amount": "₹38,40,200", "method": "NEFT", "status": "Settled", "arrived": "15 Apr 06:30", "count": 1098, "account": "HDFC ••4821", "utr": "HDFC25079817", "fee": "₹15,361", "tax": "₹2,765" },
+    { "id": "STL-9816", "merchant": "Cred Club", "amount": "₹14,20,000", "method": "NEFT", "status": "Settled", "arrived": "14 Apr 06:30", "count": 372, "account": "Kotak ••7392", "utr": "KKBK25069816", "fee": "₹5,680", "tax": "₹1,022" },
+    { "id": "STL-9815", "merchant": "Nykaa Beauty", "amount": "₹9,80,400", "method": "NEFT", "status": "Settled", "arrived": "13 Apr 06:30", "count": 448, "account": "HDFC ••1028", "utr": "HDFC25059815", "fee": "₹3,922", "tax": "₹706" },
+    { "id": "STL-9814", "merchant": "Urban Company", "amount": "₹18,60,000", "method": "RTGS", "status": "Settled", "arrived": "12 Apr 07:45", "count": 589, "account": "Axis ••3820", "utr": "UTIB25049814", "fee": "₹7,440", "tax": "₹1,339" },
+    { "id": "STL-9813", "merchant": "BookMyShow", "amount": "₹8,90,500", "method": "RTGS", "status": "Settled", "arrived": "11 Apr 06:30", "count": 421, "account": "ICICI ••9021", "utr": "ICIC25039813", "fee": "₹3,562", "tax": "₹641" },
+    { "id": "STL-9812", "merchant": "MakeMyTrip", "amount": "₹42,30,000", "method": "RTGS", "status": "Settled", "arrived": "10 Apr 08:15", "count": 1245, "account": "SBI ••4430", "utr": "SBIN25029812", "fee": "₹16,920", "tax": "₹3,046" },
+    { "id": "STL-9811", "merchant": "Razorpay Technologies", "amount": "₹98,50,000", "method": "RTGS", "status": "Settled", "arrived": "09 Apr 05:45", "count": 3124, "account": "ICICI ••2938", "utr": "ICIC25019811", "fee": "₹39,400", "tax": "₹7,092" },
+    { "id": "STL-9810", "merchant": "Zomato Foods", "amount": "₹41,00,000", "method": "NEFT", "status": "Settled", "arrived": "08 Apr 06:30", "count": 1178, "account": "HDFC ••4821", "utr": "HDFC24319810", "fee": "₹16,400", "tax": "₹2,952" }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "header": {
+    "kicker": "Onboarding",
+    "title": "Let's get this merchant live",
+    "subtitle": "Six steps, ~8 minutes. Everything can be edited later."
+  },
+  "steps": [
+    { "id": "business", "label": "Business" },
+    { "id": "kyc", "label": "Identity & KYC" },
+    { "id": "banking", "label": "Banking" },
+    { "id": "webhooks", "label": "Webhooks" },
+    { "id": "branding", "label": "Branding" },
+    { "id": "review", "label": "Review & activate" }
+  ],
+  "colors": ["#1C6F6B", "#1A1A1A", "#8B5CF6", "#F59E0B", "#EF4444", "#3B82F6", "#14B8A6", "#F97316"],
+  "businessTypes": ["Private Limited", "LLP", "Proprietorship", "Partnership"],
+  "industries": ["SaaS", "E-commerce", "FinTech", "Travel", "Creative", "Food & Delivery", "Beauty & E-commerce", "Services", "Entertainment", "Other"],
+  "settlementCadences": ["T+1 (next business day)", "T+2", "Weekly", "Monthly"],
+  "plans": [
+    { "id": "Starter", "label": "Starter", "price": "₹499/mo" },
+    { "id": "Growth", "label": "Growth", "price": "₹2,499/mo" },
+    { "id": "Scale", "label": "Scale", "price": "₹9,999/mo" }
+  ],
+  "webhookEvents": [
+    { "id": "payment.succeeded", "defaultOn": true },
+    { "id": "payment.failed", "defaultOn": true },
+    { "id": "payment.routed", "defaultOn": true },
+    { "id": "settlement.completed", "defaultOn": true },
+    { "id": "dispute.created", "defaultOn": true },
+    { "id": "subscription.charged", "defaultOn": false }
+  ]
+}

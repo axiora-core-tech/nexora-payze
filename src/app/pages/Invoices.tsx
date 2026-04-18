@@ -1,46 +1,34 @@
 import React, { useState } from 'react';
 import { colors, radius, typography } from '../../design/tokens';
-import { Card, Kicker, Button, Pill } from '../../design/primitives';
+import { Card, Kicker, Button, Pill, PageLoader, ErrorState } from '../../design/primitives';
 import * as Icons from '../../design/icons';
 import { toast } from 'sonner';
+import { useAsync } from '../../hooks/useAsync';
+import { configService } from '../../services';
 
-type Invoice = {
-  id: string;
-  merchant: string;
-  customer: string;
-  email: string;
-  amount: string;
-  due: string;
-  issued: string;
-  status: 'Paid' | 'Sent' | 'Overdue' | 'Draft' | 'Cancelled';
-  items: { desc: string; qty: number; price: number }[];
+const iconMap: Record<string, any> = {
+  IconEye: Icons.IconEye, IconDownload: Icons.IconDownload, IconMail: Icons.IconMail,
+  IconCopy: Icons.IconCopy, IconPlus: Icons.IconPlus, IconX: Icons.IconX,
 };
 
-const initialInvoices: Invoice[] = [
-  { id: 'INV-0228', merchant: 'Razorpay Technologies', customer: 'Studio Lumière', email: 'finance@lumiere.studio', amount: '₹18,200', due: '17 Apr', issued: '10 Apr', status: 'Paid',
-    items: [{ desc: 'Integration support · 14 hours', qty: 14, price: 1300 }] },
-  { id: 'INV-0227', merchant: 'Zomato Foods', customer: 'Techcorp Mumbai', email: 'ap@techcorp.in', amount: '₹1,12,000', due: '20 Apr', issued: '06 Apr', status: 'Sent',
-    items: [{ desc: 'Corporate meals · Q2', qty: 1, price: 112000 }] },
-  { id: 'INV-0226', merchant: 'Nykaa Beauty', customer: 'Brand X', email: 'billing@brandx.com', amount: '$4,800', due: '15 Apr', issued: '01 Apr', status: 'Overdue',
-    items: [{ desc: 'Brand partnership · March', qty: 1, price: 4800 }] },
-  { id: 'INV-0225', merchant: 'Cred Club', customer: 'Startup Pro', email: 'accounts@startup.pro', amount: '₹54,000', due: '22 Apr', issued: '17 Apr', status: 'Draft',
-    items: [{ desc: 'Premium membership · 12mo', qty: 1, price: 54000 }] },
-  { id: 'INV-0224', merchant: 'Urban Company', customer: 'ENT Partners', email: 'billing@ent.partners', amount: '₹8,45,200', due: '10 Apr', issued: '03 Apr', status: 'Paid',
-    items: [{ desc: 'Service retainer · Q2', qty: 1, price: 845200 }] },
-];
-
 export function Invoices() {
+  const { data, loading, error, refetch } = useAsync(() => configService.getInvoices(), []);
   const [showBuilder, setShowBuilder] = useState(false);
-  const [viewing, setViewing] = useState<Invoice | null>(null);
+  const [viewing, setViewing] = useState<any>(null);
   const [actionsFor, setActionsFor] = useState<string | null>(null);
+
+  if (error) return <ErrorState message={`Couldn't load invoices — ${error.message}`} onRetry={refetch} />;
+  if (loading || !data) return <PageLoader label="Loading invoices" />;
+
+  const { header, stats, rowActions, invoices } = data;
 
   return (
     <div style={{ animation: 'payze-fadein 0.4s ease-out' }}>
       <div style={{ marginBottom: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '16px', flexWrap: 'wrap' }}>
         <div>
-          <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>Invoicing</Kicker>
-          <div style={{ ...typography.pageTitle, color: colors.ink }}>Invoices</div>
-          <div style={{ fontSize: '13px', color: colors.text2, marginTop: '2px' }}>Documents issued, sent, and collected.</div>
+          <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>{header.kicker}</Kicker>
+          <div style={{ ...typography.pageTitle, color: colors.ink }}>{header.title}</div>
+          <div style={{ fontSize: '13px', color: colors.text2, marginTop: '2px' }}>{header.subtitle}</div>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
           <Button variant="secondary" icon={<Icons.IconDownload size={14} />} onClick={() => toast.success('Exporting as CSV')}>Export</Button>
@@ -49,26 +37,18 @@ export function Invoices() {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '20px' }}>
-        <StatCard label="Outstanding" value="₹12.40 L" sub="8 invoices" />
-        <StatCard label="Paid this month" value="₹4.82 Cr" sub="142 invoices" />
-        <StatCard label="Overdue" value="₹85,400" sub="2 invoices" />
-        <StatCard label="Avg days to pay" value="8.4 days" sub="down from 11.2" />
+        {stats.map((s: any) => <StatCard key={s.label} {...s} />)}
       </div>
 
       <Card padded={false}>
         <div style={{ padding: '12px 24px', display: 'grid', gridTemplateColumns: '0.9fr 1.5fr 1fr 0.9fr 0.8fr 0.4fr', gap: '16px', background: colors.bg, fontSize: '10px', fontWeight: 500, color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-          <div>Number</div>
-          <div>Merchant · Customer</div>
-          <div>Amount</div>
-          <div>Due</div>
-          <div>Status</div>
-          <div></div>
+          <div>Number</div><div>Merchant · Customer</div><div>Amount</div><div>Due</div><div>Status</div><div></div>
         </div>
-        {initialInvoices.map((inv, i) => (
+        {invoices.map((inv: any, i: number) => (
           <div key={inv.id} style={{
             display: 'grid', gridTemplateColumns: '0.9fr 1.5fr 1fr 0.9fr 0.8fr 0.4fr', gap: '16px',
             padding: '16px 24px',
-            borderBottom: i < initialInvoices.length - 1 ? `0.5px solid ${colors.border}` : 'none',
+            borderBottom: i < invoices.length - 1 ? `0.5px solid ${colors.border}` : 'none',
             alignItems: 'center', fontSize: '13px', cursor: 'pointer',
           }} onClick={() => setViewing(inv)}>
             <div style={{ fontFamily: typography.family.mono, fontSize: '11px', color: colors.text2 }}>{inv.id}</div>
@@ -78,9 +58,7 @@ export function Invoices() {
             </div>
             <div style={{ color: colors.ink, fontWeight: 600 }}>{inv.amount}</div>
             <div style={{ color: colors.text2 }}>{inv.due}</div>
-            <div>
-              <Pill tone={inv.status === 'Paid' ? 'teal' : inv.status === 'Overdue' ? 'outline' : 'neutral'}>{inv.status}</Pill>
-            </div>
+            <div><Pill tone={inv.status === 'Paid' ? 'teal' : inv.status === 'Overdue' ? 'outline' : 'neutral'}>{inv.status}</Pill></div>
             <div style={{ textAlign: 'right', position: 'relative' }} onClick={e => e.stopPropagation()}>
               <button onClick={() => setActionsFor(actionsFor === inv.id ? null : inv.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.text3, padding: '4px' }}>
                 <Icons.IconSettings size={14} />
@@ -89,23 +67,28 @@ export function Invoices() {
                 <>
                   <div onClick={() => setActionsFor(null)} style={{ position: 'fixed', inset: 0, zIndex: 40 }} />
                   <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '4px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.md, boxShadow: colors.shadowMd, minWidth: '180px', zIndex: 50, padding: '6px' }}>
-                    {[
-                      { label: 'Preview', icon: Icons.IconEye, action: () => setViewing(inv) },
-                      { label: 'Download PDF', icon: Icons.IconDownload, action: () => toast.success(`Downloading ${inv.id}.pdf`) },
-                      { label: 'Send reminder', icon: Icons.IconMail, action: () => toast.success('Reminder sent') },
-                      { label: 'Copy pay link', icon: Icons.IconCopy, action: () => { navigator.clipboard.writeText(`https://payze.link/${inv.id}`); toast.success('Link copied'); } },
-                      { label: 'Duplicate', icon: Icons.IconPlus, action: () => toast.success('Invoice duplicated') },
-                      { label: 'Cancel', icon: Icons.IconX, action: () => toast.success('Invoice cancelled') },
-                    ].map(a => (
-                      <button key={a.label} onClick={() => { a.action(); setActionsFor(null); }} style={{
-                        display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '8px',
-                        background: 'transparent', border: 'none', borderRadius: radius.sm,
-                        fontSize: '12px', color: colors.ink, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
-                      }}>
-                        <a.icon size={12} color={colors.text2} />
-                        {a.label}
-                      </button>
-                    ))}
+                    {rowActions.map((a: any) => {
+                      const IconComp = iconMap[a.icon] || Icons.IconSettings;
+                      const handler = () => {
+                        if (a.kind === 'preview') setViewing(inv);
+                        else if (a.kind === 'download') toast.success(`Downloading ${inv.id}.pdf`);
+                        else if (a.kind === 'remind') toast.success('Reminder sent');
+                        else if (a.kind === 'copy') { navigator.clipboard.writeText(`https://payze.link/${inv.id}`); toast.success('Link copied'); }
+                        else if (a.kind === 'dup') toast.success('Invoice duplicated');
+                        else if (a.kind === 'cancel') toast.success('Invoice cancelled');
+                        setActionsFor(null);
+                      };
+                      return (
+                        <button key={a.label} onClick={handler} style={{
+                          display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '8px',
+                          background: 'transparent', border: 'none', borderRadius: radius.sm,
+                          fontSize: '12px', color: colors.ink, cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
+                        }}>
+                          <IconComp size={12} color={colors.text2} />
+                          {a.label}
+                        </button>
+                      );
+                    })}
                   </div>
                 </>
               )}
@@ -143,9 +126,7 @@ function InvoiceBuilder({ onClose }: { onClose: () => void }) {
             <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>New invoice</Kicker>
             <div style={{ fontSize: '22px', fontWeight: 600, color: colors.ink, letterSpacing: '-0.015em' }}>Draft and send</div>
           </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.text2, padding: '4px' }}>
-            <Icons.IconX size={18} />
-          </button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.text2, padding: '4px' }}><Icons.IconX size={18} /></button>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '20px' }}>
@@ -200,8 +181,8 @@ function InvoiceBuilder({ onClose }: { onClose: () => void }) {
   );
 }
 
-function InvoicePreview({ invoice, onClose }: { invoice: Invoice; onClose: () => void }) {
-  const subtotal = invoice.items.reduce((sum, i) => sum + i.qty * i.price, 0);
+function InvoicePreview({ invoice, onClose }: { invoice: any; onClose: () => void }) {
+  const subtotal = invoice.items.reduce((sum: number, i: any) => sum + i.qty * i.price, 0);
   const gst = Math.round(subtotal * 0.18);
   const total = subtotal + gst;
 
@@ -217,9 +198,7 @@ function InvoicePreview({ invoice, onClose }: { invoice: Invoice; onClose: () =>
             <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>Invoice preview</Kicker>
             <div style={{ fontSize: '16px', fontWeight: 600, color: colors.ink, fontFamily: typography.family.mono }}>{invoice.id}</div>
           </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.text2, padding: '4px' }}>
-            <Icons.IconX size={18} />
-          </button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.text2, padding: '4px' }}><Icons.IconX size={18} /></button>
         </div>
 
         <div style={{ padding: '28px', background: colors.bg, borderRadius: radius.lg, marginBottom: '20px' }}>
@@ -253,11 +232,9 @@ function InvoicePreview({ invoice, onClose }: { invoice: Invoice; onClose: () =>
 
           <div style={{ borderTop: `0.5px solid ${colors.ink}`, paddingTop: '12px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 0.5fr 1fr', gap: '12px', fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '10px' }}>
-              <div>Description</div>
-              <div style={{ textAlign: 'right' }}>Qty</div>
-              <div style={{ textAlign: 'right' }}>Amount</div>
+              <div>Description</div><div style={{ textAlign: 'right' }}>Qty</div><div style={{ textAlign: 'right' }}>Amount</div>
             </div>
-            {invoice.items.map((item, i) => (
+            {invoice.items.map((item: any, i: number) => (
               <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 0.5fr 1fr', gap: '12px', padding: '10px 0', borderBottom: `0.5px solid ${colors.border}`, fontSize: '13px' }}>
                 <div style={{ color: colors.ink }}>{item.desc}</div>
                 <div style={{ textAlign: 'right', color: colors.text2, fontFamily: typography.family.mono }}>{item.qty}</div>
@@ -305,8 +282,6 @@ function StatCard({ label, value, sub }: any) {
 }
 
 const inputStyle: React.CSSProperties = {
-  width: '100%', padding: '10px 14px',
-  background: colors.card, border: `0.5px solid ${colors.border}`,
-  borderRadius: radius.sm, fontSize: '13px',
-  outline: 'none', color: colors.ink, fontFamily: 'inherit',
+  width: '100%', padding: '10px 14px', background: colors.card, border: `0.5px solid ${colors.border}`,
+  borderRadius: radius.sm, fontSize: '13px', outline: 'none', color: colors.ink, fontFamily: 'inherit',
 };

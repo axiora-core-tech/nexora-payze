@@ -1,0 +1,27 @@
+{
+  "header": {
+    "kicker": "Developer",
+    "title": "Build on Payze",
+    "subtitle": "API keys, webhooks, and sample code."
+  },
+  "envs": ["test", "live"],
+  "keys": [
+    { "label": "Publishable key", "value": "pk_test_4X29YJ7Kh3GbVzQ8Rp1mLwDs", "env": "test" },
+    { "label": "Secret key", "value": "sk_test_9Fh2LnG4PxV6Tk8Jd1Rm0QwB", "env": "test" },
+    { "label": "Publishable key", "value": "pk_live_7H4KjGp2NvT9Qs1Bx6Yr3WmL", "env": "live" },
+    { "label": "Secret key", "value": "sk_live_3Z9Np1Fg5Qr2Kx8Mc4Wt7Dh", "env": "live" }
+  ],
+  "webhooks": [
+    { "url": "https://api.acme.com/webhooks/payze", "events": 14, "health": "Healthy", "lastDelivery": "2m ago" },
+    { "url": "https://zomato.com/payze-ingest", "events": 8, "health": "Healthy", "lastDelivery": "4m ago" },
+    { "url": "https://cred.club/api/v2/payments", "events": 23, "health": "Failing", "lastDelivery": "1h ago" }
+  ],
+  "codeSample": "import Payze from '@payze/node';\n\nconst payze = new Payze('sk_live_...');\n\nconst payment = await payze.payments.create({\n  amount: 7800,\n  currency: 'INR',\n  method: 'auto',\n  customer: { email: 'priya@example.com' },\n  fallback: ['upi', 'netbanking', 'wallet'],\n  metadata: { order_id: 'ord_8374' }\n});\n\nconsole.log(payment.id, payment.status);",
+  "sdks": [
+    { "lang": "Node.js", "cmd": "npm install @payze/node" },
+    { "lang": "Python", "cmd": "pip install payze" },
+    { "lang": "Ruby", "cmd": "gem install payze" },
+    { "lang": "PHP", "cmd": "composer require payze/payze-php" },
+    { "lang": "Go", "cmd": "go get github.com/payze/payze-go" }
+  ]
+}

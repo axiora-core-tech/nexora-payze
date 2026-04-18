@@ -1,0 +1,43 @@
+{
+  "header": {
+    "kicker": "Invoicing",
+    "title": "Invoices",
+    "subtitle": "Documents issued, sent, and collected."
+  },
+  "stats": [
+    { "label": "Outstanding", "value": "₹12.40 L", "sub": "8 invoices" },
+    { "label": "Paid this month", "value": "₹4.82 Cr", "sub": "142 invoices" },
+    { "label": "Overdue", "value": "₹85,400", "sub": "2 invoices" },
+    { "label": "Avg days to pay", "value": "8.4 days", "sub": "down from 11.2" }
+  ],
+  "rowActions": [
+    { "label": "Preview", "icon": "IconEye", "kind": "preview" },
+    { "label": "Download PDF", "icon": "IconDownload", "kind": "download" },
+    { "label": "Send reminder", "icon": "IconMail", "kind": "remind" },
+    { "label": "Copy pay link", "icon": "IconCopy", "kind": "copy" },
+    { "label": "Duplicate", "icon": "IconPlus", "kind": "dup" },
+    { "label": "Cancel", "icon": "IconX", "kind": "cancel" }
+  ],
+  "invoices": [
+    { "id": "INV-0228", "merchant": "Razorpay Technologies", "customer": "Studio Lumière", "email": "finance@lumiere.studio", "amount": "₹18,200", "due": "17 Apr", "issued": "10 Apr", "status": "Paid",
+      "items": [{ "desc": "Integration support · 14 hours", "qty": 14, "price": 1300 }] },
+    { "id": "INV-0227", "merchant": "Zomato Foods", "customer": "Techcorp Mumbai", "email": "ap@techcorp.in", "amount": "₹1,12,000", "due": "20 Apr", "issued": "06 Apr", "status": "Sent",
+      "items": [{ "desc": "Corporate meals · Q2", "qty": 1, "price": 112000 }] },
+    { "id": "INV-0226", "merchant": "Nykaa Beauty", "customer": "Brand X", "email": "billing@brandx.com", "amount": "$4,800", "due": "15 Apr", "issued": "01 Apr", "status": "Overdue",
+      "items": [{ "desc": "Brand partnership · March", "qty": 1, "price": 4800 }] },
+    { "id": "INV-0225", "merchant": "Cred Club", "customer": "Startup Pro", "email": "accounts@startup.pro", "amount": "₹54,000", "due": "22 Apr", "issued": "17 Apr", "status": "Draft",
+      "items": [{ "desc": "Premium membership · 12mo", "qty": 1, "price": 54000 }] },
+    { "id": "INV-0224", "merchant": "Urban Company", "customer": "ENT Partners", "email": "billing@ent.partners", "amount": "₹8,45,200", "due": "10 Apr", "issued": "03 Apr", "status": "Paid",
+      "items": [{ "desc": "Service retainer · Q2", "qty": 1, "price": 845200 }] },
+    { "id": "INV-0223", "merchant": "BookMyShow", "customer": "Event Masters", "email": "pay@eventmasters.in", "amount": "₹3,20,000", "due": "25 Apr", "issued": "11 Apr", "status": "Sent",
+      "items": [{ "desc": "Ticketing platform license", "qty": 1, "price": 320000 }] },
+    { "id": "INV-0222", "merchant": "MakeMyTrip", "customer": "Global Corp", "email": "finance@globalcorp.com", "amount": "$12,400", "due": "30 Apr", "issued": "15 Apr", "status": "Sent",
+      "items": [{ "desc": "Corporate travel · March", "qty": 1, "price": 12400 }] },
+    { "id": "INV-0221", "merchant": "Zomato Foods", "customer": "Office Catering Ltd", "email": "ops@officecatering.in", "amount": "₹78,500", "due": "05 May", "issued": "17 Apr", "status": "Draft",
+      "items": [{ "desc": "Monthly catering contract", "qty": 1, "price": 78500 }] },
+    { "id": "INV-0220", "merchant": "Razorpay Technologies", "customer": "DevOps Inc", "email": "ap@devops.inc", "amount": "₹42,000", "due": "12 Apr", "issued": "28 Mar", "status": "Paid",
+      "items": [{ "desc": "API consulting · March", "qty": 1, "price": 42000 }] },
+    { "id": "INV-0219", "merchant": "Nykaa Beauty", "customer": "Retail Partners Co", "email": "ops@retailpartners.com", "amount": "₹1,85,000", "due": "18 Apr", "issued": "04 Apr", "status": "Overdue",
+      "items": [{ "desc": "Wholesale order", "qty": 1, "price": 185000 }] }
+  ]
+}

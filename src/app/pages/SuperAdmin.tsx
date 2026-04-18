@@ -1,29 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { colors, radius, typography } from '../../design/tokens';
-import { Card, Kicker, Button, Pill, PageLoader } from '../../design/primitives';
+import { Card, Kicker, Button, Pill, PageLoader, ErrorState } from '../../design/primitives';
 import * as Icons from '../../design/icons';
-import { tenantService, bookingService, Tenant, Booking } from '../../services';
+import { useAsync } from '../../hooks/useAsync';
+import { tenantService, bookingService, configService, Tenant, Booking } from '../../services';
 
 export function SuperAdmin() {
   const [tenants, setTenants] = useState<Tenant[] | null>(null);
   const [bookings, setBookings] = useState<Booking[] | null>(null);
+  const [dataError, setDataError] = useState<string | null>(null);
+  const { data: cfg, loading: cfgLoading, error: cfgError, refetch } = useAsync(() => configService.getSuperAdmin(), []);
   const navigate = useNavigate();
 
   useEffect(() => {
-    tenantService.list().then(setTenants);
-    bookingService.list().then(setBookings);
+    tenantService.list().then(setTenants).catch(e => setDataError(e.message));
+    bookingService.list().then(setBookings).catch(e => setDataError(e.message));
   }, []);
 
-  if (!tenants || !bookings) return <PageLoader label="Loading super admin" />;
+  if (cfgError || dataError) return <ErrorState message={`Couldn't load super admin — ${cfgError?.message || dataError}`} onRetry={refetch} />;
+  if (cfgLoading || !cfg || !tenants || !bookings) return <PageLoader label="Loading super admin" />;
+
+  const { header, stats } = cfg;
+  const statValues = [
+    { ...stats[0], value: tenants.length.toString() },
+    { ...stats[1], value: bookings.length.toString() },
+    stats[2],
+    stats[3],
+  ];
 
   return (
     <div style={{ animation: 'payze-fadein 0.4s ease-out' }}>
       <div style={{ marginBottom: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '16px', flexWrap: 'wrap' }}>
         <div>
-          <Kicker color={colors.amber} style={{ marginBottom: '6px' }}>Platform</Kicker>
-          <div style={{ ...typography.pageTitle, color: colors.ink }}>Super admin</div>
-          <div style={{ fontSize: '13px', color: colors.text2, marginTop: '2px' }}>Platform-level controls. Operator-only.</div>
+          <Kicker color={colors.amber} style={{ marginBottom: '6px' }}>{header.kicker}</Kicker>
+          <div style={{ ...typography.pageTitle, color: colors.ink }}>{header.title}</div>
+          <div style={{ fontSize: '13px', color: colors.text2, marginTop: '2px' }}>{header.subtitle}</div>
         </div>
         <Button variant="primary" icon={<Icons.IconPlus size={14} />} onClick={() => navigate('/app/onboarding')}>
           Onboard new merchant
@@ -31,10 +43,7 @@ export function SuperAdmin() {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '20px' }}>
-        <StatCard label="Total merchants" value={tenants.length.toString()} sub="on the platform" />
-        <StatCard label="Demo bookings" value={bookings.length.toString()} sub="awaiting response" />
-        <StatCard label="Pending KYC" value="3" sub="action required" />
-        <StatCard label="Platform MRR" value="₹18.4 L" sub="+12.4% MoM" />
+        {statValues.map((s: any) => <StatCard key={s.label} {...s} />)}
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '20px' }}>

@@ -1,49 +1,39 @@
 import React, { useState } from 'react';
 import { colors, radius, typography } from '../../design/tokens';
-import { Card, Kicker, Button, Pill } from '../../design/primitives';
+import { Card, Kicker, Button, Pill, PageLoader, ErrorState } from '../../design/primitives';
 import * as Icons from '../../design/icons';
 import { toast } from 'sonner';
-
-const team = [
-  { initials: 'KV', name: 'Kavya Venkatesh', email: 'kavya@payze.com', role: 'Owner', last: 'Now', twoFa: true, you: true },
-  { initials: 'AR', name: 'Arjun Reddy', email: 'arjun@payze.com', role: 'Admin', last: '2h ago', twoFa: true },
-  { initials: 'PM', name: 'Priya Menon', email: 'priya@payze.com', role: 'Developer', last: '1d ago', twoFa: true },
-  { initials: 'SG', name: 'Saurabh Gupta', email: 'saurabh@payze.com', role: 'Support', last: '4h ago', twoFa: true },
-  { initials: 'NT', name: 'Nisha Trivedi', email: 'nisha@payze.com', role: 'Analyst', last: '3d ago', twoFa: false },
-];
-
-const auditLog = [
-  { time: '14:32', actor: 'Arjun Reddy', action: 'Updated risk rule', detail: 'velocity_threshold: 4 → 5' },
-  { time: '12:18', actor: 'Kavya Venkatesh', action: 'Onboarded merchant', detail: 'Razorpay Technologies · /t/razorpay' },
-  { time: '11:45', actor: 'Priya Menon', action: 'Rotated API key', detail: 'sk_live_••••_a1b2' },
-  { time: '09:22', actor: 'Saurabh Gupta', action: 'Resolved dispute', detail: 'dp_9010 · ₹22,000 · won' },
-];
+import { useAsync } from '../../hooks/useAsync';
+import { configService } from '../../services';
 
 export function Admin() {
+  const { data, loading, error, refetch } = useAsync(() => configService.getAdmin(), []);
   const [showInvite, setShowInvite] = useState(false);
-  const [tab, setTab] = useState<'team' | 'audit' | 'security'>('team');
+  const [tab, setTab] = useState<string>('team');
+
+  if (error) return <ErrorState message={`Couldn't load admin — ${error.message}`} onRetry={refetch} />;
+  if (loading || !data) return <PageLoader label="Loading team" />;
+
+  const { header, stats, tabs, roles, team, auditLog, security } = data;
 
   return (
     <div style={{ animation: 'payze-fadein 0.4s ease-out' }}>
       <div style={{ marginBottom: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '16px', flexWrap: 'wrap' }}>
         <div>
-          <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>Team & admin</Kicker>
-          <div style={{ ...typography.pageTitle, color: colors.ink }}>People and access</div>
-          <div style={{ fontSize: '13px', color: colors.text2, marginTop: '2px' }}>Who has access, what they do, and when.</div>
+          <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>{header.kicker}</Kicker>
+          <div style={{ ...typography.pageTitle, color: colors.ink }}>{header.title}</div>
+          <div style={{ fontSize: '13px', color: colors.text2, marginTop: '2px' }}>{header.subtitle}</div>
         </div>
         <Button variant="primary" icon={<Icons.IconPlus size={14} />} onClick={() => setShowInvite(true)}>Invite member</Button>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '20px' }}>
-        <StatCard label="Team members" value="5" sub="1 owner · 4 others" />
-        <StatCard label="2FA coverage" value="4 of 5" sub="80% enabled" />
-        <StatCard label="Audit events, 30d" value="1,284" sub="normal activity" />
-        <StatCard label="Active API keys" value="6" sub="2 test · 4 live" />
+        {stats.map((s: any) => <StatCard key={s.label} {...s} />)}
       </div>
 
       <div style={{ display: 'flex', gap: '4px', background: colors.bg, padding: '4px', borderRadius: radius.pill, width: 'fit-content', marginBottom: '20px' }}>
-        {[{ id: 'team', label: 'Team' }, { id: 'audit', label: 'Audit log' }, { id: 'security', label: 'Security' }].map(t => (
-          <button key={t.id} onClick={() => setTab(t.id as any)} style={{
+        {tabs.map((t: any) => (
+          <button key={t.id} onClick={() => setTab(t.id)} style={{
             padding: '6px 14px', borderRadius: radius.pill, fontSize: '12px', fontWeight: 500,
             background: tab === t.id ? colors.card : 'transparent',
             color: tab === t.id ? colors.ink : colors.text2,
@@ -58,7 +48,7 @@ export function Admin() {
           <div style={{ padding: '12px 24px', display: 'grid', gridTemplateColumns: '1.5fr 1fr 0.7fr 1fr 0.4fr', gap: '16px', background: colors.bg, fontSize: '10px', fontWeight: 500, color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
             <div>Member</div><div>Role</div><div>2FA</div><div>Last active</div><div></div>
           </div>
-          {team.map((m, i) => (
+          {team.map((m: any, i: number) => (
             <div key={m.email} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 0.7fr 1fr 0.4fr', gap: '16px', padding: '16px 24px', borderBottom: i < team.length - 1 ? `0.5px solid ${colors.border}` : 'none', alignItems: 'center', fontSize: '13px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: colors.ink, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 600 }}>{m.initials}</div>
@@ -86,8 +76,8 @@ export function Admin() {
             <div style={{ fontSize: '15px', fontWeight: 600, color: colors.ink }}>Audit trail</div>
             <Button variant="ghost" size="sm" icon={<Icons.IconDownload size={12} />} onClick={() => toast.success('Audit log exported')}>Export</Button>
           </div>
-          {auditLog.map((a, i) => (
-            <div key={i} style={{ padding: '16px 24px', borderBottom: i < auditLog.length - 1 ? `0.5px solid ${colors.border}` : 'none', display: 'grid', gridTemplateColumns: '0.6fr 1fr 1.2fr 2fr', gap: '16px', alignItems: 'center', fontSize: '13px' }}>
+          {auditLog.map((a: any, i: number) => (
+            <div key={i} style={{ padding: '16px 24px', borderBottom: i < auditLog.length - 1 ? `0.5px solid ${colors.border}` : 'none', display: 'grid', gridTemplateColumns: '0.8fr 1fr 1.2fr 2fr', gap: '16px', alignItems: 'center', fontSize: '13px' }}>
               <div style={{ fontFamily: typography.family.mono, fontSize: '11px', color: colors.text2 }}>{a.time}</div>
               <div style={{ color: colors.ink, fontWeight: 500 }}>{a.actor}</div>
               <div style={{ color: colors.text2 }}>{a.action}</div>
@@ -99,41 +89,25 @@ export function Admin() {
 
       {tab === 'security' && (
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-          <Card padded>
-            <Kicker style={{ marginBottom: '14px' }}>Two-factor authentication</Kicker>
-            <div style={{ fontSize: '14px', color: colors.ink, fontWeight: 500, marginBottom: '6px' }}>Required for all members</div>
-            <div style={{ fontSize: '12px', color: colors.text2, marginBottom: '16px' }}>4 of 5 members have 2FA enabled.</div>
-            <Button variant="secondary" size="sm">Manage policy</Button>
-          </Card>
-          <Card padded>
-            <Kicker style={{ marginBottom: '14px' }}>SAML SSO</Kicker>
-            <div style={{ fontSize: '14px', color: colors.ink, fontWeight: 500, marginBottom: '6px' }}>Not configured</div>
-            <div style={{ fontSize: '12px', color: colors.text2, marginBottom: '16px' }}>Available on Scale plans.</div>
-            <Button variant="secondary" size="sm">Configure SSO</Button>
-          </Card>
-          <Card padded>
-            <Kicker style={{ marginBottom: '14px' }}>Session policy</Kicker>
-            <div style={{ fontSize: '14px', color: colors.ink, fontWeight: 500, marginBottom: '6px' }}>8-hour idle timeout</div>
-            <div style={{ fontSize: '12px', color: colors.text2, marginBottom: '16px' }}>Sessions expire after 8 hours of inactivity.</div>
-            <Button variant="secondary" size="sm">Edit policy</Button>
-          </Card>
-          <Card padded>
-            <Kicker style={{ marginBottom: '14px' }}>IP allowlist</Kicker>
-            <div style={{ fontSize: '14px', color: colors.ink, fontWeight: 500, marginBottom: '6px' }}>Disabled</div>
-            <div style={{ fontSize: '12px', color: colors.text2, marginBottom: '16px' }}>Restrict API access to specific IPs.</div>
-            <Button variant="secondary" size="sm">Enable allowlist</Button>
-          </Card>
+          {security.map((s: any) => (
+            <Card key={s.title} padded>
+              <Kicker style={{ marginBottom: '14px' }}>{s.title}</Kicker>
+              <div style={{ fontSize: '14px', color: colors.ink, fontWeight: 500, marginBottom: '6px' }}>{s.status}</div>
+              <div style={{ fontSize: '12px', color: colors.text2, marginBottom: '16px' }}>{s.desc}</div>
+              <Button variant="secondary" size="sm">{s.cta}</Button>
+            </Card>
+          ))}
         </div>
       )}
 
-      {showInvite && <InviteModal onClose={() => setShowInvite(false)} />}
+      {showInvite && <InviteModal onClose={() => setShowInvite(false)} roles={roles} />}
     </div>
   );
 }
 
-function InviteModal({ onClose }: { onClose: () => void }) {
+function InviteModal({ onClose, roles }: { onClose: () => void; roles: string[] }) {
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('Developer');
+  const [role, setRole] = useState(roles[1] || roles[0]);
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(26,26,26,0.35)', backdropFilter: 'blur(3px)', zIndex: 100, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
       <div onClick={e => e.stopPropagation()} style={{ width: '440px', maxWidth: '100%', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.lg, padding: '28px', boxShadow: '0 30px 60px -15px rgba(0,0,0,0.3)' }}>
@@ -153,7 +127,7 @@ function InviteModal({ onClose }: { onClose: () => void }) {
           <div>
             <label style={{ display: 'block', fontSize: '11px', fontWeight: 500, color: colors.text2, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '6px' }}>Role</label>
             <select value={role} onChange={e => setRole(e.target.value)} style={inputStyle}>
-              <option>Admin</option><option>Developer</option><option>Support</option><option>Analyst</option><option>Viewer</option>
+              {roles.map(r => <option key={r} value={r}>{r}</option>)}
             </select>
           </div>
           <div style={{ fontSize: '11px', color: colors.text3, padding: '10px 14px', background: colors.bg, borderRadius: radius.sm, lineHeight: 1.6 }}>

@@ -1,0 +1,52 @@
+{
+  "header": {
+    "kicker": "Risk",
+    "title": "Watch",
+    "subtitle": "Signals, scored attempts, rules, and disputes."
+  },
+  "gauge": { "score": 23, "label": "Vigilant" },
+  "composite": "Three attempts declined this hour; all permitted passage deemed safe.",
+  "metrics": [
+    { "label": "Declined today", "value": "11", "sub": "of 427 attempts" },
+    { "label": "Disputes open", "value": "3", "sub": "2 awaiting docs" },
+    { "label": "Win rate, YTD", "value": "78%", "sub": "industry avg: 34%" },
+    { "label": "Blocked by rules", "value": "₹42,800", "sub": "22 attempts" }
+  ],
+  "anomalies": [
+    { "time": "14:32", "title": "HDFC Visa decline rate elevated", "detail": "Normally 8% · now 23% for past 12 min · fallback to RuPay active", "severity": "high" },
+    { "time": "13:45", "title": "Unusual geography cluster", "detail": "14 attempts from 3 IPs in Ho Chi Minh · new for Razorpay Tech", "severity": "medium" },
+    { "time": "12:08", "title": "SEPA timeout window", "detail": "4 timeouts from Deutsche Bank · routed via alternative", "severity": "low" },
+    { "time": "11:22", "title": "Cred Club velocity spike", "detail": "Attempts up 3.2× vs 7-day baseline · promo activity suspected", "severity": "low" },
+    { "time": "10:45", "title": "New BIN seen on Zomato", "detail": "First occurrence of 547829 series · Canadian issuer", "severity": "low" }
+  ],
+  "register": [
+    { "id": "R.047", "subject": "First-time purchase, high ticket", "sub": "Card issued abroad · billing mismatch · 7-day-old account", "score": 91, "time": "14:32", "verdict": "declined" },
+    { "id": "R.046", "subject": "Velocity: four cards in eight minutes", "sub": "Same device fingerprint · three consecutive declines", "score": 87, "time": "14:19", "verdict": "blocked" },
+    { "id": "R.045", "subject": "Returning subscriber — elevated amount", "sub": "22-month customer · step-up auth honoured", "score": 42, "time": "13:58", "verdict": "passed", "pill": "Permitted w/3DS" },
+    { "id": "R.044", "subject": "Card tested against seven micro-amounts", "sub": "Classic enumeration · first three visible · rest blocked", "score": 96, "time": "11:07", "verdict": "blocked" },
+    { "id": "R.043", "subject": "Mid-ticket · corporate card · known buyer", "sub": "Quiet signals · flagged only for amount novelty", "score": 18, "time": "10:22", "verdict": "allowed" },
+    { "id": "R.042", "subject": "Chargeback pattern · repeat account", "sub": "Same card · 3 chargebacks across merchants in 90 days", "score": 88, "time": "09:47", "verdict": "blocked" },
+    { "id": "R.041", "subject": "IP / billing country mismatch", "sub": "Card India · IP in Sofia · first transaction from region", "score": 72, "time": "09:18", "verdict": "declined" },
+    { "id": "R.040", "subject": "Trusted merchant, known customer", "sub": "4-year customer · regular monthly charge", "score": 8, "time": "08:55", "verdict": "allowed" },
+    { "id": "R.039", "subject": "Amount far above customer mean", "sub": "Customer avg ₹1,200 · this attempt ₹89,000", "score": 64, "time": "08:32", "verdict": "passed", "pill": "Permitted w/3DS" },
+    { "id": "R.038", "subject": "Disposable email · new signup", "sub": "Gmail+tag pattern · 12 similar signups in 24 hours", "score": 79, "time": "07:14", "verdict": "declined" }
+  ],
+  "rules": [
+    { "name": "First-time high-value check", "triggers": 428, "blocked": 47, "active": true },
+    { "name": "Card enumeration detection", "triggers": 1241, "blocked": 1183, "active": true },
+    { "name": "Billing address mismatch", "triggers": 312, "blocked": 22, "active": true },
+    { "name": "Velocity > 4 attempts / 10 min", "triggers": 187, "blocked": 142, "active": true },
+    { "name": "Geographic restriction — high-risk regions", "triggers": 89, "blocked": 89, "active": true },
+    { "name": "Disposable email detection", "triggers": 54, "blocked": 41, "active": true },
+    { "name": "Chargeback history lookup", "triggers": 28, "blocked": 26, "active": true },
+    { "name": "High-risk MCC restriction", "triggers": 0, "blocked": 0, "active": false }
+  ],
+  "disputes": [
+    { "id": "dp_9012", "txn": "txn_00248", "reason": "Product not as described", "amount": "₹12,400", "due": "24 Apr", "status": "Evidence needed" },
+    { "id": "dp_9011", "txn": "txn_00189", "reason": "Duplicate charge", "amount": "₹4,800", "due": "20 Apr", "status": "Submitted" },
+    { "id": "dp_9010", "txn": "txn_00102", "reason": "Unrecognised charge", "amount": "₹22,000", "due": "18 Apr", "status": "Won" },
+    { "id": "dp_9009", "txn": "txn_00087", "reason": "Service not rendered", "amount": "₹8,600", "due": "16 Apr", "status": "Evidence needed" },
+    { "id": "dp_9008", "txn": "txn_00054", "reason": "Fraudulent — customer claim", "amount": "₹45,000", "due": "12 Apr", "status": "Lost" },
+    { "id": "dp_9007", "txn": "txn_00012", "reason": "Refund not received", "amount": "₹2,100", "due": "10 Apr", "status": "Won" }
+  ]
+}

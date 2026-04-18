@@ -1,0 +1,87 @@
+{
+  "nav": [
+    { "label": "Product", "href": "#product" },
+    { "label": "How it works", "href": "#how" },
+    { "label": "Developers", "href": "#developers" },
+    { "label": "Pricing", "href": "#pricing" },
+    { "label": "Customers", "href": "#customers" }
+  ],
+  "hero": {
+    "badge": "RBI-licensed · PCI-DSS Level 1 · Made in Bengaluru",
+    "lineOne": "Payments infrastructure",
+    "lineTwo": "for",
+    "accent": "every payment.",
+    "subtitle": "UPI, cards, NetBanking, wallets, SEPA, ACH — 135 currencies, one integration. When a card fails at HDFC, we route to ICICI, then RuPay, then UPI. Customers don't notice. You don't lose the sale.",
+    "primaryCta": { "label": "Get started", "href": "/book-demo" },
+    "secondaryCta": { "label": "View the docs", "href": "#developers" }
+  },
+  "trustStrip": {
+    "label": "Trusted by 47+ teams, including",
+    "logos": [
+      { "text": "zomato", "style": { "size": 22, "weight": 600, "italic": true } },
+      { "text": "Razorpay", "style": { "size": 19, "weight": 700 } },
+      { "text": "NYKAA", "style": { "size": 17, "weight": 500, "letterSpacing": "0.25em" } },
+      { "text": "CRED", "style": { "size": 21, "weight": 700 } },
+      { "text": "BOOKMYSHOW", "style": { "size": 17, "weight": 500, "letterSpacing": "0.08em" } },
+      { "text": "urban co.", "style": { "size": 18, "weight": 500 } }
+    ]
+  },
+  "how": {
+    "kicker": "How it works",
+    "title": "When a payment fails, Payze",
+    "titleAccent": "finds a way through."
+  },
+  "features": {
+    "kicker": "What you get",
+    "title": "Everything an Indian payments stack needs,\nnothing your engineering team has to wire up.",
+    "items": [
+      { "icon": "IconRoute", "title": "Intelligent routing", "desc": "Card declined at HDFC? We'll try ICICI, then RuPay, then UPI. The model learns per-bank, per-BIN, per-hour." },
+      { "icon": "IconRecurring", "title": "UPI Autopay & NACH", "desc": "Native support for every Indian recurring rail. Mandate onboarding that actually completes — 94% success vs industry 72%." },
+      { "icon": "IconShield", "title": "Fraud that stays quiet", "desc": "ML trained on 180M+ Indian transactions. False-positive rate 4× lower than rule-based systems. Dispute win rate 2.3× industry average." },
+      { "icon": "IconGlobe", "title": "Collect from anywhere", "desc": "135 currencies, every major local method — UPI, cards, SEPA, ACH, Pix, Alipay, FPX. Unified in INR in your dashboard." },
+      { "icon": "IconDeveloper", "title": "One-day integration", "desc": "Node, Python, PHP, Go, Ruby SDKs. Webhooks with retry & signing. Test in test mode, flip a toggle, you're live." },
+      { "icon": "IconChart", "title": "Reports that explain themselves", "desc": "Every anomaly described in plain English. Reconciliation reports auto-emailed. GST-ready exports." }
+    ]
+  },
+  "numbers": {
+    "kicker": "By the numbers",
+    "items": [
+      { "value": "12.4", "unit": "%", "label": "More payments succeed vs bank-only" },
+      { "value": "180", "unit": "ms", "label": "Median authorisation latency" },
+      { "value": "135", "unit": "", "label": "Currencies, 47 local methods" },
+      { "value": "99.99", "unit": "%", "label": "Uptime, SLA-backed" }
+    ]
+  },
+  "testimonial": {
+    "quote": "We were losing 14% of checkouts to card declines we couldn't explain. Four weeks in on Payze, that number is 3.8%. Routing works, the integration was a day, and reconciliation reports now arrive on their own.",
+    "name": "Vikram Kothari",
+    "role": "Head of Payments, Zomato Foods",
+    "initials": "VK"
+  },
+  "pricing": {
+    "kicker": "Pricing",
+    "title": "Simple, transparent, no surprises",
+    "tiers": [
+      { "tier": "Starter", "price": "₹499", "desc": "For small teams just starting out", "features": ["UPI + cards + NetBanking", "Up to ₹5L monthly volume", "Email support", "T+2 settlement"], "ctaLabel": "Get started" },
+      { "tier": "Growth", "price": "₹2,499", "featured": true, "desc": "For scaling merchants", "features": ["Everything in Starter", "Up to ₹50L monthly volume", "Priority support", "T+1 settlement", "Custom checkout branding"], "ctaLabel": "Get started" },
+      { "tier": "Scale", "price": "Custom", "desc": "For high-volume operations", "features": ["Everything in Growth", "Unlimited volume", "Dedicated CSM", "Custom routing rules", "SSO + SAML", "SLA 99.99%"], "ctaLabel": "Talk to sales" }
+    ]
+  },
+  "finalCta": {
+    "kicker": "Get started",
+    "title": "Stop losing revenue\nto payments that fail.",
+    "desc": "Book a 30-minute demo. We'll audit your current stack and show what you're leaving on the table — usually ₹5-15L per month for mid-size merchants.",
+    "primary": { "label": "Book a demo", "href": "/book-demo" },
+    "secondary": { "label": "Email us directly", "href": "mailto:hello@payze.com" }
+  },
+  "footer": {
+    "tagline": "© 2026 · Made in Bengaluru",
+    "links": [
+      { "label": "Privacy", "href": "#" },
+      { "label": "Terms", "href": "#" },
+      { "label": "Security", "href": "#" },
+      { "label": "RBI disclosures", "href": "#" },
+      { "label": "Status", "href": "#" }
+    ]
+  }
+}

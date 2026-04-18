@@ -1,0 +1,228 @@
+{
+  "stats": [
+    { "label": "Today", "value": "2,418 payments", "change": "+12.4%" },
+    { "label": "Volume today (INR)", "value": "₹1.82 Cr", "change": "+8.2%" },
+    { "label": "Success rate", "value": "93.7%", "change": "+0.3pts" },
+    { "label": "Blocked", "value": "47", "change": "−12%" }
+  ],
+  "fxToInr": { "INR": 1, "USD": 83.2, "EUR": 90.4, "GBP": 105.8, "AED": 22.65, "SGD": 62.4 },
+  "filters": ["all", "succeeded", "routed", "blocked", "refunded"],
+  "totalCount": 2418,
+  "transactions": [
+    { "id": "txn_00482", "time": "14:47:12", "merchant": "Zomato Foods", "customer": "Priya Venkataraman", "method": "UPI · GPay", "rail": "NPCI", "sourceAmount": 7800, "sourceCurrency": "INR", "status": "routed", "note": "Succeeded after card retry",
+      "events": [
+        { "time": "14:47:08", "label": "Initiated", "detail": "Visa ending 4242 · bank declined (05 — do not honor)" },
+        { "time": "14:47:10", "label": "Fallback", "detail": "Routed to UPI · customer re-auth on GPay" },
+        { "time": "14:47:12", "label": "Succeeded", "detail": "UPI ref: 4827341092" }
+      ]
+    },
+    { "id": "txn_00481", "time": "14:45:33", "merchant": "Razorpay Technologies", "customer": "Studio Lumière", "method": "Visa · HDFC", "rail": "Visa", "sourceAmount": 18200, "sourceCurrency": "INR", "status": "succeeded", "note": "Invoice INV-0228",
+      "events": [
+        { "time": "14:45:31", "label": "Initiated", "detail": "Visa ending 8833 · HDFC" },
+        { "time": "14:45:33", "label": "Succeeded", "detail": "Auth code: 284A19" }
+      ]
+    },
+    { "id": "txn_00480", "time": "14:42:07", "merchant": "Cred Club", "customer": "First-time buyer", "method": "Cards", "rail": "Visa", "sourceAmount": 42500, "sourceCurrency": "INR", "status": "blocked", "note": "Velocity flag, risk review",
+      "events": [
+        { "time": "14:42:05", "label": "Attempted", "detail": "New account · billing address mismatch" },
+        { "time": "14:42:06", "label": "Risk check", "detail": "Score 87/100 — velocity anomaly" },
+        { "time": "14:42:07", "label": "Blocked", "detail": "Rule: first_time_high_value" }
+      ]
+    },
+    { "id": "txn_00479", "time": "14:41:19", "merchant": "Nykaa Beauty", "customer": "Amélie Dubois (Paris)", "method": "SEPA", "rail": "SEPA", "sourceAmount": 1890, "sourceCurrency": "EUR", "status": "routed", "note": "ACH timeout → SEPA",
+      "events": [
+        { "time": "14:41:11", "label": "Initiated", "detail": "ACH via bank timeout" },
+        { "time": "14:41:14", "label": "Fallback", "detail": "Re-routed via SEPA Instant" },
+        { "time": "14:41:19", "label": "Succeeded", "detail": "SEPA ref: RF8912MN" }
+      ]
+    },
+    { "id": "txn_00478", "time": "14:38:56", "merchant": "Zomato Foods", "customer": "Rohan Shankar", "method": "UPI Autopay", "rail": "NPCI", "sourceAmount": 4500, "sourceCurrency": "INR", "status": "succeeded", "note": "Quarterly mandate",
+      "events": [
+        { "time": "14:38:54", "label": "Mandate debit", "detail": "UMN: 3842HDFC@okhdfcbank" },
+        { "time": "14:38:56", "label": "Succeeded", "detail": "UPI ref: 2938471092" }
+      ]
+    },
+    { "id": "txn_00477", "time": "14:35:44", "merchant": "Urban Company", "customer": "Kavya Rao", "method": "NetBanking", "rail": "HDFC", "sourceAmount": 22400, "sourceCurrency": "INR", "status": "succeeded", "note": "Direct debit",
+      "events": [
+        { "time": "14:35:40", "label": "Initiated", "detail": "NetBanking · HDFC" },
+        { "time": "14:35:44", "label": "Succeeded", "detail": "Bank ref: NB0018237" }
+      ]
+    },
+    { "id": "txn_00476", "time": "14:32:11", "merchant": "Cred Club", "customer": "Amit Sharma", "method": "PhonePe", "rail": "NPCI", "sourceAmount": 800, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "14:32:09", "label": "Initiated", "detail": "PhonePe UPI" },
+        { "time": "14:32:11", "label": "Succeeded", "detail": "UPI ref: 1023948123" }
+      ]
+    },
+    { "id": "txn_00475", "time": "14:29:02", "merchant": "MakeMyTrip", "customer": "Emma Dawson (NYC)", "method": "Amex", "rail": "Amex", "sourceAmount": 320, "sourceCurrency": "USD", "status": "succeeded", "note": "International · cross-border fee",
+      "events": [
+        { "time": "14:28:58", "label": "Initiated", "detail": "Amex ending 1001 · USD" },
+        { "time": "14:29:02", "label": "Succeeded", "detail": "Auth code: AX9912BC" }
+      ]
+    },
+    { "id": "txn_00474", "time": "14:24:38", "merchant": "BookMyShow", "customer": "Rajiv Mehta", "method": "UPI", "rail": "NPCI", "sourceAmount": 112000, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "14:24:36", "label": "Initiated", "detail": "UPI · PayTM" },
+        { "time": "14:24:38", "label": "Succeeded", "detail": "UPI ref: 9812734091" }
+      ]
+    },
+    { "id": "txn_00473", "time": "14:19:51", "merchant": "Zomato Foods", "customer": "Test card", "method": "Visa", "rail": "Visa", "sourceAmount": 10000, "sourceCurrency": "INR", "status": "blocked", "note": "Enumeration pattern detected",
+      "events": [
+        { "time": "14:19:45", "label": "Attempted", "detail": "Same device · 4 cards in 2 minutes" },
+        { "time": "14:19:48", "label": "Risk check", "detail": "Score 96/100 — enumeration" },
+        { "time": "14:19:51", "label": "Blocked", "detail": "Rule: card_enumeration" }
+      ]
+    },
+    { "id": "txn_00472", "time": "14:15:22", "merchant": "Nykaa Beauty", "customer": "Anjali Rao", "method": "Mastercard", "rail": "Mastercard", "sourceAmount": 3450, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "14:15:20", "label": "Initiated", "detail": "Mastercard · ICICI" },
+        { "time": "14:15:22", "label": "Succeeded", "detail": "Auth code: MC4412TR" }
+      ]
+    },
+    { "id": "txn_00471", "time": "14:12:08", "merchant": "Razorpay Technologies", "customer": "DevPro Services", "method": "NEFT", "rail": "NEFT", "sourceAmount": 245000, "sourceCurrency": "INR", "status": "succeeded", "note": "Enterprise payout",
+      "events": [
+        { "time": "14:12:04", "label": "Initiated", "detail": "NEFT transfer" },
+        { "time": "14:12:08", "label": "Succeeded", "detail": "UTR: HDFC25147108" }
+      ]
+    },
+    { "id": "txn_00470", "time": "14:08:55", "merchant": "Cred Club", "customer": "Neha Iyer", "method": "RuPay", "rail": "RuPay", "sourceAmount": 1299, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "14:08:53", "label": "Initiated", "detail": "RuPay · SBI" },
+        { "time": "14:08:55", "label": "Succeeded", "detail": "Auth: RP9981CR" }
+      ]
+    },
+    { "id": "txn_00469", "time": "14:05:12", "merchant": "Urban Company", "customer": "Vikram Desai", "method": "UPI · GPay", "rail": "NPCI", "sourceAmount": 4200, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "14:05:10", "label": "Initiated", "detail": "UPI · GPay" },
+        { "time": "14:05:12", "label": "Succeeded", "detail": "UPI ref: 8812304098" }
+      ]
+    },
+    { "id": "txn_00468", "time": "14:02:33", "merchant": "BookMyShow", "customer": "Pooja Nair", "method": "Wallet · Paytm", "rail": "Paytm", "sourceAmount": 850, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "14:02:31", "label": "Initiated", "detail": "Paytm wallet" },
+        { "time": "14:02:33", "label": "Succeeded", "detail": "Wallet ref: PTM8834012" }
+      ]
+    },
+    { "id": "txn_00467", "time": "13:58:41", "merchant": "MakeMyTrip", "customer": "Aditi Kumar", "method": "EMI · 6 months", "rail": "HDFC EMI", "sourceAmount": 85000, "sourceCurrency": "INR", "status": "succeeded", "note": "Flight booking",
+      "events": [
+        { "time": "13:58:37", "label": "Initiated", "detail": "HDFC EMI · 6 months" },
+        { "time": "13:58:41", "label": "Succeeded", "detail": "EMI ref: HDE3471" }
+      ]
+    },
+    { "id": "txn_00466", "time": "13:55:18", "merchant": "Zomato Foods", "customer": "Arjun Menon", "method": "UPI · PhonePe", "rail": "NPCI", "sourceAmount": 520, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "13:55:16", "label": "Initiated", "detail": "PhonePe UPI" },
+        { "time": "13:55:18", "label": "Succeeded", "detail": "UPI ref: 7712043987" }
+      ]
+    },
+    { "id": "txn_00465", "time": "13:50:02", "merchant": "Nykaa Beauty", "customer": "Farah Khan (Dubai)", "method": "Visa", "rail": "Visa", "sourceAmount": 1200, "sourceCurrency": "AED", "status": "succeeded", "note": "International",
+      "events": [
+        { "time": "13:50:00", "label": "Initiated", "detail": "Visa ending 9902 · AED" },
+        { "time": "13:50:02", "label": "Succeeded", "detail": "Auth: VI0091DX" }
+      ]
+    },
+    { "id": "txn_00464", "time": "13:47:29", "merchant": "Razorpay Technologies", "customer": "Initech India", "method": "UPI", "rail": "NPCI", "sourceAmount": 9999, "sourceCurrency": "INR", "status": "refunded", "note": "Customer refund request",
+      "events": [
+        { "time": "12:14:02", "label": "Succeeded", "detail": "Original payment · UPI" },
+        { "time": "13:47:29", "label": "Refunded", "detail": "Refund initiated by merchant" }
+      ]
+    },
+    { "id": "txn_00463", "time": "13:42:56", "merchant": "Cred Club", "customer": "Sandeep Patil", "method": "Mastercard", "rail": "Mastercard", "sourceAmount": 12500, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "13:42:54", "label": "Initiated", "detail": "Mastercard · Axis" },
+        { "time": "13:42:56", "label": "Succeeded", "detail": "Auth: MC7763AX" }
+      ]
+    },
+    { "id": "txn_00462", "time": "13:38:14", "merchant": "Urban Company", "customer": "Meera Iyer", "method": "UPI Autopay", "rail": "NPCI", "sourceAmount": 1499, "sourceCurrency": "INR", "status": "succeeded", "note": "Monthly plan",
+      "events": [
+        { "time": "13:38:12", "label": "Mandate debit", "detail": "UMN: UCA7782@okicici" },
+        { "time": "13:38:14", "label": "Succeeded", "detail": "UPI ref: 1122903481" }
+      ]
+    },
+    { "id": "txn_00461", "time": "13:35:05", "merchant": "BookMyShow", "customer": "Rishi Kapoor", "method": "Visa Debit", "rail": "Visa", "sourceAmount": 360, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "13:35:03", "label": "Initiated", "detail": "Visa Debit · HDFC" },
+        { "time": "13:35:05", "label": "Succeeded", "detail": "Auth: VD1172BM" }
+      ]
+    },
+    { "id": "txn_00460", "time": "13:32:47", "merchant": "Zomato Foods", "customer": "Unknown user", "method": "Cards", "rail": "Visa", "sourceAmount": 15000, "sourceCurrency": "INR", "status": "blocked", "note": "High-risk IP geography",
+      "events": [
+        { "time": "13:32:45", "label": "Attempted", "detail": "IP from blocked region · VPN detected" },
+        { "time": "13:32:47", "label": "Blocked", "detail": "Rule: geo_restriction" }
+      ]
+    },
+    { "id": "txn_00459", "time": "13:28:11", "merchant": "MakeMyTrip", "customer": "Heinrich Müller (Berlin)", "method": "SEPA", "rail": "SEPA", "sourceAmount": 890, "sourceCurrency": "EUR", "status": "succeeded", "note": "Hotel booking",
+      "events": [
+        { "time": "13:28:07", "label": "Initiated", "detail": "SEPA Instant · Deutsche Bank" },
+        { "time": "13:28:11", "label": "Succeeded", "detail": "SEPA ref: DE8812" }
+      ]
+    },
+    { "id": "txn_00458", "time": "13:22:33", "merchant": "Nykaa Beauty", "customer": "Shreya Sharma", "method": "UPI · BHIM", "rail": "NPCI", "sourceAmount": 2100, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "13:22:31", "label": "Initiated", "detail": "BHIM UPI" },
+        { "time": "13:22:33", "label": "Succeeded", "detail": "UPI ref: 5544109823" }
+      ]
+    },
+    { "id": "txn_00457", "time": "13:18:02", "merchant": "Razorpay Technologies", "customer": "TechStartup Pvt", "method": "Visa", "rail": "Visa", "sourceAmount": 49999, "sourceCurrency": "INR", "status": "routed", "note": "ICICI retry succeeded",
+      "events": [
+        { "time": "13:17:58", "label": "Initiated", "detail": "HDFC · insufficient funds" },
+        { "time": "13:18:00", "label": "Fallback", "detail": "Routed via ICICI" },
+        { "time": "13:18:02", "label": "Succeeded", "detail": "Auth: ICI8812" }
+      ]
+    },
+    { "id": "txn_00456", "time": "13:12:44", "merchant": "Cred Club", "customer": "Deepa Menon", "method": "UPI", "rail": "NPCI", "sourceAmount": 3250, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "13:12:42", "label": "Initiated", "detail": "GPay UPI" },
+        { "time": "13:12:44", "label": "Succeeded", "detail": "UPI ref: 9987123450" }
+      ]
+    },
+    { "id": "txn_00455", "time": "13:08:17", "merchant": "Urban Company", "customer": "Kiran Reddy", "method": "Amex", "rail": "Amex", "sourceAmount": 8500, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "13:08:15", "label": "Initiated", "detail": "Amex ending 7788" },
+        { "time": "13:08:17", "label": "Succeeded", "detail": "Auth: AX7788UC" }
+      ]
+    },
+    { "id": "txn_00454", "time": "13:02:59", "merchant": "BookMyShow", "customer": "Tara Ghosh", "method": "UPI · Paytm", "rail": "NPCI", "sourceAmount": 1250, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "13:02:57", "label": "Initiated", "detail": "Paytm UPI" },
+        { "time": "13:02:59", "label": "Succeeded", "detail": "UPI ref: 6631709283" }
+      ]
+    },
+    { "id": "txn_00453", "time": "12:58:41", "merchant": "Zomato Foods", "customer": "Nikhil Verma", "method": "UPI · GPay", "rail": "NPCI", "sourceAmount": 680, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "12:58:39", "label": "Initiated", "detail": "GPay UPI" },
+        { "time": "12:58:41", "label": "Succeeded", "detail": "UPI ref: 3390712845" }
+      ]
+    },
+    { "id": "txn_00452", "time": "12:52:30", "merchant": "MakeMyTrip", "customer": "Ravi Kumar", "method": "NetBanking", "rail": "SBI", "sourceAmount": 35000, "sourceCurrency": "INR", "status": "succeeded", "note": "International flights",
+      "events": [
+        { "time": "12:52:26", "label": "Initiated", "detail": "NetBanking · SBI" },
+        { "time": "12:52:30", "label": "Succeeded", "detail": "Bank ref: SBI20341" }
+      ]
+    },
+    { "id": "txn_00451", "time": "12:46:18", "merchant": "Nykaa Beauty", "customer": "Riya Shah", "method": "Mastercard", "rail": "Mastercard", "sourceAmount": 4599, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "12:46:16", "label": "Initiated", "detail": "Mastercard · Kotak" },
+        { "time": "12:46:18", "label": "Succeeded", "detail": "Auth: MC1128KM" }
+      ]
+    },
+    { "id": "txn_00450", "time": "12:41:07", "merchant": "Razorpay Technologies", "customer": "Digital Ventures", "method": "UPI", "rail": "NPCI", "sourceAmount": 199999, "sourceCurrency": "INR", "status": "succeeded", "note": "Annual subscription",
+      "events": [
+        { "time": "12:41:04", "label": "Initiated", "detail": "UPI · high-value flow · 3DS" },
+        { "time": "12:41:07", "label": "Succeeded", "detail": "UPI ref: 8801274563" }
+      ]
+    },
+    { "id": "txn_00449", "time": "12:34:55", "merchant": "Cred Club", "customer": "Saurabh Chhabra", "method": "Visa", "rail": "Visa", "sourceAmount": 2499, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "12:34:53", "label": "Initiated", "detail": "Visa · HDFC" },
+        { "time": "12:34:55", "label": "Succeeded", "detail": "Auth: VI4477HC" }
+      ]
+    },
+    { "id": "txn_00448", "time": "12:28:12", "merchant": "Urban Company", "customer": "Preeti Joshi", "method": "UPI · PhonePe", "rail": "NPCI", "sourceAmount": 1899, "sourceCurrency": "INR", "status": "succeeded", "note": "",
+      "events": [
+        { "time": "12:28:10", "label": "Initiated", "detail": "PhonePe UPI" },
+        { "time": "12:28:12", "label": "Succeeded", "detail": "UPI ref: 7781094472" }
+      ]
+    }
+  ]
+}

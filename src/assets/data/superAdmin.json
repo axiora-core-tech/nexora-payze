@@ -1,0 +1,13 @@
+{
+  "header": {
+    "kicker": "Platform",
+    "title": "Super admin",
+    "subtitle": "Platform-level controls. Operator-only."
+  },
+  "stats": [
+    { "label": "Total merchants", "sub": "on the platform" },
+    { "label": "Demo bookings", "sub": "awaiting response" },
+    { "label": "Pending KYC", "value": "3", "sub": "action required" },
+    { "label": "Platform MRR", "value": "₹18.4 L", "sub": "+12.4% MoM" }
+  ]
+}

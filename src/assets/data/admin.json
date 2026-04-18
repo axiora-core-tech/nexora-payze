@@ -1,0 +1,41 @@
+{
+  "header": {
+    "kicker": "Team & admin",
+    "title": "People and access",
+    "subtitle": "Who has access, what they do, and when."
+  },
+  "stats": [
+    { "label": "Team members", "value": "5", "sub": "1 owner · 4 others" },
+    { "label": "2FA coverage", "value": "4 of 5", "sub": "80% enabled" },
+    { "label": "Audit events, 30d", "value": "1,284", "sub": "normal activity" },
+    { "label": "Active API keys", "value": "6", "sub": "2 test · 4 live" }
+  ],
+  "tabs": [
+    { "id": "team", "label": "Team" },
+    { "id": "audit", "label": "Audit log" },
+    { "id": "security", "label": "Security" }
+  ],
+  "roles": ["Admin", "Developer", "Support", "Analyst", "Viewer"],
+  "team": [
+    { "initials": "KV", "name": "Kavya Venkatesh", "email": "kavya@payze.com", "role": "Owner", "last": "Now", "twoFa": true, "you": true },
+    { "initials": "AR", "name": "Arjun Reddy", "email": "arjun@payze.com", "role": "Admin", "last": "2h ago", "twoFa": true },
+    { "initials": "PM", "name": "Priya Menon", "email": "priya@payze.com", "role": "Developer", "last": "1d ago", "twoFa": true },
+    { "initials": "SG", "name": "Saurabh Gupta", "email": "saurabh@payze.com", "role": "Support", "last": "4h ago", "twoFa": true },
+    { "initials": "NT", "name": "Nisha Trivedi", "email": "nisha@payze.com", "role": "Analyst", "last": "3d ago", "twoFa": false }
+  ],
+  "auditLog": [
+    { "time": "14:32", "actor": "Arjun Reddy", "action": "Updated risk rule", "detail": "velocity_threshold: 4 → 5" },
+    { "time": "12:18", "actor": "Kavya Venkatesh", "action": "Onboarded merchant", "detail": "Razorpay Technologies · /t/razorpay-technologies" },
+    { "time": "11:45", "actor": "Priya Menon", "action": "Rotated API key", "detail": "sk_live_••••_a1b2" },
+    { "time": "09:22", "actor": "Saurabh Gupta", "action": "Resolved dispute", "detail": "dp_9010 · ₹22,000 · won" },
+    { "time": "Yesterday 17:48", "actor": "Arjun Reddy", "action": "Added webhook endpoint", "detail": "https://api.nykaa.com/payze/webhook" },
+    { "time": "Yesterday 14:02", "actor": "Kavya Venkatesh", "action": "Invited member", "detail": "nisha@payze.com · Analyst" },
+    { "time": "Yesterday 10:17", "actor": "Priya Menon", "action": "Deployed production SDK", "detail": "@payze/node v2.14.1" }
+  ],
+  "security": [
+    { "title": "Two-factor authentication", "status": "Required for all members", "desc": "4 of 5 members have 2FA enabled.", "cta": "Manage policy" },
+    { "title": "SAML SSO", "status": "Not configured", "desc": "Available on Scale plans.", "cta": "Configure SSO" },
+    { "title": "Session policy", "status": "8-hour idle timeout", "desc": "Sessions expire after 8 hours of inactivity.", "cta": "Edit policy" },
+    { "title": "IP allowlist", "status": "Disabled", "desc": "Restrict API access to specific IPs.", "cta": "Enable allowlist" }
+  ]
+}

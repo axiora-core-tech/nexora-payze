@@ -1,0 +1,30 @@
+{
+  "header": {
+    "kicker": "Collect",
+    "title": "Payment links",
+    "subtitle": "Share a URL, get paid."
+  },
+  "stats": [
+    { "label": "Active links", "value": "284", "sub": "across 47 merchants" },
+    { "label": "Collected, month", "value": "₹82.4 L", "sub": "+18% MoM" },
+    { "label": "Total uses", "value": "18,241", "sub": "conversion 64.2%" },
+    { "label": "Avg ticket", "value": "₹452", "sub": "median ₹299" }
+  ],
+  "rowActions": [
+    { "label": "Analytics", "icon": "IconChart" },
+    { "label": "Edit", "icon": "IconSettings" },
+    { "label": "Duplicate", "icon": "IconPlus" },
+    { "label": "Activate / Deactivate", "icon": "IconCheck" },
+    { "label": "Delete", "icon": "IconTrash" }
+  ],
+  "links": [
+    { "id": "plk_a9f3e2", "title": "Brand identity · Phase 1", "merchant": "Nykaa Beauty", "amount": "₹1,12,000", "status": "Active", "uses": "2 of 5", "collected": "₹2,24,000", "created": "16 Apr" },
+    { "id": "plk_b4c7d1", "title": "Pro subscription monthly", "merchant": "Cred Club", "amount": "₹2,499", "status": "Active", "uses": "142", "collected": "₹3,54,858", "created": "03 Apr" },
+    { "id": "plk_c8e5f2", "title": "Launch night ticket", "merchant": "BookMyShow", "amount": "€89", "status": "Expired", "uses": "48 of 48", "collected": "€4,272", "created": "28 Mar" },
+    { "id": "plk_d1a9b3", "title": "Retainer Q2", "merchant": "Razorpay Technologies", "amount": "₹3,45,200", "status": "Draft", "uses": "0", "collected": "—", "created": "17 Apr" },
+    { "id": "plk_e2f8c4", "title": "Corporate lunch package", "merchant": "Zomato Foods", "amount": "₹25,000", "status": "Active", "uses": "18", "collected": "₹4,50,000", "created": "12 Apr" },
+    { "id": "plk_f3a1d5", "title": "Annual home service plan", "merchant": "Urban Company", "amount": "₹11,999", "status": "Active", "uses": "87", "collected": "₹10,43,913", "created": "01 Apr" },
+    { "id": "plk_g7b2e8", "title": "Early bird conference ticket", "merchant": "BookMyShow", "amount": "₹3,500", "status": "Active", "uses": "142 of 200", "collected": "₹4,97,000", "created": "08 Apr" },
+    { "id": "plk_h9c4f1", "title": "Beauty pro kit", "merchant": "Nykaa Beauty", "amount": "₹7,999", "status": "Active", "uses": "54", "collected": "₹4,31,946", "created": "05 Apr" }
+  ]
+}

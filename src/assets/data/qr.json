@@ -1,0 +1,29 @@
+{
+  "header": {
+    "kicker": "Collect offline",
+    "title": "QR codes",
+    "subtitle": "Dynamic for single payments, static for standing QRs at counters."
+  },
+  "tabs": [
+    { "id": "dynamic", "label": "Dynamic QR" },
+    { "id": "static", "label": "Static standee" }
+  ],
+  "merchants": ["Acme Corporation", "Cred Club", "Zomato Foods", "BookMyShow", "Nykaa Beauty", "Urban Company"],
+  "expiries": ["15 minutes", "1 hour", "End of day", "No expiry"],
+  "formats": ["A4 poster", "Countertop standee (6x4\")", "Wall decal (12x12\")", "Sticker sheet (2x2\" × 6)"],
+  "defaultVpa": "acme.corp@payze",
+  "defaults": {
+    "merchant": "Acme Corporation",
+    "amount": "1200",
+    "description": "Table 14 · Order #8374"
+  },
+  "recentScans": [
+    { "time": "14:42", "customer": "GPay · 8912•••21", "ref": "Table 14 · Order #8374", "method": "UPI", "amount": "₹1,200", "status": "Paid" },
+    { "time": "14:38", "customer": "PhonePe · 7823•••09", "ref": "Table 11 · Order #8371", "method": "UPI", "amount": "₹840", "status": "Paid" },
+    { "time": "14:21", "customer": "Paytm · 9122•••42", "ref": "Table 6 · Order #8365", "method": "UPI", "amount": "₹2,450", "status": "Paid" },
+    { "time": "14:07", "customer": "BHIM · 9822•••11", "ref": "Counter · walk-in", "method": "UPI", "amount": "₹350", "status": "Paid" },
+    { "time": "13:58", "customer": "GPay · 6411•••78", "ref": "Table 9 · Order #8360", "method": "UPI", "amount": "₹1,820", "status": "Paid" },
+    { "time": "13:42", "customer": "PhonePe · 4821•••55", "ref": "Table 3 · Order #8354", "method": "UPI", "amount": "₹620", "status": "Paid" },
+    { "time": "13:21", "customer": "GPay · 8834•••10", "ref": "Counter · walk-in", "method": "UPI", "amount": "₹180", "status": "Paid" }
+  ]
+}

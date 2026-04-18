@@ -1,0 +1,61 @@
+{
+  "header": {
+    "kicker": "Intelligence",
+    "title": "Analytics",
+    "subtitle": "Trends, cohorts, and funnels across the platform."
+  },
+  "dateRanges": [
+    { "value": "7d", "label": "Last 7 days" },
+    { "value": "30d", "label": "Last 30 days" },
+    { "value": "90d", "label": "Last 90 days" },
+    { "value": "ytd", "label": "Year to date" }
+  ],
+  "tabs": [
+    { "id": "overview", "label": "Overview" },
+    { "id": "cohorts", "label": "Cohorts" },
+    { "id": "funnels", "label": "Funnels" }
+  ],
+  "metrics": [
+    { "label": "Total volume", "value": "₹18.42 Cr", "change": "+24.1%", "up": true },
+    { "label": "Transactions", "value": "84,217", "change": "+18.7%", "up": true },
+    { "label": "Avg ticket", "value": "₹2,186", "change": "+4.6%", "up": true },
+    { "label": "Success rate", "value": "93.7%", "change": "+0.3pts", "up": true }
+  ],
+  "volumeChart": {
+    "title": "Volume, last 30 days",
+    "total": "₹18,42,00,000",
+    "current": "M 0 190 L 30 175 L 60 180 L 90 155 L 120 145 L 150 130 L 180 138 L 210 120 L 240 108 L 270 95 L 300 115 L 330 100 L 360 82 L 390 75 L 420 80 L 450 62 L 480 68 L 510 50 L 540 40 L 570 45 L 600 28 L 630 32 L 660 22 L 690 18 L 720 12 L 750 8 L 780 5",
+    "previous": "M 0 180 L 30 170 L 60 185 L 90 160 L 120 155 L 150 140 L 180 145 L 210 130 L 240 120 L 270 110 L 300 130 L 330 115 L 360 100 L 390 90 L 420 95 L 450 80 L 480 85 L 510 70 L 540 60 L 570 65 L 600 50 L 630 55 L 660 40 L 690 35 L 720 30 L 750 25 L 780 20"
+  },
+  "methods": [
+    { "name": "UPI", "share": 62, "volume": "₹11.42 Cr" },
+    { "name": "Cards", "share": 22, "volume": "₹4.05 Cr" },
+    { "name": "NetBanking", "share": 9, "volume": "₹1.66 Cr" },
+    { "name": "Wallets", "share": 5, "volume": "₹92.1 L" },
+    { "name": "International", "share": 2, "volume": "₹37.0 L" }
+  ],
+  "geography": [
+    { "name": "India", "share": 78, "volume": "₹14.36 Cr" },
+    { "name": "UAE", "share": 8, "volume": "₹1.47 Cr" },
+    { "name": "Europe", "share": 6, "volume": "₹1.10 Cr" },
+    { "name": "United States", "share": 4, "volume": "₹73.7 L" },
+    { "name": "Rest of world", "share": 4, "volume": "₹73.7 L" }
+  ],
+  "cohorts": [
+    { "month": "Oct 2025", "size": 412, "retention": [100, 82, 74, 68, 64, 60, 58] },
+    { "month": "Nov 2025", "size": 524, "retention": [100, 80, 72, 66, 62, 58, null] },
+    { "month": "Dec 2025", "size": 628, "retention": [100, 84, 76, 70, 66, null, null] },
+    { "month": "Jan 2026", "size": 712, "retention": [100, 85, 78, 72, null, null, null] },
+    { "month": "Feb 2026", "size": 891, "retention": [100, 87, 80, null, null, null, null] },
+    { "month": "Mar 2026", "size": 924, "retention": [100, 88, null, null, null, null, null] },
+    { "month": "Apr 2026", "size": 412, "retention": [100, null, null, null, null, null, null] }
+  ],
+  "funnel": [
+    { "stage": "Checkout initiated", "count": 184212, "pct": 100 },
+    { "stage": "Payment method selected", "count": 168432, "pct": 91.4 },
+    { "stage": "Auth sent to bank", "count": 152108, "pct": 82.5 },
+    { "stage": "Succeeded (first attempt)", "count": 129824, "pct": 70.5 },
+    { "stage": "Succeeded (after fallback)", "count": 147280, "pct": 79.9 }
+  ],
+  "funnelNarrative": "Payze routing recovers 17,456 payments that would have been lost — a 9.4 point improvement over bank-only routing."
+}

@@ -1,0 +1,8 @@
+{
+  "header": {
+    "kicker": "Clients",
+    "title": "Tenants",
+    "subtitleTemplate": "{count} merchant workspaces on the platform."
+  },
+  "statusFilters": ["all", "Active", "Pending", "Suspended"]
+}
