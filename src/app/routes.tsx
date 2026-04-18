@@ -5,6 +5,7 @@ import { TenantWorkspace } from './components/TenantContext';
 
 import { Home } from './pages/Home';
 import { BookDemo } from './pages/BookDemo';
+import { SignIn } from './pages/SignIn';
 import { Dashboard } from './pages/Dashboard';
 import { Transactions } from './pages/Transactions';
 import { Tenants } from './pages/Tenants';
@@ -41,6 +42,7 @@ const appChildren = [
 
 export const router = createBrowserRouter([
   { path: '/', element: <Home /> },
+  { path: '/signin', element: <SignIn /> },
   { path: '/book-demo', element: <BookDemo /> },
   { path: '/app', element: <AppLayout />, children: appChildren },
   {

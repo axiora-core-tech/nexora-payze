@@ -1,71 +1,65 @@
-# Payze
+# Payze — Pay with Ease
 
-Payments infrastructure platform in the IRON/RH design language. **All UI content is configurable via JSON files.**
+Multi-tenant payments SaaS with a public marketing site, demo booking flow, and per-client isolated workspaces.
 
-## Run
+## Run it
 
-```
-unzip payze-final.zip
-cd payze-stage
+```bash
 npm install
 npm run dev
 ```
 
 Open http://localhost:5173
 
-## How the configuration works
+## The three entry points
 
-**Every page reads its content from JSON** in `src/assets/data/`:
+| URL | What it is | Who uses it |
+|---|---|---|
+| `/` | Public marketing home page | Prospects |
+| `/book-demo` | Calendar + form + Zoom scheduling | Prospects |
+| `/app` | Default merchant workspace (contains Super Admin) | You, the platform operator |
+| `/t/{slug}` | Client-specific workspace (e.g. `/t/acme-corp`) | Each onboarded client |
+| `/app/super-admin` | Tenant management console | You |
 
-| File | Drives |
-|---|---|
-| `home.json` | Marketing homepage — nav, hero, trust logos, features, pricing tiers, testimonial, footer |
-| `dashboard.json` | Dashboard stats, trend bars, activity feed, acceptance bars, top merchants |
-| `transactions.json` | 35 transaction rows, filters, FX rates, event timelines |
-| `risk.json` | Risk gauge, metrics, 5 anomalies, 10 scored attempts, 8 rules, 6 disputes |
-| `settlements.json` | 15 settlement batches, filters, reconciliation breakdowns |
-| `subscriptions.json` | 15 mandates, filters, row actions |
-| `invoices.json` | 10 invoices with line items, row actions |
-| `paymentLinks.json` | 8 links with stats, actions |
-| `analytics.json` | 4 metrics, volume chart, methods, geography, 7-month cohort retention, 5-stage funnel |
-| `admin.json` | Team, audit log, security cards, invite roles |
-| `developer.json` | API keys (test + live), webhooks, code sample, SDK commands |
-| `qr.json` | QR merchants, expiries, formats, 7 recent scans |
-| `pay.json` | Checkout amount, 6 methods, banks, wallets |
-| `onboarding.json` | 6 steps, industries, plans, webhook events, brand colors |
-| `tenants.json` | Page headers + status filter list |
-| `superAdmin.json` | Platform stats labels |
+## Try the full flow
 
-**Want to change anything?** Edit the JSON, hit save — the app picks it up on next page load. Adding a new transaction, changing a pricing tier, renaming a filter, swapping testimonials — no code changes.
+1. **Visit `/`** — the marketing home. Scroll through benefits, AI, numbers, tech sections.
+2. **Click "Book a demo"** — pick a date, pick a time, fill the form. Confirmation screen shows a realistic email preview with Zoom link.
+3. **Visit `/app/super-admin`** — you'll see your booking appear under "Demo Requests" tab. Also 4 seeded tenants under "Client Workspaces".
+4. **Click "Onboard new client"** — fill the form. Pick a URL slug like `nova-corp`. Watch the banner appear with the new workspace URL.
+5. **Click "Open workspace"** — you're now at `/t/nova-corp`. Header shows the tenant name + color pill. Navigate around — it's the full merchant experience, scoped to that tenant.
+6. **Navigate to `/t/acme-corp`** — Acme's workspace. Everything is tenant-aware.
 
-## How the loading behaviour works
+## Architecture
 
-Every page uses `useAsync(() => configService.getXxx())`:
+### Marketing + Booking
 
-1. **On mount** — shows `<PageLoader>` with a spinning indicator and a label like "Loading risk posture"
-2. **Fetch** — `configService` wraps each JSON import in `mockFetch()` with a random 300–900ms delay (configurable in `src/services/api.ts`)
-3. **Success** — renders the page from `data.xxx`
-4. **Error** — shows `<ErrorState>` with retry button that re-invokes the fetch
+- **HomePage** (`src/app/pages/Home.tsx`) — single-page marketing site with parallax hero, animated counters, benefits grid, dark AI section, numbers strip, tech showcase, testimonial, CTA.
+- **BookDemoPage** (`src/app/pages/BookDemo.tsx`) — 3-step flow (pick slot → details → confirmed). Generates real Zoom-style URLs and meeting IDs. Email preview shown post-booking.
 
-To swap to real API calls later: change `configService` to `fetch()` from your backend. The pages don't know the difference.
+### Multi-tenancy
 
-## Simulated failure injection
+Every route under `/t/{slug}` wraps the app in `<TenantWorkspace>`, which:
+- Looks up the tenant by slug
+- Provides the tenant via `useTenant()` hook to any child
+- Shows a not-found redirect if the slug is invalid
+- The `Layout` reads the slug from params to build `basePath = /t/{slug}` and all nav/links respect it
+- The header shows the tenant's name + brand color when scoped
+- The Super Admin nav item is hidden inside tenant workspaces (only visible in `/app`)
 
-`src/services/api.ts` → `mockFetch()` accepts `{ failureRate: 0-1 }`. Set any getter to fail 20% of the time to test error states:
-```ts
-getDashboard: () => mockFetch(dashboardData, { failureRate: 0.2 })
-```
+### Data persistence
 
-## Routes
+- **Tenants and demo bookings** persist in `localStorage` (keys: `payze.tenants`, `payze.demoBookings`). Seeded on first load with 4 example tenants.
+- **Everything else** uses the same `mockFetch` latency-simulation pattern as before.
 
-**Marketing** `/`, `/book-demo`
+### Where to plug in real backend
 
-**Operator** `/app`, `/app/transactions`, `/app/tenants`, `/app/risk`, `/app/settlements`, `/app/analytics`, `/app/invoices`, `/app/links`, `/app/qr`, `/app/pay`, `/app/subscriptions`, `/app/developer`, `/app/admin`, `/app/super-admin`, `/app/onboarding`
+- **`src/services/api.ts`** — swap `mockFetch` for real `fetch()` calls.
+- **`src/services/tenants.ts`** — `bookingService.create()` has a `TODO` comment pointing at the exact spot where the real Zoom API call should go (`POST https://api.zoom.us/v2/users/me/meetings`). Email sending via SendGrid/Resend happens right after.
+- **For real multi-tenancy**, back `tenantService` with a DB table instead of localStorage. The service interface stays identical.
 
-**Per-tenant** `/t/:slug/*` for each seeded merchant: `zomato-foods`, `razorpay-technologies`, `nykaa-beauty`, `cred-club`, `urban-company`, `bookmyshow`
+## Navigation dock
 
-## Design language
+Service-backed pages (Dashboard, Admin, Analytics, Subscriptions, Risk, Settlements, Payment Links, PaymentUI, Invoice, QRCode, Onboarding, Developer) all work identically in both `/app` and `/t/{slug}` contexts.
 
-Warm off-white `#F6F6F2`, ink `#1A1A1A`, single teal `#1C6F6B`, amber `#B48C3C` reserved for Super Admin crown. Inter sans + JetBrains Mono. 37+ custom line icons. Left floating dock (64px → 220px on hover). Top header with ⌘K search, currency switcher, notifications, avatar menu.
-
-## Made in Bengaluru
+The Super Admin button (crown icon, amber accent) appears only in the default `/app` workspace.

@@ -64,7 +64,7 @@ export function AppLayout() {
           setSearchOpen={setSearchOpen}
           profileOpen={profileOpen} setProfileOpen={setProfileOpen}
           notifOpen={notifOpen} setNotifOpen={setNotifOpen}
-          onSignOut={() => navigate('/')}
+          onSignOut={() => navigate('/signin')}
         />
         <main style={{ flex: 1, padding: '24px 40px 48px 24px', minWidth: 0 }}>
           <Outlet />

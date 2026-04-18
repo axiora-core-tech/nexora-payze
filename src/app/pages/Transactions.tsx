@@ -13,11 +13,14 @@ type Txn = {
   events: { time: string; label: string; detail: string }[];
 };
 
+const PAGE_SIZE = 10;
+
 export function Transactions() {
   const { data, loading, error, refetch } = useAsync(() => configService.getTransactions(), []);
   const [filter, setFilter] = useState<string>('all');
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<Txn | null>(null);
+  const [page, setPage] = useState(0);
 
   if (error) return <ErrorState message={`Couldn't load transactions — ${error.message}`} onRetry={refetch} />;
   if (loading || !data) return <PageLoader label="Loading ledger" />;
@@ -36,6 +39,13 @@ export function Transactions() {
     return true;
   });
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages - 1);
+  const paged = filtered.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE);
+
+  const setFilterReset = (f: string) => { setFilter(f); setPage(0); };
+  const setSearchReset = (v: string) => { setSearch(v); setPage(0); };
+
   return (
     <div style={{ animation: 'payze-fadein 0.4s ease-out' }}>
       <div style={{ marginBottom: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '16px', flexWrap: 'wrap' }}>
@@ -48,7 +58,7 @@ export function Transactions() {
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
           <Button variant="secondary" icon={<Icons.IconFilter size={14} />}>Filters</Button>
-          <Button variant="secondary" icon={<Icons.IconDownload size={14} />} onClick={() => toast.success(`Exporting ${data.totalCount} transactions as CSV`)}>Export CSV</Button>
+          <Button variant="secondary" icon={<Icons.IconDownload size={14} />} onClick={() => toast.success(`Exporting ${filtered.length} transactions as CSV`)}>Export CSV</Button>
         </div>
       </div>
 
@@ -60,7 +70,7 @@ export function Transactions() {
         <div style={{ padding: '18px 24px', borderBottom: `0.5px solid ${colors.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', gap: '6px', background: colors.bg, padding: '4px', borderRadius: radius.pill }}>
             {data.filters.map((f: string) => (
-              <button key={f} onClick={() => setFilter(f)} style={{
+              <button key={f} onClick={() => setFilterReset(f)} style={{
                 padding: '6px 14px', borderRadius: radius.pill, fontSize: '12px', fontWeight: 500,
                 background: filter === f ? colors.card : 'transparent',
                 color: filter === f ? colors.ink : colors.text2,
@@ -71,7 +81,7 @@ export function Transactions() {
           </div>
           <div style={{ position: 'relative' }}>
             <Icons.IconSearch size={14} color={colors.text2} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
-            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search id, merchant, customer…" style={{
+            <input value={search} onChange={(e) => setSearchReset(e.target.value)} placeholder="Search id, merchant, customer…" style={{
               background: colors.bg, border: `0.5px solid ${colors.border}`, borderRadius: radius.pill,
               padding: '8px 14px 8px 36px', fontSize: '12px', width: '320px', outline: 'none',
               color: colors.ink, fontFamily: typography.family.sans,
@@ -84,18 +94,35 @@ export function Transactions() {
           <div style={{ textAlign: 'right' }}>Amount (INR / source)</div><div>Status</div><div></div>
         </div>
 
-        {filtered.map((t, i) => (
-          <TxnRow key={t.id} txn={t} isLast={i === filtered.length - 1} onClick={() => setSelected(t)}
-            inr={toInr(t.sourceAmount, t.sourceCurrency)}
-            formatInr={formatInr} formatSource={formatSource}
-          />
-        ))}
+        {paged.length === 0 ? (
+          <div style={{ padding: '60px 24px', textAlign: 'center', color: colors.text3, fontSize: '13px' }}>
+            No transactions match these filters.
+          </div>
+        ) : (
+          paged.map((t, i) => (
+            <TxnRow key={t.id} txn={t} isLast={i === paged.length - 1} onClick={() => setSelected(t)}
+              inr={toInr(t.sourceAmount, t.sourceCurrency)}
+              formatInr={formatInr} formatSource={formatSource}
+            />
+          ))
+        )}
 
-        <div style={{ padding: '14px 24px', borderTop: `0.5px solid ${colors.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontSize: '12px', color: colors.text2 }}>Showing {filtered.length} of {data.totalCount} transactions</div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <Button variant="ghost" size="sm">Previous</Button>
-            <Button variant="secondary" size="sm">Next →</Button>
+        <div style={{ padding: '14px 24px', borderTop: `0.5px solid ${colors.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <div style={{ fontSize: '12px', color: colors.text2 }}>
+            {filtered.length === 0 ? 'No results' : (
+              <>Showing <span style={{ color: colors.ink, fontWeight: 500 }}>{currentPage * PAGE_SIZE + 1}–{Math.min((currentPage + 1) * PAGE_SIZE, filtered.length)}</span> of <span style={{ color: colors.ink, fontWeight: 500 }}>{filtered.length}</span>{filtered.length !== data.totalCount && ` (of ${data.totalCount.toLocaleString('en-IN')} total)`}</>
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <div style={{ fontSize: '11px', color: colors.text3, fontFamily: typography.family.mono, marginRight: '4px' }}>
+              Page {currentPage + 1} of {totalPages}
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => setPage(Math.max(0, currentPage - 1))} disabled={currentPage === 0}>
+              ← Previous
+            </Button>
+            <Button variant="secondary" size="sm" onClick={() => setPage(Math.min(totalPages - 1, currentPage + 1))} disabled={currentPage >= totalPages - 1}>
+              Next →
+            </Button>
           </div>
         </div>
       </Card>

@@ -34,7 +34,7 @@ export function Home() {
             {nav.map((n: any) => <a key={n.href} href={n.href}>{n.label}</a>)}
           </div>
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-            <Link to="/app" style={{ fontSize: '14px', color: colors.text2 }}>Sign in</Link>
+            <Link to="/signin" style={{ fontSize: '14px', color: colors.text2 }}>Sign in</Link>
             <Link to="/book-demo" style={{ padding: '10px 18px', background: colors.teal, color: '#fff', borderRadius: radius.pill, fontSize: '13px', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
               Get started <Icons.IconArrowUpRight size={13} color="#fff" />
             </Link>
