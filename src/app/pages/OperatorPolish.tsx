@@ -9,7 +9,7 @@ import { configService } from '../../services';
 const AMBER = '#B48C3C';
 const RED   = '#D64545';
 
-type InnerTab = 'fraud' | 'disputeNotif' | 'disputeUploads' | 'receipts' | 'subAnalytics';
+type InnerTab = 'fraud' | 'disputeNotif' | 'receipts';
 
 export function OperatorPolish() {
   const { data, loading, error, refetch } = useAsync(() => configService.getOperatorPolish(), []);
@@ -20,10 +20,8 @@ export function OperatorPolish() {
 
   const tabs: Array<{ id: InnerTab; label: string; hint: string }> = [
     { id: 'fraud',          label: 'Fraud rules',         hint: `${data.fraudRules.rules.length} rules · ${data.fraudRules.rules.filter((r: any) => r.active).length} active` },
-    { id: 'disputeUploads', label: 'Evidence uploads',     hint: `${data.disputeUploads.queue.length} in queue` },
     { id: 'disputeNotif',   label: 'Dispute alerts',        hint: `${data.disputeNotifications.rules.filter((r: any) => r.active).length} rules on` },
     { id: 'receipts',       label: 'Receipt editor',        hint: `${data.receiptEditor.currentTemplate.blocks.length} blocks` },
-    { id: 'subAnalytics',   label: 'Subscription analytics', hint: data.subscriptionAnalytics.stats[0].value },
   ];
 
   return (
@@ -56,10 +54,8 @@ export function OperatorPolish() {
       </div>
 
       {tab === 'fraud'          && <FraudRulesView data={data.fraudRules} />}
-      {tab === 'disputeUploads' && <DisputeUploadsView data={data.disputeUploads} />}
       {tab === 'disputeNotif'   && <DisputeNotifView data={data.disputeNotifications} />}
       {tab === 'receipts'       && <ReceiptEditorView data={data.receiptEditor} />}
-      {tab === 'subAnalytics'   && <SubAnalyticsView data={data.subscriptionAnalytics} />}
     </div>
   );
 }
@@ -215,116 +211,6 @@ function RuleEditor({ rule, actionPalette, fieldCatalog, onClose }: any) {
   );
 }
 
-// ── P6.2 Dispute uploads ────────────────────────────────────────
-function DisputeUploadsView({ data }: any) {
-  const [active, setActive] = useState<any>(data.queue[0]);
-  return (
-    <>
-      <div style={{ fontSize: '12px', color: colors.text2, lineHeight: 1.55, marginBottom: '16px', maxWidth: '720px' }}>{data.summary}</div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '16px' }}>
-        {/* Queue list */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {data.queue.map((d: any) => {
-            const isCritical = d.status === 'critical';
-            const isActive = active?.id === d.id;
-            return (
-              <button key={d.id} onClick={() => setActive(d)} style={{
-                padding: '14px 16px', textAlign: 'left',
-                background: isActive ? colors.card : colors.bg,
-                border: isActive ? `0.5px solid rgba(28,111,107,0.4)` : `0.5px solid ${colors.border}`,
-                borderRadius: radius.md, cursor: 'pointer', fontFamily: 'inherit',
-                borderLeft: isCritical ? `3px solid ${RED}` : (isActive ? `3px solid ${colors.teal}` : `3px solid transparent`),
-              }}>
-                <div style={{ fontSize: '11px', color: colors.text3, fontFamily: typography.family.mono, marginBottom: '3px' }}>{d.id}</div>
-                <div style={{ fontSize: '13px', fontWeight: 600, color: colors.ink, marginBottom: '3px' }}>{d.merchant}</div>
-                <div style={{ fontSize: '11px', color: colors.text2, marginBottom: '6px' }}>{d.customer} · {d.amount}</div>
-                <div style={{ fontSize: '10px', color: isCritical ? RED : (d.hoursLeft < 48 ? AMBER : colors.text3), fontFamily: typography.family.mono, fontWeight: isCritical ? 700 : 500 }}>
-                  {isCritical ? `⚠ ${d.hoursLeft}h left` : `${d.hoursLeft}h left`}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Detail */}
-        {active && (
-          <Card padded style={{ padding: '24px 26px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-              <div>
-                <Kicker style={{ marginBottom: '4px' }}>Dispute · {active.id}</Kicker>
-                <div style={{ fontSize: '20px', fontWeight: 600, color: colors.ink, fontFamily: typography.family.mono, letterSpacing: '-0.015em' }}>{active.amount}</div>
-                <div style={{ fontSize: '12px', color: colors.text2, marginTop: '2px' }}>{active.merchant} · {active.customer}</div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '11px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '3px' }}>Deadline</div>
-                <div style={{ fontSize: '12px', color: colors.ink, fontFamily: typography.family.mono }}>{active.deadline}</div>
-              </div>
-            </div>
-
-            {active.winProbability !== null && (
-              <div style={{ padding: '14px 16px', background: active.winProbability >= 60 ? 'rgba(28,111,107,0.06)' : 'rgba(214,69,69,0.05)', border: `0.5px solid ${active.winProbability >= 60 ? 'rgba(28,111,107,0.25)' : 'rgba(214,69,69,0.2)'}`, borderRadius: radius.md, marginBottom: '14px', display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: active.winProbability >= 60 ? colors.teal : RED, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 700, fontFamily: typography.family.mono, flexShrink: 0 }}>{active.winProbability}%</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '10px', color: active.winProbability >= 60 ? colors.teal : RED, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 700, marginBottom: '4px' }}>Win probability</div>
-                  <div style={{ fontSize: '12px', color: colors.text2, lineHeight: 1.55 }}>{active.narrative}</div>
-                </div>
-              </div>
-            )}
-
-            {/* Dropzone */}
-            <div style={{ padding: '24px', background: colors.bg, border: `1.5px dashed ${colors.borderHover}`, borderRadius: radius.md, marginBottom: '14px', textAlign: 'center', cursor: 'pointer' }} onClick={() => toast.success('File picker opened')}>
-              <Icons.IconFileText size={20} color={colors.text2} />
-              <div style={{ fontSize: '12px', color: colors.ink, fontWeight: 500, marginTop: '6px' }}>Drop evidence files here</div>
-              <div style={{ fontSize: '10px', color: colors.text3, marginTop: '2px' }}>PDF · JPG · PNG · CSV up to 10 MB · auto-OCR + categorize</div>
-            </div>
-
-            {active.evidenceCollected.length > 0 && (
-              <>
-                <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '8px' }}>Collected · {active.evidenceCollected.length}</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '14px' }}>
-                  {active.evidenceCollected.map((e: any, i: number) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px', background: colors.bg, border: `0.5px solid ${colors.border}`, borderRadius: radius.sm }}>
-                      <Icons.IconCheck size={14} color={colors.teal} strokeWidth={2.5} />
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: '12px', color: colors.ink, fontWeight: 500 }}>{e.type}</div>
-                        <div style={{ fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono }}>{e.filename} · {e.size} · uploaded {e.uploadedAt}</div>
-                      </div>
-                      {e.ocrComplete && <Pill tone="teal">OCR done</Pill>}
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {active.evidenceMissing.length > 0 && (
-              <>
-                <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '8px' }}>Missing · {active.evidenceMissing.length}</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '14px' }}>
-                  {active.evidenceMissing.map((e: any, i: number) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px', background: 'rgba(180,140,60,0.06)', border: `0.5px solid rgba(180,140,60,0.25)`, borderRadius: radius.sm }}>
-                      <Icons.IconAlert size={14} color={AMBER} />
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: '12px', color: colors.ink, fontWeight: 500 }}>{e.type} {e.required && <span style={{ color: RED, fontSize: '10px', marginLeft: '4px' }}>required</span>}</div>
-                        <div style={{ fontSize: '10px', color: colors.text2 }}>{e.hint}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-
-            <div style={{ display: 'flex', gap: '8px', paddingTop: '14px', borderTop: `0.5px solid ${colors.border}` }}>
-              <Button variant="primary" size="sm" disabled={active.evidenceMissing.some((e: any) => e.required)} onClick={() => toast.success('Evidence submitted to acquirer · Visa Resolve Online')}>Submit to acquirer</Button>
-              <Button variant="secondary" size="sm" onClick={() => toast.success('Evidence saved as draft')}>Save draft</Button>
-              <Button variant="ghost" size="sm" onClick={() => toast.success('Accepted · merchant refunded customer')} style={{ marginLeft: 'auto' }}>Accept & refund</Button>
-            </div>
-          </Card>
-        )}
-      </div>
-    </>
-  );
-}
 
 // ── P6.3 Dispute notifications ─────────────────────────────────
 function DisputeNotifView({ data }: any) {
@@ -447,103 +333,6 @@ function ReceiptEditorView({ data }: any) {
   );
 }
 
-// ── P6.5 Subscription analytics ───────────────────────────────
-function SubAnalyticsView({ data }: any) {
-  return (
-    <>
-      <div style={{ fontSize: '12px', color: colors.text2, lineHeight: 1.55, marginBottom: '16px', maxWidth: '720px' }}>{data.summary}</div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '20px' }}>
-        {data.stats.map((s: any) => <StatTile key={s.label} stat={s} />)}
-      </div>
-
-      {/* MRR trend */}
-      <Card padded style={{ marginBottom: '20px' }}>
-        <Kicker style={{ marginBottom: '14px' }}>MRR trend · last 7 months</Kicker>
-        <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px', height: '160px' }}>
-          {data.mrrTrend.map((m: any, i: number) => {
-            const maxMrr = Math.max(...data.mrrTrend.map((x: any) => x.mrr));
-            const heightPct = (m.mrr / maxMrr) * 100;
-            return (
-              <div key={m.month} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-                <div style={{ fontSize: '10px', color: colors.ink, fontFamily: typography.family.mono, fontWeight: 600 }}>₹{(m.mrr / 100000).toFixed(1)}L</div>
-                <div style={{ width: '100%', height: `${heightPct}%`, background: i === data.mrrTrend.length - 1 ? colors.teal : colors.borderHover, borderRadius: '3px 3px 0 0', minHeight: '12px' }} />
-                <div style={{ fontSize: '9px', color: colors.text3, fontFamily: typography.family.mono }}>{m.month.split(' ')[0]}</div>
-              </div>
-            );
-          })}
-        </div>
-      </Card>
-
-      {/* Cohort table */}
-      <Card padded style={{ marginBottom: '20px' }}>
-        <Kicker style={{ marginBottom: '14px' }}>Retention cohorts · % active by month since signup</Kicker>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
-            <thead>
-              <tr style={{ borderBottom: `0.5px solid ${colors.border}` }}>
-                <th style={{ textAlign: 'left', padding: '8px 10px', fontSize: '10px', color: colors.text3, letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>Cohort</th>
-                <th style={{ textAlign: 'right', padding: '8px 10px', fontSize: '10px', color: colors.text3, letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>Size</th>
-                {[0,1,2,3,4,5,6].map(m => <th key={m} style={{ textAlign: 'center', padding: '8px 10px', fontSize: '10px', color: colors.text3, letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>M{m}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              {data.cohorts.map((c: any) => (
-                <tr key={c.joined} style={{ borderBottom: `0.5px solid ${colors.border}` }}>
-                  <td style={{ padding: '8px 10px', color: colors.ink, fontWeight: 500 }}>{c.joined}</td>
-                  <td style={{ padding: '8px 10px', textAlign: 'right', color: colors.text2, fontFamily: typography.family.mono }}>{c.size}</td>
-                  {Array.from({ length: 7 }).map((_, idx) => {
-                    const v = c.active[idx];
-                    if (!v) return <td key={idx} style={{ padding: '8px 10px', textAlign: 'center', color: colors.text3 }}>—</td>;
-                    const num = parseInt(v);
-                    const intensity = num / 100;
-                    return <td key={idx} style={{ padding: '8px 10px', textAlign: 'center', background: `rgba(28,111,107,${intensity * 0.18})`, color: colors.ink, fontFamily: typography.family.mono, fontWeight: 500 }}>{v}</td>;
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
-
-      {/* Churn reasons + top plans */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-        <Card padded>
-          <Kicker style={{ marginBottom: '12px' }}>Churn reasons · 30d</Kicker>
-          {data.churnReasons.map((r: any) => (
-            <div key={r.reason} style={{ marginBottom: '10px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '11px' }}>
-                <span style={{ color: colors.ink }}>{r.reason}</span>
-                <span style={{ color: colors.text2, fontFamily: typography.family.mono }}>{r.count} · {r.pct}%</span>
-              </div>
-              <div style={{ width: '100%', height: '4px', background: colors.bg, borderRadius: '2px', overflow: 'hidden' }}>
-                <div style={{ width: `${r.pct * 4}%`, maxWidth: '100%', height: '100%', background: colors.teal }} />
-              </div>
-            </div>
-          ))}
-        </Card>
-
-        <Card padded={false}>
-          <div style={{ padding: '14px 18px', borderBottom: `0.5px solid ${colors.border}` }}>
-            <Kicker>Top plans · by MRR</Kicker>
-          </div>
-          {data.topPlans.map((p: any, i: number) => (
-            <div key={p.plan} style={{ padding: '12px 18px', borderBottom: i < data.topPlans.length - 1 ? `0.5px solid ${colors.border}` : 'none' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
-                <span style={{ fontSize: '12px', color: colors.ink, fontWeight: 500 }}>{p.plan}</span>
-                <span style={{ fontSize: '13px', color: colors.teal, fontFamily: typography.family.mono, fontWeight: 600 }}>{p.mrr}</span>
-              </div>
-              <div style={{ display: 'flex', gap: '12px', fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono }}>
-                <span>{p.subs.toLocaleString('en-IN')} subs</span>
-                <span style={{ color: parseFloat(p.churn) > 5 ? AMBER : colors.teal }}>{p.churn} churn</span>
-                <span style={{ color: p.trend === 'up' ? colors.teal : RED, marginLeft: 'auto' }}>{p.trend === 'up' ? '↗ growing' : '↘ declining'}</span>
-              </div>
-            </div>
-          ))}
-        </Card>
-      </div>
-    </>
-  );
-}
 
 // ── Helpers ──────────────────────────────────────────────────
 function StatTile({ stat }: any) {

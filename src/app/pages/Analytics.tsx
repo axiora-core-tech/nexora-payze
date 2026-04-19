@@ -11,6 +11,7 @@ const RED   = '#D64545';
 
 export function Analytics() {
   const { data, loading, error, refetch } = useAsync(() => configService.getAnalytics(), []);
+  const { data: opData } = useAsync(() => configService.getOperatorPolish(), []);
   const [tab, setTab] = useState<string>('overview');
   const [range, setRange] = useState('30d');
 
@@ -207,6 +208,12 @@ export function Analytics() {
             <LtvTile label="Payback period"       value={`${revenueRetention.ltv.paybackMonths} mo`} sub="CAC / gross margin per month" />
           </div>
         </>
+      )}
+
+      {tab === 'subscriptions' && (
+        opData?.subscriptionAnalytics
+          ? <SubscriptionsTab data={opData.subscriptionAnalytics} />
+          : <PageLoader label="Loading subscriptions" />
       )}
     </div>
   );
@@ -490,3 +497,104 @@ const thStyle: React.CSSProperties = {
   textTransform: 'uppercase',
   fontWeight: 500,
 };
+
+// ── Subscriptions analytics tab ──────────────────────────────────
+function SubscriptionsTab({ data }: any) {
+  return (
+    <>
+      <div style={{ fontSize: '12px', color: colors.text2, lineHeight: 1.55, marginBottom: '16px', maxWidth: '720px' }}>{data.summary}</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '20px' }}>
+        {data.stats.map((s: any) => (
+          <Card key={s.label} padded style={{ padding: '16px 18px' }}>
+            <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, marginBottom: '6px' }}>{s.label}</div>
+            <div style={{ fontSize: '20px', fontWeight: 600, color: colors.ink, fontFamily: typography.family.mono, letterSpacing: '-0.02em', marginBottom: '4px' }}>{s.value}</div>
+            <div style={{ fontSize: '11px', color: colors.text2 }}>{s.sub}</div>
+          </Card>
+        ))}
+      </div>
+
+      <Card padded style={{ marginBottom: '20px' }}>
+        <Kicker style={{ marginBottom: '14px' }}>MRR trend · last 7 months</Kicker>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px', height: '160px' }}>
+          {data.mrrTrend.map((m: any, i: number) => {
+            const maxMrr = Math.max(...data.mrrTrend.map((x: any) => x.mrr));
+            const heightPct = (m.mrr / maxMrr) * 100;
+            return (
+              <div key={m.month} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                <div style={{ fontSize: '10px', color: colors.ink, fontFamily: typography.family.mono, fontWeight: 600 }}>₹{(m.mrr / 100000).toFixed(1)}L</div>
+                <div style={{ width: '100%', height: `${heightPct}%`, background: i === data.mrrTrend.length - 1 ? colors.teal : colors.borderHover, borderRadius: '3px 3px 0 0', minHeight: '12px' }} />
+                <div style={{ fontSize: '9px', color: colors.text3, fontFamily: typography.family.mono }}>{m.month.split(' ')[0]}</div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+      <Card padded style={{ marginBottom: '20px' }}>
+        <Kicker style={{ marginBottom: '14px' }}>Retention cohorts · % active by month since signup</Kicker>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
+            <thead>
+              <tr style={{ borderBottom: `0.5px solid ${colors.border}` }}>
+                <th style={{ textAlign: 'left', padding: '8px 10px', fontSize: '10px', color: colors.text3, letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>Cohort</th>
+                <th style={{ textAlign: 'right', padding: '8px 10px', fontSize: '10px', color: colors.text3, letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>Size</th>
+                {[0,1,2,3,4,5,6].map(m => <th key={m} style={{ textAlign: 'center', padding: '8px 10px', fontSize: '10px', color: colors.text3, letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>M{m}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {data.cohorts.map((c: any) => (
+                <tr key={c.joined} style={{ borderBottom: `0.5px solid ${colors.border}` }}>
+                  <td style={{ padding: '8px 10px', color: colors.ink, fontWeight: 500 }}>{c.joined}</td>
+                  <td style={{ padding: '8px 10px', textAlign: 'right', color: colors.text2, fontFamily: typography.family.mono }}>{c.size}</td>
+                  {Array.from({ length: 7 }).map((_, idx) => {
+                    const v = c.active[idx];
+                    if (!v) return <td key={idx} style={{ padding: '8px 10px', textAlign: 'center', color: colors.text3 }}>—</td>;
+                    const num = parseInt(v);
+                    const intensity = num / 100;
+                    return <td key={idx} style={{ padding: '8px 10px', textAlign: 'center', background: `rgba(28,111,107,${intensity * 0.18})`, color: colors.ink, fontFamily: typography.family.mono, fontWeight: 500 }}>{v}</td>;
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+        <Card padded>
+          <Kicker style={{ marginBottom: '12px' }}>Churn reasons · 30d</Kicker>
+          {data.churnReasons.map((r: any) => (
+            <div key={r.reason} style={{ marginBottom: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '11px' }}>
+                <span style={{ color: colors.ink }}>{r.reason}</span>
+                <span style={{ color: colors.text2, fontFamily: typography.family.mono }}>{r.count} · {r.pct}%</span>
+              </div>
+              <div style={{ width: '100%', height: '4px', background: colors.bg, borderRadius: '2px', overflow: 'hidden' }}>
+                <div style={{ width: `${r.pct * 4}%`, maxWidth: '100%', height: '100%', background: colors.teal }} />
+              </div>
+            </div>
+          ))}
+        </Card>
+
+        <Card padded={false}>
+          <div style={{ padding: '14px 18px', borderBottom: `0.5px solid ${colors.border}` }}>
+            <Kicker>Top plans · by MRR</Kicker>
+          </div>
+          {data.topPlans.map((p: any, i: number) => (
+            <div key={p.plan} style={{ padding: '12px 18px', borderBottom: i < data.topPlans.length - 1 ? `0.5px solid ${colors.border}` : 'none' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
+                <span style={{ fontSize: '12px', color: colors.ink, fontWeight: 500 }}>{p.plan}</span>
+                <span style={{ fontSize: '13px', color: colors.teal, fontFamily: typography.family.mono, fontWeight: 600 }}>{p.mrr}</span>
+              </div>
+              <div style={{ display: 'flex', gap: '12px', fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono }}>
+                <span>{p.subs.toLocaleString('en-IN')} subs</span>
+                <span style={{ color: parseFloat(p.churn) > 5 ? AMBER : colors.teal }}>{p.churn} churn</span>
+                <span style={{ color: p.trend === 'up' ? colors.teal : RED, marginLeft: 'auto' }}>{p.trend === 'up' ? '↗ growing' : '↘ declining'}</span>
+              </div>
+            </div>
+          ))}
+        </Card>
+      </div>
+    </>
+  );
+}

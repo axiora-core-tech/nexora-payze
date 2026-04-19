@@ -5,15 +5,40 @@
     "subtitle": "What's happening, why it matters, and what to do about it."
   },
   "dateRanges": [
-    { "value": "7d",  "label": "Last 7 days" },
-    { "value": "30d", "label": "Last 30 days" },
-    { "value": "90d", "label": "Last 90 days" },
-    { "value": "ytd", "label": "Year to date" }
+    {
+      "value": "7d",
+      "label": "Last 7 days"
+    },
+    {
+      "value": "30d",
+      "label": "Last 30 days"
+    },
+    {
+      "value": "90d",
+      "label": "Last 90 days"
+    },
+    {
+      "value": "ytd",
+      "label": "Year to date"
+    }
   ],
   "tabs": [
-    { "id": "overview",    "label": "Overview" },
-    { "id": "performance", "label": "Performance" },
-    { "id": "customers",   "label": "Customers" }
+    {
+      "id": "overview",
+      "label": "Overview"
+    },
+    {
+      "id": "performance",
+      "label": "Performance"
+    },
+    {
+      "id": "customers",
+      "label": "Customers"
+    },
+    {
+      "id": "subscriptions",
+      "label": "Subscriptions"
+    }
   ],
   "intelligence": [
     {
@@ -39,118 +64,831 @@
     }
   ],
   "metrics": [
-    { "label": "Gross volume",  "value": "₹18.42 Cr", "change": "+24.1%",   "up": true,  "sparkline": [78, 82, 91, 88, 104, 112, 128] },
-    { "label": "Net volume",    "value": "₹17.98 Cr", "change": "+24.6%",   "up": true,  "sparkline": [75, 80, 89, 86, 102, 110, 125] },
-    { "label": "Transactions",  "value": "84,217",    "change": "+18.7%",   "up": true,  "sparkline": [62, 68, 74, 71, 82, 88, 96] },
-    { "label": "Success rate",  "value": "93.7%",     "change": "+0.3 pts", "up": true,  "sparkline": [92.8, 93.1, 93.0, 93.4, 93.5, 93.4, 93.7] },
-    { "label": "Avg ticket",    "value": "₹2,186",    "change": "+4.6%",    "up": true,  "sparkline": [2020, 2040, 2085, 2075, 2120, 2155, 2186] },
-    { "label": "Dispute rate",  "value": "0.18%",     "change": "-0.04 pts","up": true,  "sparkline": [0.24, 0.23, 0.22, 0.20, 0.19, 0.19, 0.18] }
+    {
+      "label": "Gross volume",
+      "value": "₹18.42 Cr",
+      "change": "+24.1%",
+      "up": true,
+      "sparkline": [
+        78,
+        82,
+        91,
+        88,
+        104,
+        112,
+        128
+      ]
+    },
+    {
+      "label": "Net volume",
+      "value": "₹17.98 Cr",
+      "change": "+24.6%",
+      "up": true,
+      "sparkline": [
+        75,
+        80,
+        89,
+        86,
+        102,
+        110,
+        125
+      ]
+    },
+    {
+      "label": "Transactions",
+      "value": "84,217",
+      "change": "+18.7%",
+      "up": true,
+      "sparkline": [
+        62,
+        68,
+        74,
+        71,
+        82,
+        88,
+        96
+      ]
+    },
+    {
+      "label": "Success rate",
+      "value": "93.7%",
+      "change": "+0.3 pts",
+      "up": true,
+      "sparkline": [
+        92.8,
+        93.1,
+        93.0,
+        93.4,
+        93.5,
+        93.4,
+        93.7
+      ]
+    },
+    {
+      "label": "Avg ticket",
+      "value": "₹2,186",
+      "change": "+4.6%",
+      "up": true,
+      "sparkline": [
+        2020,
+        2040,
+        2085,
+        2075,
+        2120,
+        2155,
+        2186
+      ]
+    },
+    {
+      "label": "Dispute rate",
+      "value": "0.18%",
+      "change": "-0.04 pts",
+      "up": true,
+      "sparkline": [
+        0.24,
+        0.23,
+        0.22,
+        0.2,
+        0.19,
+        0.19,
+        0.18
+      ]
+    }
   ],
   "volumeChart": {
     "title": "Volume · last 30 days",
     "total": "₹18,42,00,000",
-    "current":  "M 0 190 L 30 175 L 60 180 L 90 155 L 120 145 L 150 130 L 180 138 L 210 120 L 240 108 L 270 95 L 300 115 L 330 100 L 360 82 L 390 75 L 420 80 L 450 62 L 480 68 L 510 50 L 540 40 L 570 45 L 600 28 L 630 32 L 660 22 L 690 18 L 720 12 L 750 8 L 780 5",
+    "current": "M 0 190 L 30 175 L 60 180 L 90 155 L 120 145 L 150 130 L 180 138 L 210 120 L 240 108 L 270 95 L 300 115 L 330 100 L 360 82 L 390 75 L 420 80 L 450 62 L 480 68 L 510 50 L 540 40 L 570 45 L 600 28 L 630 32 L 660 22 L 690 18 L 720 12 L 750 8 L 780 5",
     "previous": "M 0 180 L 30 170 L 60 185 L 90 160 L 120 155 L 150 140 L 180 145 L 210 130 L 240 120 L 270 110 L 300 130 L 330 115 L 360 100 L 390 90 L 420 95 L 450 80 L 480 85 L 510 70 L 540 60 L 570 65 L 600 50 L 630 55 L 660 40 L 690 35 L 720 30 L 750 25 L 780 20"
   },
   "concentration": {
     "hhi": 1482,
     "hhiBand": "moderate concentration",
     "hhiNote": "Herfindahl-Hirschman Index · below 1,500 is considered a diversified merchant book. Above 2,500 starts to look like platform fragility.",
-    "top1":  { "name": "Razorpay Technologies", "share": 22.4, "volume": "₹4.13 Cr" },
-    "top5":  { "share": 68.2 },
-    "top10": { "share": 84.6 },
+    "top1": {
+      "name": "Razorpay Technologies",
+      "share": 22.4,
+      "volume": "₹4.13 Cr"
+    },
+    "top5": {
+      "share": 68.2
+    },
+    "top10": {
+      "share": 84.6
+    },
     "distribution": [
-      { "merchant": "Razorpay Technologies", "volume": "₹4.13 Cr", "share": 22.4 },
-      { "merchant": "Zomato Foods",          "volume": "₹2.84 Cr", "share": 15.4 },
-      { "merchant": "Nykaa Beauty",          "volume": "₹2.12 Cr", "share": 11.5 },
-      { "merchant": "MakeMyTrip",            "volume": "₹1.84 Cr", "share": 10.0 },
-      { "merchant": "BookMyShow",            "volume": "₹1.62 Cr", "share":  8.8 },
-      { "merchant": "Cred Club",             "volume": "₹1.28 Cr", "share":  6.9 },
-      { "merchant": "Urban Company",         "volume": "₹1.18 Cr", "share":  6.4 },
-      { "merchant": "Everyone else (40)",    "volume": "₹2.85 Cr", "share": 18.6 }
+      {
+        "merchant": "Razorpay Technologies",
+        "volume": "₹4.13 Cr",
+        "share": 22.4
+      },
+      {
+        "merchant": "Zomato Foods",
+        "volume": "₹2.84 Cr",
+        "share": 15.4
+      },
+      {
+        "merchant": "Nykaa Beauty",
+        "volume": "₹2.12 Cr",
+        "share": 11.5
+      },
+      {
+        "merchant": "MakeMyTrip",
+        "volume": "₹1.84 Cr",
+        "share": 10.0
+      },
+      {
+        "merchant": "BookMyShow",
+        "volume": "₹1.62 Cr",
+        "share": 8.8
+      },
+      {
+        "merchant": "Cred Club",
+        "volume": "₹1.28 Cr",
+        "share": 6.9
+      },
+      {
+        "merchant": "Urban Company",
+        "volume": "₹1.18 Cr",
+        "share": 6.4
+      },
+      {
+        "merchant": "Everyone else (40)",
+        "volume": "₹2.85 Cr",
+        "share": 18.6
+      }
     ]
   },
   "hourHeatmap": {
-    "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    "data": [
-      [4,3,2,2,2,3,6,14,28,44,52,58,64,68,62,58,54,62,78,84,74,58,38,18],
-      [3,2,2,1,1,3,7,16,32,48,56,62,68,72,66,60,55,64,82,92,88,72,48,24],
-      [4,3,2,2,2,3,6,15,30,46,54,60,66,70,64,59,55,63,80,86,76,60,40,20],
-      [4,3,2,2,2,3,6,14,29,45,53,59,65,69,63,58,54,62,79,85,75,59,39,19],
-      [4,3,2,2,2,3,7,16,32,48,58,64,70,74,68,63,58,66,84,94,88,76,52,28],
-      [3,2,2,1,1,2,4,10,22,36,46,54,60,64,60,58,56,62,72,78,74,66,52,32],
-      [3,2,2,1,1,2,4,11,24,40,48,54,58,60,56,52,50,56,68,74,70,60,46,28]
+    "days": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
     ],
-    "peak":    { "day": "Fri", "hour": 20, "volume": "₹82 L / hour" },
-    "note":    "Concentrated weekday evenings 18–22 IST · Tuesday 20:00 spike correlates with the dispute-rate anomaly (see intelligence above)."
+    "data": [
+      [
+        4,
+        3,
+        2,
+        2,
+        2,
+        3,
+        6,
+        14,
+        28,
+        44,
+        52,
+        58,
+        64,
+        68,
+        62,
+        58,
+        54,
+        62,
+        78,
+        84,
+        74,
+        58,
+        38,
+        18
+      ],
+      [
+        3,
+        2,
+        2,
+        1,
+        1,
+        3,
+        7,
+        16,
+        32,
+        48,
+        56,
+        62,
+        68,
+        72,
+        66,
+        60,
+        55,
+        64,
+        82,
+        92,
+        88,
+        72,
+        48,
+        24
+      ],
+      [
+        4,
+        3,
+        2,
+        2,
+        2,
+        3,
+        6,
+        15,
+        30,
+        46,
+        54,
+        60,
+        66,
+        70,
+        64,
+        59,
+        55,
+        63,
+        80,
+        86,
+        76,
+        60,
+        40,
+        20
+      ],
+      [
+        4,
+        3,
+        2,
+        2,
+        2,
+        3,
+        6,
+        14,
+        29,
+        45,
+        53,
+        59,
+        65,
+        69,
+        63,
+        58,
+        54,
+        62,
+        79,
+        85,
+        75,
+        59,
+        39,
+        19
+      ],
+      [
+        4,
+        3,
+        2,
+        2,
+        2,
+        3,
+        7,
+        16,
+        32,
+        48,
+        58,
+        64,
+        70,
+        74,
+        68,
+        63,
+        58,
+        66,
+        84,
+        94,
+        88,
+        76,
+        52,
+        28
+      ],
+      [
+        3,
+        2,
+        2,
+        1,
+        1,
+        2,
+        4,
+        10,
+        22,
+        36,
+        46,
+        54,
+        60,
+        64,
+        60,
+        58,
+        56,
+        62,
+        72,
+        78,
+        74,
+        66,
+        52,
+        32
+      ],
+      [
+        3,
+        2,
+        2,
+        1,
+        1,
+        2,
+        4,
+        11,
+        24,
+        40,
+        48,
+        54,
+        58,
+        60,
+        56,
+        52,
+        50,
+        56,
+        68,
+        74,
+        70,
+        60,
+        46,
+        28
+      ]
+    ],
+    "peak": {
+      "day": "Fri",
+      "hour": 20,
+      "volume": "₹82 L / hour"
+    },
+    "note": "Concentrated weekday evenings 18–22 IST · Tuesday 20:00 spike correlates with the dispute-rate anomaly (see intelligence above)."
   },
   "methodMatrix": [
-    { "method": "UPI",                "share": 62, "volume": "₹11.42 Cr", "successRate": 99.1, "avgTicket": "₹1,840",  "disputeRate": 0.04, "note": "Cleanest rail · leans on NPCI switch health" },
-    { "method": "Cards · credit",     "share": 15, "volume": "₹2.76 Cr",  "successRate": 86.4, "avgTicket": "₹4,280",  "disputeRate": 0.42, "note": "Biggest improvement lever · issuer-decline retry could add 3–4 pts" },
-    { "method": "Cards · RuPay debit","share":  7, "volume": "₹1.29 Cr",  "successRate": 91.2, "avgTicket": "₹2,120",  "disputeRate": 0.11, "note": "Zero-MDR · strong at Tier-2 merchants" },
-    { "method": "NetBanking",         "share":  9, "volume": "₹1.66 Cr",  "successRate": 88.8, "avgTicket": "₹8,420",  "disputeRate": 0.02, "note": "Slowest checkout · used for high-ticket B2B" },
-    { "method": "Wallets",            "share":  5, "volume": "₹92.1 L",   "successRate": 94.1, "avgTicket": "₹1,080",  "disputeRate": 0.08, "note": "PhonePe & Paytm lead · low ticket" },
-    { "method": "International",      "share":  2, "volume": "₹37.0 L",   "successRate": 72.3, "avgTicket": "₹18,420", "disputeRate": 0.94, "note": "3DS adds friction · fraud-rule tuning needed" }
+    {
+      "method": "UPI",
+      "share": 62,
+      "volume": "₹11.42 Cr",
+      "successRate": 99.1,
+      "avgTicket": "₹1,840",
+      "disputeRate": 0.04,
+      "note": "Cleanest rail · leans on NPCI switch health"
+    },
+    {
+      "method": "Cards · credit",
+      "share": 15,
+      "volume": "₹2.76 Cr",
+      "successRate": 86.4,
+      "avgTicket": "₹4,280",
+      "disputeRate": 0.42,
+      "note": "Biggest improvement lever · issuer-decline retry could add 3–4 pts"
+    },
+    {
+      "method": "Cards · RuPay debit",
+      "share": 7,
+      "volume": "₹1.29 Cr",
+      "successRate": 91.2,
+      "avgTicket": "₹2,120",
+      "disputeRate": 0.11,
+      "note": "Zero-MDR · strong at Tier-2 merchants"
+    },
+    {
+      "method": "NetBanking",
+      "share": 9,
+      "volume": "₹1.66 Cr",
+      "successRate": 88.8,
+      "avgTicket": "₹8,420",
+      "disputeRate": 0.02,
+      "note": "Slowest checkout · used for high-ticket B2B"
+    },
+    {
+      "method": "Wallets",
+      "share": 5,
+      "volume": "₹92.1 L",
+      "successRate": 94.1,
+      "avgTicket": "₹1,080",
+      "disputeRate": 0.08,
+      "note": "PhonePe & Paytm lead · low ticket"
+    },
+    {
+      "method": "International",
+      "share": 2,
+      "volume": "₹37.0 L",
+      "successRate": 72.3,
+      "avgTicket": "₹18,420",
+      "disputeRate": 0.94,
+      "note": "3DS adds friction · fraud-rule tuning needed"
+    }
   ],
   "geography": [
-    { "name": "India · Tier-1 cities",    "share": 54, "volume": "₹9.95 Cr", "growth": "+18%", "cities": "Bengaluru · Mumbai · Delhi · Hyderabad · Chennai · Pune" },
-    { "name": "India · Tier-2 cities",    "share": 18, "volume": "₹3.31 Cr", "growth": "+42%", "cities": "Jaipur · Lucknow · Coimbatore · Kochi · Indore · Chandigarh" },
-    { "name": "India · Rest",             "share":  6, "volume": "₹1.10 Cr", "growth": "+12%", "cities": "Tier-3 and below · 218 PIN codes" },
-    { "name": "UAE",                      "share":  8, "volume": "₹1.47 Cr", "growth": "+8%",  "cities": "Dubai · Abu Dhabi" },
-    { "name": "Europe (SEPA)",            "share":  6, "volume": "₹1.10 Cr", "growth": "+3%",  "cities": "Paris · Berlin · Amsterdam · Dublin" },
-    { "name": "United States",            "share":  4, "volume": "₹73.7 L",  "growth": "-5%",  "cities": "NYC · SF · LA" },
-    { "name": "Rest of world",            "share":  4, "volume": "₹73.7 L",  "growth": "+1%",  "cities": "Singapore · UK · Canada · 9 others" }
+    {
+      "name": "India · Tier-1 cities",
+      "share": 54,
+      "volume": "₹9.95 Cr",
+      "growth": "+18%",
+      "cities": "Bengaluru · Mumbai · Delhi · Hyderabad · Chennai · Pune"
+    },
+    {
+      "name": "India · Tier-2 cities",
+      "share": 18,
+      "volume": "₹3.31 Cr",
+      "growth": "+42%",
+      "cities": "Jaipur · Lucknow · Coimbatore · Kochi · Indore · Chandigarh"
+    },
+    {
+      "name": "India · Rest",
+      "share": 6,
+      "volume": "₹1.10 Cr",
+      "growth": "+12%",
+      "cities": "Tier-3 and below · 218 PIN codes"
+    },
+    {
+      "name": "UAE",
+      "share": 8,
+      "volume": "₹1.47 Cr",
+      "growth": "+8%",
+      "cities": "Dubai · Abu Dhabi"
+    },
+    {
+      "name": "Europe (SEPA)",
+      "share": 6,
+      "volume": "₹1.10 Cr",
+      "growth": "+3%",
+      "cities": "Paris · Berlin · Amsterdam · Dublin"
+    },
+    {
+      "name": "United States",
+      "share": 4,
+      "volume": "₹73.7 L",
+      "growth": "-5%",
+      "cities": "NYC · SF · LA"
+    },
+    {
+      "name": "Rest of world",
+      "share": 4,
+      "volume": "₹73.7 L",
+      "growth": "+1%",
+      "cities": "Singapore · UK · Canada · 9 others"
+    }
   ],
   "benchmarks": {
     "summary": "Payze is at or above industry average on 3 of 4 core metrics. Card success rate is the largest improvement lever.",
     "metrics": [
-      { "name": "Checkout conversion",   "payze": 79.9, "industry": 72.4, "leader": 84.2, "unit": "%",    "status": "above",  "note": "+7.5 pts over industry · top quartile" },
-      { "name": "UPI success rate",      "payze": 99.1, "industry": 96.8, "leader": 99.4, "unit": "%",    "status": "above",  "note": "+2.3 pts over industry · near leader" },
-      { "name": "Card success rate",     "payze": 86.4, "industry": 88.1, "leader": 93.2, "unit": "%",    "status": "below",  "note": "-1.7 pts below industry · improvement lever" },
-      { "name": "Dispute rate",          "payze": 0.18, "industry": 0.22, "leader": 0.09, "unit": "%",    "status": "above",  "note": "-0.04 pts below industry · still 2× leader" },
-      { "name": "Settlement T+1 on-time","payze": 99.4, "industry": 97.2, "leader": 99.7, "unit": "%",    "status": "above",  "note": "+2.2 pts over industry" },
-      { "name": "Avg checkout latency",  "payze": 1.82,"industry": 2.64,  "leader": 1.44, "unit": "s",    "status": "above",  "note": "0.82s faster than industry · leader target" }
+      {
+        "name": "Checkout conversion",
+        "payze": 79.9,
+        "industry": 72.4,
+        "leader": 84.2,
+        "unit": "%",
+        "status": "above",
+        "note": "+7.5 pts over industry · top quartile"
+      },
+      {
+        "name": "UPI success rate",
+        "payze": 99.1,
+        "industry": 96.8,
+        "leader": 99.4,
+        "unit": "%",
+        "status": "above",
+        "note": "+2.3 pts over industry · near leader"
+      },
+      {
+        "name": "Card success rate",
+        "payze": 86.4,
+        "industry": 88.1,
+        "leader": 93.2,
+        "unit": "%",
+        "status": "below",
+        "note": "-1.7 pts below industry · improvement lever"
+      },
+      {
+        "name": "Dispute rate",
+        "payze": 0.18,
+        "industry": 0.22,
+        "leader": 0.09,
+        "unit": "%",
+        "status": "above",
+        "note": "-0.04 pts below industry · still 2× leader"
+      },
+      {
+        "name": "Settlement T+1 on-time",
+        "payze": 99.4,
+        "industry": 97.2,
+        "leader": 99.7,
+        "unit": "%",
+        "status": "above",
+        "note": "+2.2 pts over industry"
+      },
+      {
+        "name": "Avg checkout latency",
+        "payze": 1.82,
+        "industry": 2.64,
+        "leader": 1.44,
+        "unit": "s",
+        "status": "above",
+        "note": "0.82s faster than industry · leader target"
+      }
     ]
   },
   "funnel": [
-    { "stage": "Checkout initiated",        "count": 184212, "pct": 100 },
-    { "stage": "Payment method selected",   "count": 168432, "pct": 91.4 },
-    { "stage": "Auth sent to bank",         "count": 152108, "pct": 82.5 },
-    { "stage": "Succeeded (first attempt)", "count": 129824, "pct": 70.5 },
-    { "stage": "Succeeded (after fallback)","count": 147280, "pct": 79.9 }
+    {
+      "stage": "Checkout initiated",
+      "count": 184212,
+      "pct": 100
+    },
+    {
+      "stage": "Payment method selected",
+      "count": 168432,
+      "pct": 91.4
+    },
+    {
+      "stage": "Auth sent to bank",
+      "count": 152108,
+      "pct": 82.5
+    },
+    {
+      "stage": "Succeeded (first attempt)",
+      "count": 129824,
+      "pct": 70.5
+    },
+    {
+      "stage": "Succeeded (after fallback)",
+      "count": 147280,
+      "pct": 79.9
+    }
   ],
   "funnelNarrative": "Payze routing recovers 17,456 payments that would have been lost to first-attempt decline — a 9.4 pt improvement over bank-only routing. Equivalent to roughly ₹3.82 Cr of recovered GMV at average ticket.",
   "funnelByMethod": [
-    { "method": "UPI",         "init": 114276, "selected": 111832, "sentToBank": 108412, "succeededFirst": 108124, "succeededAfter": 108682, "convFinal": 95.1 },
-    { "method": "Cards",       "init": 40528,  "selected": 36842,  "sentToBank": 32194,  "succeededFirst": 27638,  "succeededAfter": 30624,  "convFinal": 75.6 },
-    { "method": "NetBanking",  "init": 16578,  "selected": 14928,  "sentToBank": 13102,  "succeededFirst": 11632,  "succeededAfter": 12382,  "convFinal": 74.7 },
-    { "method": "Wallets",     "init": 9212,   "selected": 8578,   "sentToBank": 7984,   "succeededFirst": 7552,   "succeededAfter": 7776,   "convFinal": 84.4 },
-    { "method": "International","init": 3618,  "selected": 2252,   "sentToBank": 1884,   "succeededFirst": 1240,   "succeededAfter": 1616,   "convFinal": 44.7 }
+    {
+      "method": "UPI",
+      "init": 114276,
+      "selected": 111832,
+      "sentToBank": 108412,
+      "succeededFirst": 108124,
+      "succeededAfter": 108682,
+      "convFinal": 95.1
+    },
+    {
+      "method": "Cards",
+      "init": 40528,
+      "selected": 36842,
+      "sentToBank": 32194,
+      "succeededFirst": 27638,
+      "succeededAfter": 30624,
+      "convFinal": 75.6
+    },
+    {
+      "method": "NetBanking",
+      "init": 16578,
+      "selected": 14928,
+      "sentToBank": 13102,
+      "succeededFirst": 11632,
+      "succeededAfter": 12382,
+      "convFinal": 74.7
+    },
+    {
+      "method": "Wallets",
+      "init": 9212,
+      "selected": 8578,
+      "sentToBank": 7984,
+      "succeededFirst": 7552,
+      "succeededAfter": 7776,
+      "convFinal": 84.4
+    },
+    {
+      "method": "International",
+      "init": 3618,
+      "selected": 2252,
+      "sentToBank": 1884,
+      "succeededFirst": 1240,
+      "succeededAfter": 1616,
+      "convFinal": 44.7
+    }
   ],
   "cohorts": [
-    { "month": "Oct 2025", "size": 412, "retention": [100, 82, 74, 68, 64, 60, 58] },
-    { "month": "Nov 2025", "size": 524, "retention": [100, 80, 72, 66, 62, 58, null] },
-    { "month": "Dec 2025", "size": 628, "retention": [100, 84, 76, 70, 66, null, null] },
-    { "month": "Jan 2026", "size": 712, "retention": [100, 85, 78, 72, null, null, null] },
-    { "month": "Feb 2026", "size": 891, "retention": [100, 87, 80, null, null, null, null] },
-    { "month": "Mar 2026", "size": 924, "retention": [100, 88, null, null, null, null, null] },
-    { "month": "Apr 2026", "size": 412, "retention": [100, null, null, null, null, null, null] }
+    {
+      "month": "Oct 2025",
+      "size": 412,
+      "retention": [
+        100,
+        82,
+        74,
+        68,
+        64,
+        60,
+        58
+      ]
+    },
+    {
+      "month": "Nov 2025",
+      "size": 524,
+      "retention": [
+        100,
+        80,
+        72,
+        66,
+        62,
+        58,
+        null
+      ]
+    },
+    {
+      "month": "Dec 2025",
+      "size": 628,
+      "retention": [
+        100,
+        84,
+        76,
+        70,
+        66,
+        null,
+        null
+      ]
+    },
+    {
+      "month": "Jan 2026",
+      "size": 712,
+      "retention": [
+        100,
+        85,
+        78,
+        72,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "month": "Feb 2026",
+      "size": 891,
+      "retention": [
+        100,
+        87,
+        80,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "month": "Mar 2026",
+      "size": 924,
+      "retention": [
+        100,
+        88,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "month": "Apr 2026",
+      "size": 412,
+      "retention": [
+        100,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    }
   ],
   "revenueRetention": {
     "summary": "Revenue retention stays above 100% from Month 3 on — customers spend more over time despite attrition.",
     "grrTarget": 88,
     "nrrTarget": 115,
     "cohorts": [
-      { "month": "Oct 2025", "grr": [100,  92,  88,  85,  83,  81,  80], "nrr": [100, 104, 108, 114, 120, 126, 132] },
-      { "month": "Nov 2025", "grr": [100,  91,  87,  84,  82,  80, null],"nrr": [100, 103, 107, 112, 118, 124, null] },
-      { "month": "Dec 2025", "grr": [100,  93,  89,  86,  84, null, null],"nrr":[100, 105, 110, 115, 122, null, null] },
-      { "month": "Jan 2026", "grr": [100,  94,  90,  87, null, null, null],"nrr":[100, 106, 112, 118, null, null, null] },
-      { "month": "Feb 2026", "grr": [100,  93,  89, null, null, null, null],"nrr":[100, 104, 111, null, null, null, null] },
-      { "month": "Mar 2026", "grr": [100,  95, null, null, null, null, null],"nrr":[100, 108, null, null, null, null, null] }
+      {
+        "month": "Oct 2025",
+        "grr": [
+          100,
+          92,
+          88,
+          85,
+          83,
+          81,
+          80
+        ],
+        "nrr": [
+          100,
+          104,
+          108,
+          114,
+          120,
+          126,
+          132
+        ]
+      },
+      {
+        "month": "Nov 2025",
+        "grr": [
+          100,
+          91,
+          87,
+          84,
+          82,
+          80,
+          null
+        ],
+        "nrr": [
+          100,
+          103,
+          107,
+          112,
+          118,
+          124,
+          null
+        ]
+      },
+      {
+        "month": "Dec 2025",
+        "grr": [
+          100,
+          93,
+          89,
+          86,
+          84,
+          null,
+          null
+        ],
+        "nrr": [
+          100,
+          105,
+          110,
+          115,
+          122,
+          null,
+          null
+        ]
+      },
+      {
+        "month": "Jan 2026",
+        "grr": [
+          100,
+          94,
+          90,
+          87,
+          null,
+          null,
+          null
+        ],
+        "nrr": [
+          100,
+          106,
+          112,
+          118,
+          null,
+          null,
+          null
+        ]
+      },
+      {
+        "month": "Feb 2026",
+        "grr": [
+          100,
+          93,
+          89,
+          null,
+          null,
+          null,
+          null
+        ],
+        "nrr": [
+          100,
+          104,
+          111,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      {
+        "month": "Mar 2026",
+        "grr": [
+          100,
+          95,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "nrr": [
+          100,
+          108,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      }
     ],
     "ltv": {
       "average12m": "₹84,200",
-      "top1Decile":  "₹4,82,400",
+      "top1Decile": "₹4,82,400",
       "paybackMonths": 2.8
     }
   }

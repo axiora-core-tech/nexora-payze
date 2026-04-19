@@ -9,9 +9,12 @@ import { configService } from '../../services';
 export function Risk() {
   const { data, loading, error, refetch } = useAsync(() => configService.getRisk(), []);
   const { data: forecast } = useAsync(() => configService.getForecast(), []);
+  const { data: opData } = useAsync(() => configService.getOperatorPolish(), []);
   const { data: evidenceLib } = useAsync(() => configService.getDisputeEvidence(), []);
   const [tab, setTab] = useState<'forecast' | 'signals' | 'rules' | 'disputes'>('forecast');
+  const [disputeSubTab, setDisputeSubTab] = useState<'list' | 'evidence'>('list');
   const [selectedDispute, setSelectedDispute] = useState<any>(null);
+  const [selectedEvidence, setSelectedEvidence] = useState<any>(null);
 
   if (error) return <ErrorState message={`Couldn't load risk — ${error.message}`} onRetry={refetch} />;
   if (loading || !data) return <PageLoader label="Loading risk posture" />;
@@ -128,6 +131,30 @@ export function Risk() {
 
         {tab === 'disputes' && (
           <div style={{ padding: '18px 24px' }}>
+            {/* Sub-tab pill nav */}
+            <div style={{ display: 'inline-flex', gap: '4px', background: colors.bg, padding: '4px', borderRadius: radius.pill, border: `0.5px solid ${colors.border}`, marginBottom: '16px' }}>
+              {[
+                { id: 'list',     label: 'Active disputes', hint: `${disputes.length}` },
+                { id: 'evidence', label: 'Evidence uploads', hint: opData?.disputeUploads ? `${opData.disputeUploads.queue.length} in queue` : '…' },
+              ].map((t: any) => {
+                const active = disputeSubTab === t.id;
+                return (
+                  <button key={t.id} onClick={() => setDisputeSubTab(t.id)} style={{
+                    padding: '7px 16px', borderRadius: radius.pill, fontSize: '12px', fontWeight: active ? 600 : 500,
+                    background: active ? 'rgba(28,111,107,0.09)' : 'transparent',
+                    color: active ? colors.teal : colors.text2,
+                    border: active ? '0.5px solid rgba(28,111,107,0.3)' : '0.5px solid transparent',
+                    cursor: 'pointer', fontFamily: typography.family.sans,
+                    display: 'inline-flex', alignItems: 'center', gap: '8px',
+                  }}>
+                    <span>{t.label}</span>
+                    <span style={{ fontSize: '10px', color: active ? colors.teal : colors.text3, opacity: 0.75, fontFamily: typography.family.mono }}>· {t.hint}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {disputeSubTab === 'list' && <>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px', marginBottom: '12px', background: colors.tealTint, borderRadius: radius.md }}>
               <Icons.IconSparkle size={12} color={colors.teal} />
               <div style={{ fontSize: '12px', color: colors.ink, lineHeight: 1.5 }}>
@@ -159,6 +186,13 @@ export function Risk() {
                 <div style={{ textAlign: 'right' }}><Icons.IconArrowUpRight size={13} color={colors.text3} /></div>
               </div>
             ))}
+            </>}
+
+            {disputeSubTab === 'evidence' && (
+              opData?.disputeUploads
+                ? <EvidenceUploads data={opData.disputeUploads} active={selectedEvidence || opData.disputeUploads.queue[0]} setActive={setSelectedEvidence} />
+                : <PageLoader label="Loading evidence portal" />
+            )}
           </div>
         )}
       </Card>
@@ -630,5 +664,114 @@ function DisputeEvidenceDrawer({ dispute, evidence, fallback, onClose }: any) {
         )}
       </div>
     </div>
+  );
+}
+
+// ── Evidence Uploads (moved from Settings → Tools) ─────────────────
+function EvidenceUploads({ data, active, setActive }: any) {
+  const AMBER_LOCAL = '#B48C3C';
+  const RED_LOCAL = '#D64545';
+  return (
+    <>
+      <div style={{ fontSize: '12px', color: colors.text2, lineHeight: 1.55, marginBottom: '16px', maxWidth: '720px' }}>{data.summary}</div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {data.queue.map((d: any) => {
+            const isCritical = d.status === 'critical';
+            const isActive = active?.id === d.id;
+            return (
+              <button key={d.id} onClick={() => setActive(d)} style={{
+                padding: '14px 16px', textAlign: 'left',
+                background: isActive ? colors.card : colors.bg,
+                border: isActive ? `0.5px solid rgba(28,111,107,0.4)` : `0.5px solid ${colors.border}`,
+                borderRadius: radius.md, cursor: 'pointer', fontFamily: 'inherit',
+                borderLeft: isCritical ? `3px solid ${RED_LOCAL}` : (isActive ? `3px solid ${colors.teal}` : `3px solid transparent`),
+              }}>
+                <div style={{ fontSize: '11px', color: colors.text3, fontFamily: typography.family.mono, marginBottom: '3px' }}>{d.id}</div>
+                <div style={{ fontSize: '13px', fontWeight: 600, color: colors.ink, marginBottom: '3px' }}>{d.merchant}</div>
+                <div style={{ fontSize: '11px', color: colors.text2, marginBottom: '6px' }}>{d.customer} · {d.amount}</div>
+                <div style={{ fontSize: '10px', color: isCritical ? RED_LOCAL : (d.hoursLeft < 48 ? AMBER_LOCAL : colors.text3), fontFamily: typography.family.mono, fontWeight: isCritical ? 700 : 500 }}>
+                  {isCritical ? `⚠ ${d.hoursLeft}h left` : `${d.hoursLeft}h left`}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {active && (
+          <Card padded style={{ padding: '24px 26px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+              <div>
+                <Kicker style={{ marginBottom: '4px' }}>Dispute · {active.id}</Kicker>
+                <div style={{ fontSize: '20px', fontWeight: 600, color: colors.ink, fontFamily: typography.family.mono, letterSpacing: '-0.015em' }}>{active.amount}</div>
+                <div style={{ fontSize: '12px', color: colors.text2, marginTop: '2px' }}>{active.merchant} · {active.customer}</div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: '11px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '3px' }}>Deadline</div>
+                <div style={{ fontSize: '12px', color: colors.ink, fontFamily: typography.family.mono }}>{active.deadline}</div>
+              </div>
+            </div>
+
+            {active.winProbability !== null && (
+              <div style={{ padding: '14px 16px', background: active.winProbability >= 60 ? 'rgba(28,111,107,0.06)' : 'rgba(214,69,69,0.05)', border: `0.5px solid ${active.winProbability >= 60 ? 'rgba(28,111,107,0.25)' : 'rgba(214,69,69,0.2)'}`, borderRadius: radius.md, marginBottom: '14px', display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: active.winProbability >= 60 ? colors.teal : RED_LOCAL, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 700, fontFamily: typography.family.mono, flexShrink: 0 }}>{active.winProbability}%</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '10px', color: active.winProbability >= 60 ? colors.teal : RED_LOCAL, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 700, marginBottom: '4px' }}>Win probability</div>
+                  <div style={{ fontSize: '12px', color: colors.text2, lineHeight: 1.55 }}>{active.narrative}</div>
+                </div>
+              </div>
+            )}
+
+            <div style={{ padding: '24px', background: colors.bg, border: `1.5px dashed ${colors.borderHover}`, borderRadius: radius.md, marginBottom: '14px', textAlign: 'center', cursor: 'pointer' }} onClick={() => toast.success('File picker opened')}>
+              <Icons.IconFileText size={20} color={colors.text2} />
+              <div style={{ fontSize: '12px', color: colors.ink, fontWeight: 500, marginTop: '6px' }}>Drop evidence files here</div>
+              <div style={{ fontSize: '10px', color: colors.text3, marginTop: '2px' }}>PDF · JPG · PNG · CSV up to 10 MB · auto-OCR + categorize</div>
+            </div>
+
+            {active.evidenceCollected.length > 0 && (
+              <>
+                <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '8px' }}>Collected · {active.evidenceCollected.length}</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '14px' }}>
+                  {active.evidenceCollected.map((e: any, i: number) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px', background: colors.bg, border: `0.5px solid ${colors.border}`, borderRadius: radius.sm }}>
+                      <Icons.IconCheck size={14} color={colors.teal} strokeWidth={2.5} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: '12px', color: colors.ink, fontWeight: 500 }}>{e.type}</div>
+                        <div style={{ fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono }}>{e.filename} · {e.size} · uploaded {e.uploadedAt}</div>
+                      </div>
+                      {e.ocrComplete && <Pill tone="teal">OCR done</Pill>}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {active.evidenceMissing.length > 0 && (
+              <>
+                <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '8px' }}>Missing · {active.evidenceMissing.length}</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '14px' }}>
+                  {active.evidenceMissing.map((e: any, i: number) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px', background: 'rgba(180,140,60,0.06)', border: `0.5px solid rgba(180,140,60,0.25)`, borderRadius: radius.sm }}>
+                      <Icons.IconAlert size={14} color={AMBER_LOCAL} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: '12px', color: colors.ink, fontWeight: 500 }}>{e.type} {e.required && <span style={{ color: RED_LOCAL, fontSize: '10px', marginLeft: '4px' }}>required</span>}</div>
+                        <div style={{ fontSize: '10px', color: colors.text2 }}>{e.hint}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            <div style={{ display: 'flex', gap: '8px', paddingTop: '14px', borderTop: `0.5px solid ${colors.border}` }}>
+              <Button variant="primary" size="sm" disabled={active.evidenceMissing.some((e: any) => e.required)} onClick={() => toast.success('Evidence submitted to acquirer · Visa Resolve Online')}>Submit to acquirer</Button>
+              <Button variant="secondary" size="sm" onClick={() => toast.success('Evidence saved as draft')}>Save draft</Button>
+              <Button variant="ghost" size="sm" onClick={() => toast.success('Accepted · merchant refunded customer')} style={{ marginLeft: 'auto' }}>Accept & refund</Button>
+            </div>
+          </Card>
+        )}
+      </div>
+    </>
   );
 }
