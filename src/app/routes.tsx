@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import { AppLayout } from './AppLayout';
 import { TenantWorkspace } from './components/TenantContext';
 
@@ -7,17 +7,13 @@ import { Home } from './pages/Home';
 import { BookDemo } from './pages/BookDemo';
 import { SignIn } from './pages/SignIn';
 import { Dashboard } from './pages/Dashboard';
-import { Transactions } from './pages/Transactions';
 import { Tenants } from './pages/Tenants';
 import { Risk } from './pages/Risk';
-import { Settlements } from './pages/Settlements';
 import { Analytics } from './pages/Analytics';
-import { Invoices } from './pages/Invoices';
 import { Collect } from './pages/Collect';
 import { Pay } from './pages/Pay';
-import { Subscriptions } from './pages/Subscriptions';
-import { Developer } from './pages/Developer';
-import { Admin } from './pages/Admin';
+import { Money } from './pages/Money';
+import { Settings } from './pages/Settings';
 import { Compliance } from './pages/Compliance';
 import { SuperAdmin } from './pages/SuperAdmin';
 import { Onboarding } from './pages/Onboarding';
@@ -25,19 +21,23 @@ import { PublicMerchant } from './pages/PublicMerchant';
 
 const appChildren = [
   { index: true, element: <Dashboard /> },
-  { path: 'transactions', element: <Transactions /> },
+  { path: 'money', element: <Money /> },
   { path: 'tenants', element: <Tenants /> },
-  { path: 'risk', element: <Risk /> },
-  { path: 'settlements', element: <Settlements /> },
-  { path: 'analytics', element: <Analytics /> },
-  { path: 'invoices', element: <Invoices /> },
   { path: 'collect', element: <Collect /> },
-  { path: 'pay', element: <Pay /> },
-  { path: 'subscriptions', element: <Subscriptions /> },
-  { path: 'developer', element: <Developer /> },
-  { path: 'admin', element: <Admin /> },
+  { path: 'risk', element: <Risk /> },
+  { path: 'analytics', element: <Analytics /> },
   { path: 'compliance', element: <Compliance /> },
+  { path: 'settings', element: <Settings /> },
+  { path: 'pay', element: <Pay /> },
   { path: 'super-admin', element: <SuperAdmin /> },
+
+  // Legacy routes · preserved as redirects into the consolidated pages
+  { path: 'transactions',  element: <Navigate to="/app/money" replace /> },
+  { path: 'settlements',   element: <Navigate to="/app/money?tab=payouts" replace /> },
+  { path: 'invoices',      element: <Navigate to="/app/collect?section=invoices" replace /> },
+  { path: 'subscriptions', element: <Navigate to="/app/collect?section=subscriptions" replace /> },
+  { path: 'admin',         element: <Navigate to="/app/settings" replace /> },
+  { path: 'developer',     element: <Navigate to="/app/settings?tab=developer" replace /> },
 ];
 
 export const router = createBrowserRouter([

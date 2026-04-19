@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { colors, radius, typography } from '../../design/tokens';
 import { Card, Kicker, Button, Pill, PageLoader, ErrorState } from '../../design/primitives';
 import * as Icons from '../../design/icons';
 import { toast } from 'sonner';
 import { useAsync } from '../../hooks/useAsync';
 import { configService } from '../../services';
+import { Invoices } from './Invoices';
+import { Subscriptions } from './Subscriptions';
+
+type SectionId = 'surfaces' | 'invoices' | 'subscriptions';
 
 type Surface = {
   id: string;
@@ -29,6 +34,54 @@ type Surface = {
 };
 
 export function Collect() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const section = (searchParams.get('section') as SectionId) || 'surfaces';
+
+  const setSection = (next: SectionId) => {
+    if (next === 'surfaces') setSearchParams({});
+    else setSearchParams({ section: next });
+  };
+
+  return (
+    <div style={{ animation: 'payze-fadein 0.4s ease-out' }}>
+      <SectionTabs active={section} onChange={setSection} />
+      {section === 'surfaces'      && <SurfacesSection />}
+      {section === 'invoices'      && <Invoices />}
+      {section === 'subscriptions' && <Subscriptions />}
+    </div>
+  );
+}
+
+function SectionTabs({ active, onChange }: { active: SectionId; onChange: (s: SectionId) => void }) {
+  const tabs: { id: SectionId; label: string; hint: string }[] = [
+    { id: 'surfaces',      label: 'Surfaces',      hint: 'Links, QR, embeds' },
+    { id: 'invoices',      label: 'Invoices',      hint: 'B2B billing with GST' },
+    { id: 'subscriptions', label: 'Subscriptions', hint: 'Active mandates' },
+  ];
+  return (
+    <div style={{ display: 'flex', gap: '4px', marginBottom: '24px', padding: '4px', background: colors.bg, borderRadius: radius.pill, width: 'fit-content' }}>
+      {tabs.map(t => {
+        const isActive = active === t.id;
+        return (
+          <button key={t.id} onClick={() => onChange(t.id)} style={{
+            padding: '7px 16px', borderRadius: radius.pill, fontSize: '12px', fontWeight: 500,
+            background: isActive ? colors.card : 'transparent',
+            color: isActive ? colors.ink : colors.text2,
+            border: isActive ? `0.5px solid ${colors.border}` : 'none',
+            boxShadow: isActive ? colors.shadow : 'none',
+            cursor: 'pointer', fontFamily: typography.family.sans,
+            display: 'flex', alignItems: 'center', gap: '8px',
+          }}>
+            <span>{t.label}</span>
+            <span style={{ fontSize: '10px', color: colors.text3, fontWeight: 400 }}>· {t.hint}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function SurfacesSection() {
   const { data, loading, error, refetch } = useAsync(() => configService.getCollect(), []);
   const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -47,7 +100,7 @@ export function Collect() {
   });
 
   return (
-    <div style={{ animation: 'payze-fadein 0.4s ease-out' }}>
+    <div>
       <div style={{ marginBottom: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '16px', flexWrap: 'wrap' }}>
         <div>
           <Kicker color={colors.teal} style={{ marginBottom: '6px' }}>{data.header.kicker}</Kicker>

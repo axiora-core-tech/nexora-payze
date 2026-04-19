@@ -25,18 +25,14 @@ export function AppLayout() {
   const isActive = (p: string) => subpath === p || (p !== '/' && subpath.startsWith(p));
 
   const mainItems: NavItem[] = [
-    { to: '', label: 'Dashboard', Icon: Icons.IconHome, matches: (p) => p === '/' || p === '' },
-    { to: '/transactions', label: 'Transactions', Icon: Icons.IconLedger, matches: (p) => p.startsWith('/transactions') },
-    { to: '/tenants', label: 'Tenants', Icon: Icons.IconTenants, matches: (p) => p.startsWith('/tenants') },
-    { to: '/risk', label: 'Risk', Icon: Icons.IconShield, matches: (p) => p.startsWith('/risk') },
-    { to: '/settlements', label: 'Settlements', Icon: Icons.IconSettlements, matches: (p) => p.startsWith('/settlements') },
-    { to: '/analytics', label: 'Analytics', Icon: Icons.IconChart, matches: (p) => p.startsWith('/analytics') },
-    { to: '/invoices', label: 'Invoices', Icon: Icons.IconInvoice, matches: (p) => p.startsWith('/invoices') },
-    { to: '/collect', label: 'Collect', Icon: Icons.IconPay, matches: (p) => p.startsWith('/collect') },
-    { to: '/subscriptions', label: 'Subscriptions', Icon: Icons.IconRecurring, matches: (p) => p.startsWith('/subscriptions') },
-    { to: '/developer', label: 'Developer', Icon: Icons.IconDeveloper, matches: (p) => p.startsWith('/developer') },
-    { to: '/admin', label: 'Team & admin', Icon: Icons.IconUser, matches: (p) => p.startsWith('/admin') },
+    { to: '',            label: 'Dashboard',  Icon: Icons.IconHome,       matches: (p) => p === '/' || p === '' },
+    { to: '/money',      label: 'Money',      Icon: Icons.IconLedger,     matches: (p) => p.startsWith('/money') || p.startsWith('/transactions') || p.startsWith('/settlements') },
+    { to: '/tenants',    label: 'Tenants',    Icon: Icons.IconTenants,    matches: (p) => p.startsWith('/tenants') },
+    { to: '/collect',    label: 'Collect',    Icon: Icons.IconPay,        matches: (p) => p.startsWith('/collect') || p.startsWith('/invoices') || p.startsWith('/subscriptions') },
+    { to: '/risk',       label: 'Risk',       Icon: Icons.IconShield,     matches: (p) => p.startsWith('/risk') },
+    { to: '/analytics',  label: 'Analytics',  Icon: Icons.IconChart,      matches: (p) => p.startsWith('/analytics') },
     { to: '/compliance', label: 'Compliance', Icon: Icons.IconCompliance, matches: (p) => p.startsWith('/compliance') },
+    { to: '/settings',   label: 'Settings',   Icon: Icons.IconSettings,   matches: (p) => p.startsWith('/settings') || p.startsWith('/admin') || p.startsWith('/developer') },
   ];
 
   const superAdminItem: NavItem | null = !tenant
