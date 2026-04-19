@@ -23,5 +23,48 @@
     { "lang": "Ruby", "cmd": "gem install payze" },
     { "lang": "PHP", "cmd": "composer require payze/payze-php" },
     { "lang": "Go", "cmd": "go get github.com/payze/payze-go" }
-  ]
+  ],
+  "idempotency": {
+    "kicker": "Idempotency keys",
+    "summary": "Every state-changing API request accepts an `Idempotency-Key` header. Payze caches the response for 24 hours · safe to retry from anywhere.",
+    "header": "Idempotency-Key",
+    "windowHours": 24,
+    "exampleKey": "ord_8374-2026-04-19T14:42:18Z",
+    "behaviour": [
+      "Same key + same payload → cached response, no double-charge",
+      "Same key + different payload → 422 conflict · prevents accidental amount changes",
+      "Different key → fresh request",
+      "Cache TTL: 24 hours from first successful response"
+    ],
+    "codeSnippet": "// Safe retry — even from a different machine\nconst payment = await payze.payments.create(\n  {\n    amount: 24999,\n    currency: 'INR',\n    customer: { email: 'priya@studio.com' }\n  },\n  { idempotencyKey: 'ord_8374-2026-04-19T14:42:18Z' }\n);"
+  },
+  "testCards": {
+    "kicker": "Test card library",
+    "summary": "Use these card numbers in test mode to simulate every outcome. CVV and expiry can be any value.",
+    "categories": [
+      {
+        "name": "Successful charges",
+        "cards": [
+          { "pan": "4111 1111 1111 1111", "network": "Visa",       "scenario": "3DS frictionless · success",            "behaviour": "Authorises immediately · no challenge" },
+          { "pan": "5555 5555 5555 4444", "network": "Mastercard", "scenario": "3DS step-up · success",                  "behaviour": "OTP challenge · accept any 6-digit OTP" },
+          { "pan": "6080 1010 0000 4321", "network": "RuPay",      "scenario": "Domestic UPI-on-card · success",         "behaviour": "Routes via NPCI switch" }
+        ]
+      },
+      {
+        "name": "Declined charges",
+        "cards": [
+          { "pan": "4000 0000 0000 0002", "network": "Visa",       "scenario": "Generic decline",                        "behaviour": "Returns failure code Z03 · insufficient funds" },
+          { "pan": "4000 0000 0000 9995", "network": "Visa",       "scenario": "Issuer not available",                   "behaviour": "Returns failure code R01 · triggers fallback rail" },
+          { "pan": "5200 0000 0000 0007", "network": "Mastercard", "scenario": "Do not honour",                          "behaviour": "Returns failure code Z14 · do not retry on same card" }
+        ]
+      },
+      {
+        "name": "Refund & dispute",
+        "cards": [
+          { "pan": "4000 0000 0000 1976", "network": "Visa",       "scenario": "Charges, then disputes after T+1",       "behaviour": "Auto-fires `dispute.opened` webhook 24h after capture" },
+          { "pan": "4000 0000 0000 0259", "network": "Visa",       "scenario": "Refund fails",                           "behaviour": "Refund returns 'failed' · simulates closed customer account" }
+        ]
+      }
+    ]
+  }
 }

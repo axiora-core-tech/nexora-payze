@@ -19,5 +19,22 @@
     { "id": "emi", "label": "Pay in EMI", "sub": "3, 6, 9, 12 months", "icon": "IconRecurring" }
   ],
   "banks": ["HDFC", "ICICI", "SBI", "Axis", "Kotak", "Yes Bank", "IndusInd", "Other"],
-  "wallets": ["Amazon Pay", "Mobikwik", "Freecharge", "JioMoney", "Ola Money", "Airtel Money"]
+  "wallets": ["Amazon Pay", "Mobikwik", "Freecharge", "JioMoney", "Ola Money", "Airtel Money"],
+  "savedCards": [
+    { "id": "tok_8f4a", "network": "Visa",       "issuer": "HDFC Bank",  "last4": "4821", "expiryMasked": "••/••", "tokenRef": "VTSS-2026-7384921", "tokenizedAt": "12 Mar 2026 · per RBI Oct 2022 mandate", "isDefault": true,  "cvvLessEligible": true },
+    { "id": "tok_2c9e", "network": "Mastercard", "issuer": "ICICI Bank", "last4": "9034", "expiryMasked": "••/••", "tokenRef": "MDES-2026-1928374", "tokenizedAt": "08 Apr 2026 · per RBI Oct 2022 mandate", "isDefault": false, "cvvLessEligible": false }
+  ],
+  "tokenization": {
+    "vault":        "Network tokenization (Visa VTS · Mastercard MDES · RuPay)",
+    "regulationRef": "RBI Notification CO.DPSS.POLC.No.S33/02-14-008/2022-23 · 7 Oct 2022",
+    "rawPanStored": false,
+    "merchantPolicy": "Network token only · raw PAN never persisted on Payze servers"
+  },
+  "threeDS": {
+    "version":  "3DS 2.2",
+    "afaThreshold": "₹2,000 (RBI Additional Factor of Authentication mandate)",
+    "fraudScore": 14,
+    "frictionless": true,
+    "frictionlessReason": "Risk score below challenge threshold · device & behaviour profile match prior successful auths"
+  }
 }

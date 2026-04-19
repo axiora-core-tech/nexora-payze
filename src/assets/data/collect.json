@@ -26,12 +26,16 @@
       "description": "Logo system, typography, color palette · 6-week engagement",
       "customer": "Zomato Foods",
       "status": "active", "created": "2 days ago", "expiresIn": "27 days",
+      "reuseMode": "single_use",
       "channels": {
         "link":  { "enabled": true, "shortCode": "LUMQ2", "url": "payze.app/p/lumq2" },
         "qr":    { "enabled": true },
         "embed": { "enabled": false }
       },
-      "analytics": { "views": 14, "payments": 1, "revenue": 450000, "conversionRate": 7.1 }
+      "analytics": { "views": 14, "payments": 1, "revenue": 450000, "conversionRate": 7.1, "expectedPayments": 1, "outstandingPayments": 0, "outstandingValue": 0 },
+      "payments": [
+        { "id": "pay_lumq2_001", "txn": "txn_00382", "customer": "Vikram Kothari", "email": "vikram@zomato.com", "phone": "+91 98765 43210", "amount": "₹4,50,000", "method": "RTGS", "status": "succeeded", "paidAt": "Yesterday 16:42", "geo": "Bengaluru, KA" }
+      ]
     },
     {
       "id": "surf_rhea_month",
@@ -42,12 +46,23 @@
       "description": "Unlimited classes · Pause anytime",
       "customer": "Rhea Yoga",
       "status": "active", "created": "3 weeks ago", "expiresIn": null,
+      "reuseMode": "reusable",
       "channels": {
         "link":  { "enabled": true, "shortCode": "RHEAMO", "url": "payze.app/p/rheamo" },
         "qr":    { "enabled": true },
         "embed": { "enabled": true }
       },
-      "analytics": { "views": 284, "payments": 47, "revenue": 225600, "conversionRate": 16.5 }
+      "analytics": { "views": 284, "payments": 47, "revenue": 225600, "conversionRate": 16.5, "expectedPayments": null, "outstandingPayments": 0, "outstandingValue": 0 },
+      "payments": [
+        { "id": "pay_rhea_047", "txn": "txn_00478", "customer": "Anushka Rao",       "email": "anushka.r@gmail.com",   "phone": "+91 99876 51230", "amount": "₹4,800", "method": "UPI Autopay · GPay",   "status": "succeeded", "paidAt": "Today 14:38",   "geo": "Mumbai, MH" },
+        { "id": "pay_rhea_046", "txn": "txn_00471", "customer": "Karan Mehta",        "email": "karan.m@outlook.com",   "phone": "+91 98123 45678", "amount": "₹4,800", "method": "UPI Autopay · PhonePe","status": "succeeded", "paidAt": "Today 09:14",   "geo": "Bengaluru, KA" },
+        { "id": "pay_rhea_045", "txn": "txn_00465", "customer": "Tara Iyer",          "email": "tara.iyer@yahoo.com",   "phone": "+91 97654 32109", "amount": "₹4,800", "method": "UPI Autopay · GPay",    "status": "succeeded", "paidAt": "Yesterday 18:22","geo": "Chennai, TN" },
+        { "id": "pay_rhea_044", "txn": "txn_00458", "customer": "Ishaan Kapoor",      "email": "ishaan.k@gmail.com",    "phone": "+91 99887 76655", "amount": "₹4,800", "method": "Cards · HDFC credit",  "status": "succeeded", "paidAt": "Yesterday 11:08","geo": "Delhi, DL" },
+        { "id": "pay_rhea_043", "txn": "txn_00444", "customer": "Mira Singh",         "email": "mira.singh@gmail.com",  "phone": "+91 98765 11222", "amount": "₹4,800", "method": "UPI · Paytm",          "status": "succeeded", "paidAt": "16 Apr 13:42",  "geo": "Pune, MH" },
+        { "id": "pay_rhea_042", "txn": "txn_00432", "customer": "Aditya Reddy",       "email": "aditya.r@hotmail.com",  "phone": "+91 99001 22334", "amount": "₹4,800", "method": "Cards · ICICI debit",  "status": "succeeded", "paidAt": "16 Apr 09:18",  "geo": "Hyderabad, TS" },
+        { "id": "pay_rhea_041", "txn": "txn_00418", "customer": "Sara D'Souza",       "email": "sara.d@gmail.com",      "phone": "+91 98342 56789", "amount": "₹4,800", "method": "UPI Autopay · BHIM",   "status": "succeeded", "paidAt": "15 Apr 19:32",  "geo": "Goa, GA" },
+        { "id": "pay_rhea_040", "txn": "txn_00402", "customer": "Yash Patel",         "email": "yash.p@yahoo.in",       "phone": "+91 96543 21098", "amount": "₹4,800", "method": "UPI · GPay",           "status": "failed",    "paidAt": "15 Apr 14:08",  "geo": "Ahmedabad, GJ", "failureReason": "UPI handle deactivated" }
+      ]
     },
     {
       "id": "surf_tip_jar",
@@ -58,6 +73,7 @@
       "description": "Tips split evenly across baristas, settled weekly",
       "customer": "Third Wave Coffee · Indiranagar",
       "status": "active", "created": "6 weeks ago", "expiresIn": null,
+      "reuseMode": "reusable",
       "channels": {
         "link":  { "enabled": true, "shortCode": "3WAVE", "url": "payze.app/p/3wave" },
         "qr":    { "enabled": true },

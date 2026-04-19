@@ -3,8 +3,9 @@ import { useSearchParams } from 'react-router';
 import { SectionTabs } from '../../design/primitives';
 import { Admin } from './Admin';
 import { Developer } from './Developer';
+import { Webhooks } from './Webhooks';
 
-type TabId = 'team' | 'developer';
+type TabId = 'team' | 'developer' | 'webhooks';
 
 export function Settings() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -22,11 +23,13 @@ export function Settings() {
         onChange={setTab}
         tabs={[
           { id: 'team',      label: 'Team',      hint: 'Users, roles, billing' },
-          { id: 'developer', label: 'Developer', hint: 'API keys, webhooks, test mode' },
+          { id: 'developer', label: 'Developer', hint: 'API keys, test mode' },
+          { id: 'webhooks',  label: 'Webhooks',  hint: 'Event subscriptions · deliveries' },
         ]}
       />
       {tab === 'team'      && <Admin />}
       {tab === 'developer' && <Developer />}
+      {tab === 'webhooks'  && <Webhooks />}
     </div>
   );
 }

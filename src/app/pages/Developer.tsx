@@ -15,7 +15,7 @@ export function Developer() {
   if (error) return <ErrorState message={`Couldn't load developer console — ${error.message}`} onRetry={refetch} />;
   if (loading || !data) return <PageLoader label="Loading developer console" />;
 
-  const { header, envs, keys, webhooks, codeSample, sdks } = data;
+  const { header, envs, keys, webhooks, codeSample, sdks, idempotency, testCards } = data;
   const envKeys = keys.filter((k: any) => k.env === env);
 
   const copy = (text: string, label: string) => {
@@ -110,6 +110,68 @@ export function Developer() {
           ))}
         </Card>
       </div>
+
+      {idempotency && (
+        <Card padded style={{ marginTop: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', flexWrap: 'wrap' }}>
+            <Kicker style={{ margin: 0 }}>{idempotency.kicker}</Kicker>
+            <span style={{ fontSize: '9px', color: colors.teal, letterSpacing: '0.08em', fontWeight: 600, padding: '2px 8px', background: 'rgba(28,111,107,0.08)', border: '0.5px solid rgba(28,111,107,0.25)', borderRadius: radius.pill }}>SAFE RETRY</span>
+            <span style={{ fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono, marginLeft: 'auto' }}>{idempotency.windowHours}h cache window</span>
+          </div>
+          <div style={{ fontSize: '12px', color: colors.text2, marginBottom: '16px', lineHeight: 1.55 }}>{idempotency.summary}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: '16px' }}>
+            <div>
+              <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '8px' }}>Behaviour</div>
+              {idempotency.behaviour.map((b: string, i: number) => (
+                <div key={i} style={{ display: 'flex', gap: '8px', padding: '6px 0', fontSize: '11px', color: colors.text2, lineHeight: 1.5, borderBottom: i < idempotency.behaviour.length - 1 ? `0.5px solid ${colors.border}` : 'none' }}>
+                  <span style={{ color: colors.teal, flexShrink: 0 }}>·</span>
+                  <span>{b}</span>
+                </div>
+              ))}
+              <div style={{ marginTop: '14px' }}>
+                <div style={{ fontSize: '9px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>Header</div>
+                <code style={{ fontFamily: typography.family.mono, fontSize: '11px', padding: '4px 8px', background: colors.bg, borderRadius: radius.sm, color: colors.ink }}>{idempotency.header}: {idempotency.exampleKey}</code>
+              </div>
+            </div>
+            <div style={{ background: '#1A1A1A', borderRadius: radius.md, padding: '16px 18px' }}>
+              <div style={{ fontSize: '9px', color: '#8A8A88', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '10px' }}>Example · Node SDK</div>
+              <pre style={{ margin: 0, fontFamily: typography.family.mono, fontSize: '11px', color: '#E4E4E0', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{idempotency.codeSnippet}</pre>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {testCards && (
+        <Card padded style={{ marginTop: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', flexWrap: 'wrap' }}>
+            <Kicker style={{ margin: 0 }}>{testCards.kicker}</Kicker>
+            <Pill tone="outline">test mode only</Pill>
+          </div>
+          <div style={{ fontSize: '12px', color: colors.text2, marginBottom: '18px', lineHeight: 1.55 }}>{testCards.summary}</div>
+          {testCards.categories.map((cat: any, ci: number) => (
+            <div key={cat.name} style={{ marginBottom: ci < testCards.categories.length - 1 ? '20px' : 0 }}>
+              <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '10px' }}>{cat.name}</div>
+              <div style={{ background: colors.bg, border: `0.5px solid ${colors.border}`, borderRadius: radius.md, overflow: 'hidden' }}>
+                {cat.cards.map((c: any, i: number) => {
+                  const isLast = i === cat.cards.length - 1;
+                  const netColor = c.network === 'Visa' ? '#1A1F71' : c.network === 'Mastercard' ? '#1A1A1A' : '#702D8E';
+                  return (
+                    <div key={c.pan} style={{ display: 'grid', gridTemplateColumns: '46px 1.6fr 1.4fr 2fr 70px', gap: '14px', padding: '12px 16px', borderBottom: isLast ? 'none' : `0.5px solid ${colors.border}`, alignItems: 'center', fontSize: '12px' }}>
+                      <div style={{ width: '36px', height: '24px', borderRadius: '3px', background: netColor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', fontWeight: 700, letterSpacing: '0.04em' }}>{c.network.toUpperCase().slice(0, 4)}</div>
+                      <div style={{ fontFamily: typography.family.mono, color: colors.ink, fontWeight: 500 }}>{c.pan}</div>
+                      <div style={{ color: colors.ink, fontWeight: 500 }}>{c.scenario}</div>
+                      <div style={{ fontSize: '11px', color: colors.text2, lineHeight: 1.5 }}>{c.behaviour}</div>
+                      <button onClick={() => { navigator.clipboard.writeText(c.pan.replace(/\s/g, '')); toast.success('Card number copied'); }} style={{ padding: '6px 10px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.sm, fontSize: '10px', color: colors.ink, cursor: 'pointer', fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Icons.IconCopy size={10} /> Copy
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </Card>
+      )}
 
       {testData && (
         <Card padded={false} style={{ marginTop: '20px' }}>

@@ -12,7 +12,7 @@ const iconMap: Record<string, any> = {
   IconShield: Icons.IconShield,
 };
 
-type State = 'pick' | 'details' | 'processing' | 'success';
+type State = 'pick' | 'details' | 'processing' | 'threeds' | 'success';
 
 export function Pay() {
   const { data, loading, error, refetch } = useAsync(() => configService.getPay(), []);
@@ -22,11 +22,18 @@ export function Pay() {
   if (error) return <ErrorState message={`Couldn't load checkout — ${error.message}`} onRetry={refetch} />;
   if (loading || !data) return <PageLoader label="Loading checkout" />;
 
-  const { header, checkout, methods, banks, wallets } = data;
+  const { header, checkout, methods, banks, wallets, savedCards, tokenization, threeDS } = data;
+  const [selectedToken, setSelectedToken] = useState<string | null>(null);
 
   const handlePay = () => {
     setState('processing');
-    setTimeout(() => setState('success'), 1800);
+    // 3DS step (if cards): advance after 1.4s, success after another 1.4s
+    if (methodId === 'card' && checkout.amount >= 2000 && !threeDS.frictionless) {
+      setTimeout(() => setState('threeds'), 1400);
+      setTimeout(() => setState('success'), 2800);
+    } else {
+      setTimeout(() => setState('success'), 1800);
+    }
   };
 
   if (state === 'success') {
@@ -132,20 +139,58 @@ export function Pay() {
 
             {(methodId === 'card' || methodId === 'emi') && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                <Field label="Card number"><input style={{ ...inputStyle, fontFamily: typography.family.mono }} placeholder="0000 0000 0000 0000" /></Field>
+                {savedCards && savedCards.length > 0 && methodId === 'card' && (
+                  <div style={{ marginBottom: '6px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                      <Kicker style={{ margin: 0 }}>Saved cards</Kicker>
+                      <span style={{ fontSize: '9px', color: colors.teal, letterSpacing: '0.08em', fontWeight: 600, padding: '2px 8px', background: 'rgba(28,111,107,0.08)', border: '0.5px solid rgba(28,111,107,0.25)', borderRadius: radius.pill }}>RBI TOKENIZED</span>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {savedCards.map((c: any) => {
+                        const isSelected = selectedToken === c.id;
+                        return (
+                          <button key={c.id} onClick={() => setSelectedToken(isSelected ? null : c.id)} style={{
+                            display: 'flex', alignItems: 'center', gap: '14px',
+                            padding: '12px 14px', background: isSelected ? 'rgba(28,111,107,0.06)' : colors.bg,
+                            border: `0.5px solid ${isSelected ? 'rgba(28,111,107,0.4)' : colors.border}`,
+                            borderRadius: radius.md, cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left',
+                            transition: 'all 0.15s ease',
+                          }}>
+                            <div style={{ width: '36px', height: '24px', borderRadius: '3px', background: c.network === 'Visa' ? '#1A1F71' : c.network === 'Mastercard' ? '#1A1A1A' : colors.ink, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 700, letterSpacing: '0.04em' }}>{c.network.toUpperCase().slice(0, 4)}</div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: '13px', fontWeight: 500, color: colors.ink, fontFamily: typography.family.mono }}>•••• •••• •••• {c.last4}</div>
+                              <div style={{ fontSize: '10px', color: colors.text3, marginTop: '2px' }}>{c.issuer} · expires {c.expiryMasked}{c.isDefault ? ' · default' : ''}{c.cvvLessEligible ? ' · CVV-less eligible' : ''}</div>
+                            </div>
+                            {isSelected && <Icons.IconCheck size={14} color={colors.teal} strokeWidth={2} />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <div style={{ fontSize: '10px', color: colors.text3, marginTop: '8px', lineHeight: 1.5 }}>
+                      Saved as <span style={{ fontWeight: 500 }}>network tokens</span> per RBI mandate (7 Oct 2022). Raw card numbers are never stored on Payze servers.
+                    </div>
+                    <div style={{ fontSize: '11px', color: colors.text2, textAlign: 'center', margin: '14px 0 6px 0', position: 'relative' }}>
+                      <span style={{ background: colors.card, padding: '0 10px', position: 'relative', zIndex: 1 }}>or pay with a new card</span>
+                      <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '0.5px', background: colors.border, zIndex: 0 }} />
+                    </div>
+                  </div>
+                )}
+                <Field label="Card number"><input style={{ ...inputStyle, fontFamily: typography.family.mono }} placeholder="0000 0000 0000 0000" disabled={!!selectedToken} /></Field>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-                  <Field label="Expiry"><input style={{ ...inputStyle, fontFamily: typography.family.mono }} placeholder="MM / YY" /></Field>
+                  <Field label="Expiry"><input style={{ ...inputStyle, fontFamily: typography.family.mono }} placeholder="MM / YY" disabled={!!selectedToken} /></Field>
                   <Field label="CVV"><input style={{ ...inputStyle, fontFamily: typography.family.mono }} placeholder="•••" type="password" /></Field>
                 </div>
-                <Field label="Cardholder name"><input style={inputStyle} placeholder="As printed on card" /></Field>
+                <Field label="Cardholder name"><input style={inputStyle} placeholder="As printed on card" disabled={!!selectedToken} /></Field>
                 {methodId === 'emi' && (
                   <Field label="EMI tenure">
                     <select style={inputStyle}><option>3 months</option><option>6 months</option><option>9 months</option><option>12 months</option></select>
                   </Field>
                 )}
-                <label style={{ fontSize: '12px', color: colors.text2, display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-                  <input type="checkbox" /> Save card for future payments
-                </label>
+                {!selectedToken && (
+                  <label style={{ fontSize: '12px', color: colors.text2, display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                    <input type="checkbox" /> Save card as RBI-compliant network token for future payments
+                  </label>
+                )}
               </div>
             )}
 
@@ -200,7 +245,33 @@ export function Pay() {
           <div style={{ padding: '60px 28px', textAlign: 'center' }}>
             <div style={{ width: '48px', height: '48px', margin: '0 auto 20px auto', borderRadius: '50%', border: `2px solid ${colors.border}`, borderTopColor: colors.teal, animation: 'payze-spin 0.8s linear infinite' }} />
             <div style={{ fontSize: '14px', fontWeight: 500, color: colors.ink, marginBottom: '4px' }}>Authorising payment</div>
-            <div style={{ fontSize: '12px', color: colors.text2 }}>Do not close or refresh this page</div>
+            <div style={{ fontSize: '12px', color: colors.text2, marginBottom: '20px' }}>Do not close or refresh this page</div>
+            {methodId === 'card' && checkout.amount >= 2000 && threeDS && (
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 14px', background: colors.bg, border: `0.5px solid ${colors.border}`, borderRadius: radius.pill, fontSize: '11px', color: colors.text2 }}>
+                <Icons.IconShield size={11} color={colors.teal} />
+                <span><span style={{ fontWeight: 600, color: colors.ink }}>3DS {threeDS.version}</span> · {threeDS.frictionless ? 'Frictionless' : 'Step-up challenge in progress'}</span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {state === 'threeds' && (
+          <div style={{ padding: '40px 28px', textAlign: 'center' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '4px 12px', background: 'rgba(28,111,107,0.06)', border: '0.5px solid rgba(28,111,107,0.25)', borderRadius: radius.pill, fontSize: '10px', color: colors.teal, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '20px' }}>
+              <Icons.IconShield size={11} color={colors.teal} />
+              3DS 2.2 · Step-up authentication
+            </div>
+            <div style={{ fontSize: '20px', fontWeight: 600, color: colors.ink, marginBottom: '8px', letterSpacing: '-0.015em' }}>Verifying with your bank</div>
+            <div style={{ fontSize: '13px', color: colors.text2, marginBottom: '24px', maxWidth: '380px', margin: '0 auto 24px auto', lineHeight: 1.5 }}>
+              {threeDS.afaThreshold} · RBI Additional Factor of Authentication required for cards over ₹2,000.
+            </div>
+            <div style={{ display: 'inline-flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start', padding: '16px 20px', background: colors.bg, borderRadius: radius.md, marginBottom: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: colors.teal, animation: 'payze-pulse-dot 1.4s ease-in-out infinite' }} />
+                <span style={{ fontSize: '11px', color: colors.text2 }}>Sent OTP to registered mobile <span style={{ fontFamily: typography.family.mono, color: colors.ink, fontWeight: 500 }}>+91 ••••• ••210</span></span>
+              </div>
+              <div style={{ fontSize: '10px', color: colors.text3, marginLeft: '17px' }}>Auto-fills if your device supports SMS auto-read</div>
+            </div>
           </div>
         )}
       </Card>
