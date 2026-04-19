@@ -147,7 +147,7 @@ export function Pill({
   style = {},
 }: {
   children: React.ReactNode;
-  tone?: 'neutral' | 'teal' | 'ink' | 'outline' | 'rose';
+  tone?: 'neutral' | 'teal' | 'ink' | 'outline' | 'rose' | 'amber';
   style?: React.CSSProperties;
 }) {
   const tones = {
@@ -156,6 +156,7 @@ export function Pill({
     ink: { bg: colors.ink, color: '#fff', border: 'none' },
     outline: { bg: 'transparent', color: colors.ink, border: `0.5px solid ${colors.borderStrong}` },
     rose: { bg: colors.roseTint, color: colors.rose, border: 'none' },
+    amber: { bg: colors.amberTint, color: colors.amber, border: 'none' },
   };
   const t = tones[tone];
   return (

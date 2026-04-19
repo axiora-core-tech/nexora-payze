@@ -5,8 +5,9 @@ import { Admin } from './Admin';
 import { DeveloperAndWebhooks } from './DeveloperAndWebhooks';
 import { ReceiptTemplates } from './ReceiptTemplates';
 import { Enterprise } from './Enterprise';
+import { OperatorPolish } from './OperatorPolish';
 
-type TabId = 'team' | 'developer' | 'receipts' | 'enterprise';
+type TabId = 'team' | 'developer' | 'receipts' | 'enterprise' | 'tools';
 
 export function Settings() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -29,12 +30,14 @@ export function Settings() {
           { id: 'developer',  label: 'Developer',  hint: 'API keys · webhooks · test mode' },
           { id: 'receipts',   label: 'Receipts',   hint: 'Branded confirmation emails' },
           { id: 'enterprise', label: 'Enterprise', hint: 'Multi-MID · splits · 2FA · audit' },
+          { id: 'tools',      label: 'Tools',      hint: 'Fraud · disputes · analytics' },
         ]}
       />
       {tab === 'team'       && <Admin />}
       {tab === 'developer'  && <DeveloperAndWebhooks />}
       {tab === 'receipts'   && <ReceiptTemplates />}
       {tab === 'enterprise' && <Enterprise />}
+      {tab === 'tools'      && <OperatorPolish />}
     </div>
   );
 }

@@ -1,0 +1,214 @@
+{
+  "fraudRules": {
+    "kicker": "Fraud rules · live engine",
+    "summary": "Visual rule builder. Set conditions, choose action. Hot-reloads in <30s. Test against last 30 days of traffic before shipping.",
+    "stats": [
+      { "label": "Active rules",    "value": "24",       "sub": "across 6 categories" },
+      { "label": "Blocked · 30d",    "value": "1,824",   "sub": "₹84.2 L attempted fraud" },
+      { "label": "False positives",  "value": "0.18%",   "sub": "industry 0.5-1.0%" },
+      { "label": "Avg evaluation",   "value": "12 ms",   "sub": "p99 21 ms · pre-auth" }
+    ],
+    "categories": ["Velocity", "Amount", "Geo", "Device", "Behaviour", "BIN/Issuer"],
+    "rules": [
+      {
+        "id": "rule_velocity_v2", "name": "velocity_anomaly_v2", "category": "Velocity", "active": true,
+        "description": "More than 4 attempts from one device in 2 minutes",
+        "conditions": [
+          { "field": "device.attempts_in_window", "op": ">",  "value": "4" },
+          { "field": "device.window_seconds",      "op": "==", "value": "120" }
+        ],
+        "action": "block", "fires30d": 482, "trueFraud30d": 478, "falsePositives30d": 4, "lastFired": "Today 14:28"
+      },
+      {
+        "id": "rule_first_high",   "name": "first_time_high_value", "category": "Behaviour", "active": true,
+        "description": "New customer (account age <14d) attempting >3x average ticket",
+        "conditions": [
+          { "field": "customer.account_age_days", "op": "<", "value": "14" },
+          { "field": "txn.amount_vs_avg_ratio",   "op": ">", "value": "3" }
+        ],
+        "action": "step_up_3ds", "fires30d": 284, "trueFraud30d": 178, "falsePositives30d": 14, "lastFired": "Today 11:42"
+      },
+      {
+        "id": "rule_geo_block",     "name": "blocked_geo_ips",        "category": "Geo", "active": true,
+        "description": "IP geolocation in OFAC sanctioned countries",
+        "conditions": [
+          { "field": "ip.country", "op": "IN", "value": "OFAC_SDN_LIST" }
+        ],
+        "action": "block", "fires30d": 18, "trueFraud30d": 18, "falsePositives30d": 0, "lastFired": "Yesterday 09:14"
+      },
+      {
+        "id": "rule_card_enum",     "name": "card_enumeration",       "category": "BIN/Issuer", "active": true,
+        "description": "Different cards, same device, same BIN within 5 minutes (testing stolen list)",
+        "conditions": [
+          { "field": "device.distinct_pans_5min", "op": ">", "value": "3" },
+          { "field": "device.same_bin_5min",       "op": "==", "value": "true" }
+        ],
+        "action": "block", "fires30d": 142, "trueFraud30d": 142, "falsePositives30d": 0, "lastFired": "Today 02:18"
+      },
+      {
+        "id": "rule_billing_mismatch","name": "billing_ip_mismatch",  "category": "Geo", "active": true,
+        "description": "IP country differs from billing country (high-amount only)",
+        "conditions": [
+          { "field": "ip.country", "op": "!=", "value": "card.billing_country" },
+          { "field": "txn.amount", "op": ">", "value": "10000" }
+        ],
+        "action": "step_up_3ds", "fires30d": 142, "trueFraud30d": 89, "falsePositives30d": 18, "lastFired": "Today 12:38"
+      },
+      {
+        "id": "rule_late_night",     "name": "late_night_high_amount","category": "Behaviour", "active": false,
+        "description": "Transactions between 02:00-05:00 IST above ₹50,000",
+        "conditions": [
+          { "field": "time.hour_ist",     "op": "BETWEEN", "value": "[2,5]" },
+          { "field": "txn.amount",        "op": ">",       "value": "50000" }
+        ],
+        "action": "step_up_3ds", "fires30d": 0, "trueFraud30d": 0, "falsePositives30d": 0, "lastFired": "—"
+      }
+    ],
+    "actionPalette": [
+      { "id": "block",         "label": "Block",         "color": "red",   "description": "Reject pre-authorization · customer sees error" },
+      { "id": "step_up_3ds",   "label": "Step-up to 3DS","color": "amber", "description": "Force 3DS challenge · friction added" },
+      { "id": "manual_review", "label": "Manual review", "color": "amber", "description": "Auth allowed but flagged · operator must approve before capture" },
+      { "id": "log_only",      "label": "Log only",      "color": "teal",  "description": "Allow but log to risk register · for monitoring" }
+    ],
+    "fieldCatalog": [
+      { "namespace": "txn",       "fields": ["amount", "amount_vs_avg_ratio", "currency", "method", "merchant_id"] },
+      { "namespace": "customer",  "fields": ["account_age_days", "ltv", "prior_disputes", "first_payment"] },
+      { "namespace": "device",    "fields": ["fingerprint", "attempts_in_window", "window_seconds", "distinct_pans_5min", "same_bin_5min", "vpn_detected"] },
+      { "namespace": "ip",        "fields": ["country", "asn", "is_residential", "is_proxy"] },
+      { "namespace": "card",      "fields": ["bin", "country", "billing_country", "is_prepaid", "issuer_risk_score"] },
+      { "namespace": "time",      "fields": ["hour_ist", "day_of_week", "is_weekend"] }
+    ]
+  },
+  "disputeNotifications": {
+    "kicker": "Notification rules",
+    "summary": "Get pinged when disputes arrive, evidence is missing, or SLAs approach. Per-channel routing.",
+    "rules": [
+      { "id": "n_new_dispute",      "trigger": "New dispute received",                  "channels": ["Email · risk@", "Slack · #disputes"], "audience": "Risk team", "active": true,  "fired30d": 47 },
+      { "id": "n_sla_24h",          "trigger": "Evidence due in 24h",                   "channels": ["Email · arjun@", "SMS"],              "audience": "Arjun Reddy", "active": true,  "fired30d": 12 },
+      { "id": "n_sla_4h",           "trigger": "Evidence due in 4h · CRITICAL",         "channels": ["Email · arjun@, kavya@", "SMS", "Page"], "audience": "Risk + on-call", "active": true,  "fired30d": 2 },
+      { "id": "n_high_value",       "trigger": "Dispute >₹50,000",                       "channels": ["Email · founder@", "Slack · #leadership"], "audience": "Owner + Admin", "active": true,  "fired30d": 8 },
+      { "id": "n_won",              "trigger": "Dispute won",                            "channels": ["Slack · #disputes"],                   "audience": "Risk team", "active": true,  "fired30d": 28 },
+      { "id": "n_lost",             "trigger": "Dispute lost",                           "channels": ["Email · risk@", "Slack · #disputes"],  "audience": "Risk team", "active": true,  "fired30d": 14 },
+      { "id": "n_pattern",          "trigger": "Pattern detected · same merchant · 3+ disputes/week", "channels": ["Email · risk@", "Slack · #disputes"], "audience": "Risk + merchant ops", "active": false, "fired30d": 0 }
+    ]
+  },
+  "disputeUploads": {
+    "kicker": "Evidence upload portal",
+    "summary": "Dropzone for chargeback evidence. Auto-categorize, OCR, validate, then submit to acquirer in the right format.",
+    "queue": [
+      {
+        "id": "dp_9012", "merchant": "Cred Club", "customer": "Rohan Malhotra", "amount": "₹9,999", "deadline": "23 Apr 2026 · 18:00 IST", "hoursLeft": 102, "status": "preparing",
+        "evidenceCollected": [
+          { "type": "Delivery proof",          "filename": "shiprocket_signed_06apr.pdf",        "size": "84 KB",  "uploadedAt": "Today 11:42", "ocrComplete": true,  "valid": true },
+          { "type": "Customer correspondence", "filename": "support_tickets_export.csv",         "size": "12 KB",  "uploadedAt": "Today 11:48", "ocrComplete": true,  "valid": true },
+          { "type": "Refund policy",           "filename": "credclub_refunds.pdf",                "size": "44 KB",  "uploadedAt": "Today 11:52", "ocrComplete": true,  "valid": true }
+        ],
+        "evidenceMissing": [
+          { "type": "Identity verification (KYC at signup)", "required": true, "hint": "Upload Aadhaar mask + selfie liveness from onboarding" }
+        ],
+        "winProbability": 78, "narrative": "Strong: delivery confirmed 14:32 06 Apr. Customer opened 3 support tickets after delivery — none mentioned size until chargeback (14 days later). Pattern suggests buyer's remorse, not non-delivery."
+      },
+      {
+        "id": "dp_9013", "merchant": "Studio Lumière", "customer": "Vikram Joshi", "amount": "₹4,50,000", "deadline": "20 Apr 2026 · 18:00 IST", "hoursLeft": 4, "status": "critical",
+        "evidenceCollected": [
+          { "type": "Service contract", "filename": "studio_contract_signed.pdf", "size": "284 KB", "uploadedAt": "16 Apr", "ocrComplete": true, "valid": true }
+        ],
+        "evidenceMissing": [
+          { "type": "Delivery acceptance", "required": true,  "hint": "Email or signed-off acceptance from customer" },
+          { "type": "Invoice + GSTIN",      "required": true,  "hint": "GSTR-1 ready PDF — auto-pull from Auto tax invoices" },
+          { "type": "Communication log",    "required": false, "hint": "Slack/email exchange showing milestones" }
+        ],
+        "winProbability": 32, "narrative": "Weak. We have the contract but no delivery acceptance. Customer claims work was incomplete. Recommendation: refund partial (₹1,50,000) and accept loss to avoid chargeback fees."
+      },
+      {
+        "id": "dp_9014", "merchant": "Nykaa Beauty", "customer": "Anushka Rao", "amount": "₹2,840", "deadline": "26 Apr 2026 · 18:00 IST", "hoursLeft": 174, "status": "queued",
+        "evidenceCollected": [],
+        "evidenceMissing": [
+          { "type": "Delivery proof",         "required": true,  "hint": "Bluedart POD" },
+          { "type": "Customer correspondence","required": false, "hint": "Pre-purchase chat or reviews" }
+        ],
+        "winProbability": null, "narrative": "Awaiting evidence collection."
+      }
+    ]
+  },
+  "receiptEditor": {
+    "kicker": "Visual editor",
+    "summary": "Edit receipt templates with live preview. Drag fields, change colors, add merge variables.",
+    "fieldCatalog": [
+      { "name": "{{merchant_name}}",   "category": "Merchant" },
+      { "name": "{{merchant_logo}}",    "category": "Merchant" },
+      { "name": "{{merchant_gstin}}",   "category": "Merchant" },
+      { "name": "{{customer_name}}",    "category": "Customer" },
+      { "name": "{{customer_email}}",   "category": "Customer" },
+      { "name": "{{txn_id}}",            "category": "Transaction" },
+      { "name": "{{amount}}",            "category": "Transaction" },
+      { "name": "{{currency}}",          "category": "Transaction" },
+      { "name": "{{paid_at}}",           "category": "Transaction" },
+      { "name": "{{method}}",            "category": "Transaction" },
+      { "name": "{{tax_amount}}",        "category": "Tax" },
+      { "name": "{{cgst}}",              "category": "Tax" },
+      { "name": "{{sgst}}",              "category": "Tax" },
+      { "name": "{{igst}}",              "category": "Tax" },
+      { "name": "{{80g_section}}",       "category": "Donations" }
+    ],
+    "blockTypes": [
+      { "type": "header",      "label": "Header with logo",       "icon": "header" },
+      { "type": "summary",     "label": "Amount summary",          "icon": "amount" },
+      { "type": "lineItems",   "label": "Line items table",        "icon": "table" },
+      { "type": "tax",         "label": "Tax breakdown (GST)",     "icon": "tax" },
+      { "type": "footer",      "label": "Footer · GSTIN, address", "icon": "footer" },
+      { "type": "donation",    "label": "Donation block (80G)",    "icon": "heart" }
+    ],
+    "currentTemplate": {
+      "name": "Default · order receipt",
+      "blocks": [
+        { "type": "header",     "config": { "logo": true, "merchantName": true } },
+        { "type": "summary",    "config": { "amount": true, "currency": true, "method": true } },
+        { "type": "lineItems",  "config": { "showSubtotal": true, "showDiscount": false } },
+        { "type": "tax",        "config": { "breakdown": "cgst_sgst", "showRate": true } },
+        { "type": "footer",     "config": { "gstin": true, "address": true, "supportEmail": true } }
+      ]
+    }
+  },
+  "subscriptionAnalytics": {
+    "kicker": "Subscription analytics",
+    "summary": "MRR cohorts, churn, LTV. The numbers your CFO and your investors care about.",
+    "stats": [
+      { "label": "MRR",              "value": "₹84.2 L",   "sub": "+18.4% MoM · 2,842 active subs" },
+      { "label": "ARR",              "value": "₹10.10 Cr", "sub": "₹84.2 L × 12 · projected" },
+      { "label": "Churn · 30d",      "value": "3.8%",      "sub": "184 cancelled · industry 5-7%" },
+      { "label": "LTV (avg)",        "value": "₹28,400",   "sub": "26 mo avg lifetime" }
+    ],
+    "mrrTrend": [
+      { "month": "Sep 2025", "mrr": 4242000,  "newSubs": 142, "churnedSubs": 24 },
+      { "month": "Oct 2025", "mrr": 5184000,  "newSubs": 184, "churnedSubs": 32 },
+      { "month": "Nov 2025", "mrr": 5824000,  "newSubs": 168, "churnedSubs": 28 },
+      { "month": "Dec 2025", "mrr": 6442000,  "newSubs": 202, "churnedSubs": 42 },
+      { "month": "Jan 2026", "mrr": 7184000,  "newSubs": 248, "churnedSubs": 38 },
+      { "month": "Feb 2026", "mrr": 7824000,  "newSubs": 224, "churnedSubs": 44 },
+      { "month": "Mar 2026", "mrr": 8420000,  "newSubs": 284, "churnedSubs": 52 }
+    ],
+    "cohorts": [
+      { "joined": "Oct 2025", "size": 184, "active": ["100%", "94%", "88%", "84%", "82%", "78%", "76%"] },
+      { "joined": "Nov 2025", "size": 168, "active": ["100%", "92%", "86%", "82%", "78%", "76%"] },
+      { "joined": "Dec 2025", "size": 202, "active": ["100%", "94%", "88%", "84%", "80%"] },
+      { "joined": "Jan 2026", "size": 248, "active": ["100%", "92%", "86%", "82%"] },
+      { "joined": "Feb 2026", "size": 224, "active": ["100%", "94%", "88%"] },
+      { "joined": "Mar 2026", "size": 284, "active": ["100%", "94%"] },
+      { "joined": "Apr 2026", "size": 142, "active": ["100%"] }
+    ],
+    "churnReasons": [
+      { "reason": "Too expensive",          "count": 48, "pct": 26 },
+      { "reason": "Not using enough",        "count": 42, "pct": 23 },
+      { "reason": "Switched to competitor",  "count": 28, "pct": 15 },
+      { "reason": "Service quality issue",   "count": 24, "pct": 13 },
+      { "reason": "Payment method failed",   "count": 22, "pct": 12 },
+      { "reason": "No reason given",         "count": 20, "pct": 11 }
+    ],
+    "topPlans": [
+      { "plan": "Rhea Yoga · Monthly unlimited", "mrr": "₹13.6 L", "subs": 284, "churn": "2.4%", "trend": "up"   },
+      { "plan": "Cred Club · Scale",              "mrr": "₹14.2 L", "subs": 142, "churn": "5.8%", "trend": "down" },
+      { "plan": "Nykaa · Prime",                   "mrr": "₹14.2 L", "subs": 2842,"churn": "4.2%", "trend": "up"   }
+    ]
+  }
+}
