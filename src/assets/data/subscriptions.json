@@ -48,5 +48,33 @@
     { "id": "sub_470m", "customer": "Farah Khan", "plan": "Zomato UAE Premium", "amount": "AED 99", "method": "Card", "type": "international", "nextCharge": "02 May", "status": "Active", "collected": 7 },
     { "id": "sub_469n", "customer": "Pooja Nair", "plan": "BookMyShow Gold", "amount": "₹499", "method": "UPI Autopay", "type": "upi", "nextCharge": "26 Apr", "status": "Paused", "collected": 5 },
     { "id": "sub_468o", "customer": "Digital Ventures", "plan": "Platform Scale", "amount": "₹1,99,999", "method": "NACH", "type": "nach", "nextCharge": "01 May", "status": "Active", "collected": 22 }
-  ]
+  ],
+  "eMandate": {
+    "kicker": "e-Mandate compliance",
+    "summary": "Automated guardrails per RBI e-Mandate framework. Pre-debit notification, additional factor authentication, and one-click revocation applied across 287 active mandates.",
+    "regulationRef": "RBI DPSS.CO.PD No.1822/02.14.008/2019-20 (10 Jan 2020) + PD No.447 (16 Aug 2019)",
+    "stats": [
+      { "label": "PDN sent (24h notice)", "value": "284", "sub": "last 7 days" },
+      { "label": "Pending PDN dispatch",  "value": "12",  "sub": "charges > ₹15K upcoming" },
+      { "label": "AFA coverage",          "value": "100%","sub": "287 of 287 mandates verified" },
+      { "label": "Revocations (30d)",     "value": "18",  "sub": "avg 4 sec self-service" }
+    ],
+    "pdnQueue": [
+      { "subId": "sub_291d", "customer": "Rohan Malhotra", "merchant": "Cred Club",      "amount": "₹32,999", "chargeAt": "Today 18:00",   "pdnStatus": "overdue · -2h",  "status": "overdue" },
+      { "subId": "sub_298f", "customer": "Priya Mehta",    "merchant": "Cred Club",      "amount": "₹24,500", "chargeAt": "Tomorrow 09:00","pdnStatus": "dispatch in 8h", "status": "pending" },
+      { "subId": "sub_295b", "customer": "Kavya Nair",     "merchant": "Aanya Films",    "amount": "₹22,000", "chargeAt": "21 Apr 08:00",  "pdnStatus": "sent · 20 Apr 08:00 IST", "status": "sent" },
+      { "subId": "sub_297a", "customer": "Arjun Krishnan", "merchant": "Crypto Arcadia", "amount": "₹18,200", "chargeAt": "20 Apr 10:00",  "pdnStatus": "sent · 19 Apr 10:00 IST", "status": "sent" },
+      { "subId": "sub_289e", "customer": "Ananya Das",     "merchant": "Rhea Yoga",      "amount": "₹16,500", "chargeAt": "22 Apr 07:00",  "pdnStatus": "scheduled · 21 Apr 07:00", "status": "scheduled" }
+    ],
+    "afaRecentAudit": [
+      { "subId": "sub_298f", "mandateType": "UPI Autopay · GPay",  "afaMethod": "OTP + biometric",    "afaTimestamp": "17 Apr 2026 14:22:38 IST", "afaRef": "AFA-2026-482719" },
+      { "subId": "sub_297a", "mandateType": "NACH · SBI",           "afaMethod": "Aadhaar OTP + NACH", "afaTimestamp": "14 Apr 2026 11:08:14 IST", "afaRef": "AFA-2026-480288" },
+      { "subId": "sub_295b", "mandateType": "Card · HDFC credit",   "afaMethod": "OTP · issuer",       "afaTimestamp": "11 Apr 2026 09:48:02 IST", "afaRef": "AFA-2026-478442" }
+    ],
+    "recentRevocations": [
+      { "subId": "sub_274c", "customer": "Neelam Gupta",  "revokedAt": "3h ago", "channel": "self-service · 1-click", "confirmationSec": 3, "refund": "No pro-rata · no charges post-revocation" },
+      { "subId": "sub_268a", "customer": "Vikram Rao",    "revokedAt": "2d ago", "channel": "self-service · 1-click", "confirmationSec": 4, "refund": "No pro-rata · no charges post-revocation" },
+      { "subId": "sub_251b", "customer": "Ishita Mehta",  "revokedAt": "6d ago", "channel": "merchant-initiated",     "confirmationSec": 5, "refund": "Pro-rated ₹4,999 · refunded instantly" }
+    ]
+  }
 }

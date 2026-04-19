@@ -34,7 +34,20 @@
         { "time": "14:41:11", "label": "Initiated", "detail": "ACH via bank timeout" },
         { "time": "14:41:14", "label": "Fallback", "detail": "Re-routed via SEPA Instant" },
         { "time": "14:41:19", "label": "Succeeded", "detail": "SEPA ref: RF8912MN" }
-      ]
+      ],
+      "paCb": {
+        "direction": "inbound · export receipt",
+        "purposeCode": "P0302",
+        "purposeDescription": "Export of cosmetics & personal care goods · retail DDP to EU consumer",
+        "adBank": "HDFC Bank · AD Category 1",
+        "escrowAccount": "Separate PA-CB nodal · HDFC ••••6401",
+        "inrEquivalent": "₹1,70,856",
+        "fxMarginBps": 25,
+        "fema": { "reportingStatus": "R-return due 07 May 2026", "eBrcStatus": "Auto-generated on settlement", "reportingRef": null },
+        "lrsApplicable": false,
+        "lrsNote": "LRS governs outbound individual remittance only · not applicable to this inbound merchant receipt",
+        "sanctionsCleared": true
+      }
     },
     { "id": "txn_00478", "time": "14:38:56", "merchant": "Zomato Foods", "customer": "Rohan Shankar", "method": "UPI Autopay", "rail": "NPCI", "sourceAmount": 4500, "sourceCurrency": "INR", "status": "succeeded", "note": "Quarterly mandate",
       "events": [
@@ -58,7 +71,20 @@
       "events": [
         { "time": "14:28:58", "label": "Initiated", "detail": "Amex ending 1001 · USD" },
         { "time": "14:29:02", "label": "Succeeded", "detail": "Auth code: AX9912BC" }
-      ]
+      ],
+      "paCb": {
+        "direction": "inbound · travel services receipt",
+        "purposeCode": "S0801",
+        "purposeDescription": "Travel and accommodation receipts · international visitor · Indian hospitality services",
+        "adBank": "ICICI Bank · AD Category 1",
+        "escrowAccount": "Separate PA-CB nodal · ICICI ••••7812",
+        "inrEquivalent": "₹26,624",
+        "fxMarginBps": 30,
+        "fema": { "reportingStatus": "R-return due 07 May 2026", "eBrcStatus": "Services export · eBRC not applicable", "reportingRef": null },
+        "lrsApplicable": false,
+        "lrsNote": "LRS governs outbound individual remittance only · not applicable to this inbound merchant receipt",
+        "sanctionsCleared": true
+      }
     },
     { "id": "txn_00474", "time": "14:24:38", "merchant": "BookMyShow", "customer": "Rajiv Mehta", "method": "UPI", "rail": "NPCI", "sourceAmount": 112000, "sourceCurrency": "INR", "status": "succeeded", "note": "",
       "events": [

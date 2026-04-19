@@ -407,6 +407,41 @@ function TxnDetailDrawer({ txn, onClose, fxRate, toInr, formatSource, enrichEven
           <DetailRow label="Status" value={txn.status.toUpperCase()} isLast mono />
         </div>
 
+        {txn.paCb && (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+              <Kicker>PA-CB compliance · cross-border</Kicker>
+              <span style={{ fontSize: '9px', color: colors.teal, letterSpacing: '0.08em', fontWeight: 600, padding: '2px 8px', background: 'rgba(28,111,107,0.08)', border: '0.5px solid rgba(28,111,107,0.25)', borderRadius: radius.pill }}>RBI PA-CB</span>
+            </div>
+            <div style={{ fontSize: '10px', color: colors.text3, marginBottom: '12px', lineHeight: 1.5 }}>
+              Per RBI PA-CB Regulations (31 Oct 2024) · purpose-coded, separately-escrowed, and FEMA-reportable.
+            </div>
+            <div style={{ padding: '16px', background: colors.bg, borderRadius: radius.md, marginBottom: '20px' }}>
+              <div style={{ padding: '12px 14px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.sm, marginBottom: '14px' }}>
+                <div style={{ fontSize: '9px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '6px' }}>FEMA purpose code</div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '18px', fontWeight: 600, color: colors.ink, fontFamily: typography.family.mono, letterSpacing: '-0.01em' }}>{txn.paCb.purposeCode}</span>
+                  <span style={{ fontSize: '11px', color: colors.text2, lineHeight: 1.5 }}>{txn.paCb.purposeDescription}</span>
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
+                <DetailRow label="Direction"      value={txn.paCb.direction} />
+                <DetailRow label="AD Bank"        value={txn.paCb.adBank} />
+                <DetailRow label="PA-CB escrow"   value={txn.paCb.escrowAccount} mono />
+                <DetailRow label="INR equivalent" value={txn.paCb.inrEquivalent} mono />
+                <DetailRow label="FX margin"      value={`${txn.paCb.fxMarginBps} bps`} mono />
+                <DetailRow label="FEMA"           value={txn.paCb.fema.reportingStatus} />
+                <DetailRow label="eBRC"           value={txn.paCb.fema.eBrcStatus} />
+                <DetailRow label="Sanctions"      value={txn.paCb.sanctionsCleared ? '✓ cleared · OFAC/UN/MHA/PEP' : 'under review'} isLast />
+              </div>
+              <div style={{ padding: '10px 12px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.sm, marginTop: '12px', fontSize: '10px', color: colors.text2, lineHeight: 1.55 }}>
+                <span style={{ color: colors.text3, fontWeight: 500, letterSpacing: '0.06em' }}>LRS · </span>
+                {txn.paCb.lrsNote}
+              </div>
+            </div>
+          </>
+        )}
+
         <Kicker style={{ marginBottom: '14px' }}>Event timeline</Kicker>
         <div style={{ marginBottom: '24px' }}>
           {txn.events.map((e: any, i: number) => {

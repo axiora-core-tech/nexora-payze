@@ -43,10 +43,50 @@
   ],
   "disputes": [
     { "id": "dp_9012", "txn": "txn_00248", "reason": "Product not as described", "amount": "₹12,400", "due": "24 Apr", "status": "Evidence needed" },
-    { "id": "dp_9011", "txn": "txn_00189", "reason": "Duplicate charge", "amount": "₹4,800", "due": "20 Apr", "status": "Submitted" },
+    { "id": "dp_9011", "txn": "txn_00189", "reason": "Duplicate charge", "amount": "₹4,800", "due": "20 Apr", "status": "Submitted",
+      "udir": {
+        "status": "in_investigation",
+        "ref": "UDR-2026-482719",
+        "rail": "UPI",
+        "raisedAt": "15 Apr 2026 · 11:22 IST",
+        "customerPsp": "PhonePe · ICICI Bank",
+        "beneficiaryPsp": "GPay · HDFC Bank",
+        "npciTat": "7 days",
+        "tatElapsed": "3d 6h",
+        "tatRemaining": "3d 18h",
+        "expectedBy": "22 Apr 2026",
+        "timeline": [
+          { "at": "15 Apr · 11:22", "event": "Raised on UDIR",                 "detail": "Customer raised via PhonePe support · auto-synced to NPCI UDIR",                            "status": "done" },
+          { "at": "15 Apr · 14:08", "event": "Acknowledged by beneficiary PSP", "detail": "HDFC Bank ack in 2h 46m · within TAT",                                                        "status": "done" },
+          { "at": "16 Apr · 09:14", "event": "Investigation opened",            "detail": "Reviewing double-debit logs at switch · Payze provided duplicate-txn proof",                 "status": "done" },
+          { "at": "—",              "event": "Beneficiary response due",        "detail": "HDFC to post resolution on UDIR · expected by 22 Apr per NPCI TAT",                          "status": "pending" },
+          { "at": "—",              "event": "NPCI arbitration (if unresolved)","detail": "Escalated only if beneficiary fails TAT or customer contests · currently not needed",      "status": "upcoming" }
+        ]
+      }
+    },
     { "id": "dp_9010", "txn": "txn_00102", "reason": "Unrecognised charge", "amount": "₹22,000", "due": "18 Apr", "status": "Won" },
     { "id": "dp_9009", "txn": "txn_00087", "reason": "Service not rendered", "amount": "₹8,600", "due": "16 Apr", "status": "Evidence needed" },
     { "id": "dp_9008", "txn": "txn_00054", "reason": "Fraudulent — customer claim", "amount": "₹45,000", "due": "12 Apr", "status": "Lost" },
-    { "id": "dp_9007", "txn": "txn_00012", "reason": "Refund not received", "amount": "₹2,100", "due": "10 Apr", "status": "Won" }
+    { "id": "dp_9007", "txn": "txn_00012", "reason": "Refund not received", "amount": "₹2,100", "due": "10 Apr", "status": "Won",
+      "udir": {
+        "status": "resolved_in_favour",
+        "ref": "UDR-2026-478192",
+        "rail": "UPI",
+        "raisedAt": "02 Apr 2026 · 16:40 IST",
+        "customerPsp": "GPay · SBI",
+        "beneficiaryPsp": "BHIM · HDFC Bank",
+        "npciTat": "7 days",
+        "tatElapsed": "5d 8h",
+        "tatRemaining": "—",
+        "expectedBy": "closed 07 Apr 2026",
+        "timeline": [
+          { "at": "02 Apr · 16:40", "event": "Raised on UDIR",               "detail": "Refund claim raised by customer",                                                "status": "done" },
+          { "at": "02 Apr · 18:12", "event": "Acknowledged",                  "detail": "HDFC Bank ack · beneficiary investigation opened",                                "status": "done" },
+          { "at": "04 Apr · 11:32", "event": "Refund trace completed",        "detail": "Refund credit confirmed on HDFC side but stuck at NPCI switch · 48h hold",       "status": "done" },
+          { "at": "06 Apr · 09:48", "event": "Refund reprocessed",            "detail": "HDFC reversed failed credit · customer account credited ₹2,100",                 "status": "done" },
+          { "at": "07 Apr · 14:22", "event": "Closed in customer's favour",   "detail": "Customer confirmed receipt · dispute closed · within TAT",                         "status": "done" }
+        ]
+      }
+    }
   ]
 }

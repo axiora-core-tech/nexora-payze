@@ -186,6 +186,55 @@ function BreakdownTab({ batch }: { batch: any }) {
         </div>
       </div>
 
+      {batch.mdrBreakdown && (
+        <>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+            <Kicker>MDR transparency · per method</Kicker>
+            <span style={{ fontSize: '9px', color: colors.teal, letterSpacing: '0.08em', fontWeight: 600, padding: '2px 8px', background: 'rgba(28,111,107,0.08)', border: '0.5px solid rgba(28,111,107,0.25)', borderRadius: radius.pill }}>RBI MANDATE</span>
+          </div>
+          <div style={{ fontSize: '10px', color: colors.text3, lineHeight: 1.5, marginBottom: '12px' }}>
+            Per RBI PA/PG Guidelines (17 Mar 2020) · merchants are entitled to per-method MDR disclosure on every settlement. Rates below are applied at source · itemized and auditable.
+          </div>
+          <div style={{ padding: '14px', background: colors.bg, borderRadius: radius.md, marginBottom: '20px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 0.6fr 1fr 0.7fr 1fr', gap: '10px', padding: '6px 0', borderBottom: `0.5px solid ${colors.border}`, fontSize: '9px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500 }}>
+              <div>Method</div><div style={{ textAlign: 'right' }}>Count</div><div style={{ textAlign: 'right' }}>Volume</div><div style={{ textAlign: 'right' }}>Rate</div><div style={{ textAlign: 'right' }}>MDR</div>
+            </div>
+            {batch.mdrBreakdown.byMethod.map((m: any, i: number) => (
+              <div key={i} style={{ padding: '8px 0', borderBottom: i < batch.mdrBreakdown.byMethod.length - 1 ? `0.5px solid ${colors.border}` : 'none' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 0.6fr 1fr 0.7fr 1fr', gap: '10px', fontSize: '11px', alignItems: 'baseline' }}>
+                  <div style={{ color: colors.ink, fontWeight: 500 }}>{m.method}</div>
+                  <div style={{ textAlign: 'right', fontFamily: typography.family.mono, color: colors.text2 }}>{m.count.toLocaleString('en-IN')}</div>
+                  <div style={{ textAlign: 'right', fontFamily: typography.family.mono, color: colors.ink }}>{m.volume}</div>
+                  <div style={{ textAlign: 'right', fontFamily: typography.family.mono, color: m.mdrRate === '0%' ? colors.teal : colors.ink, fontWeight: 500 }}>{m.mdrRate}</div>
+                  <div style={{ textAlign: 'right', fontFamily: typography.family.mono, color: colors.ink, fontWeight: 500 }}>{m.mdr}</div>
+                </div>
+                <div style={{ fontSize: '9px', color: colors.text3, marginTop: '3px', lineHeight: 1.4 }}>{m.note}</div>
+              </div>
+            ))}
+            <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 0.6fr 1fr 0.7fr 1fr', gap: '10px', padding: '10px 0 2px 0', borderTop: `0.5px solid ${colors.border}`, marginTop: '4px', fontSize: '11px', fontFamily: typography.family.mono }}>
+              <div style={{ color: colors.text2 }}>MDR total</div>
+              <div></div><div></div><div></div>
+              <div style={{ textAlign: 'right', color: colors.ink, fontWeight: 600 }}>{batch.mdrBreakdown.mdrTotal}</div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 0.6fr 1fr 0.7fr 1fr', gap: '10px', padding: '4px 0', fontSize: '11px', fontFamily: typography.family.mono }}>
+              <div style={{ color: colors.text2 }}>GST @ 18% on MDR</div>
+              <div></div><div></div><div></div>
+              <div style={{ textAlign: 'right', color: colors.ink }}>{batch.mdrBreakdown.gstOnMdr}</div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 0.6fr 1fr 0.7fr 1fr', gap: '10px', padding: '4px 0', fontSize: '11px', fontFamily: typography.family.mono }}>
+              <div style={{ color: colors.text2 }}>TDS under 194-O</div>
+              <div></div><div></div><div></div>
+              <div style={{ textAlign: 'right', color: colors.text3 }}>{batch.mdrBreakdown.tdsUnder194O}</div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 0.6fr 1fr 0.7fr 1fr', gap: '10px', padding: '10px 0 0 0', borderTop: `0.5px solid ${colors.ink}`, marginTop: '6px', fontSize: '12px', fontFamily: typography.family.mono }}>
+              <div style={{ color: colors.ink, fontWeight: 600 }}>Net settled to bank</div>
+              <div></div><div></div><div></div>
+              <div style={{ textAlign: 'right', color: colors.ink, fontWeight: 600 }}>{batch.mdrBreakdown.netSettled}</div>
+            </div>
+          </div>
+        </>
+      )}
+
       <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
         <Button variant="primary" icon={<Icons.IconDownload size={14} />} onClick={() => toast.success('CSV downloaded')}>Download CSV</Button>
         <Button variant="secondary" icon={<Icons.IconDownload size={14} />} onClick={() => toast.success('PDF downloaded')}>Download PDF</Button>

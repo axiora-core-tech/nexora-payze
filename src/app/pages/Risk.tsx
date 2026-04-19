@@ -388,6 +388,64 @@ function DisputeEvidenceDrawer({ dispute, evidence, fallback, onClose }: any) {
           </div>
         )}
 
+        {dispute.udir && (
+          <div style={{ marginBottom: '20px', padding: '16px', border: `0.5px solid ${colors.border}`, borderRadius: radius.md, background: colors.bg }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
+              <Kicker style={{ margin: 0 }}>UDIR · NPCI dispute integration</Kicker>
+              <span style={{ fontSize: '9px', color: colors.teal, letterSpacing: '0.08em', fontWeight: 600, padding: '2px 8px', background: 'rgba(28,111,107,0.08)', border: '0.5px solid rgba(28,111,107,0.25)', borderRadius: radius.pill }}>{dispute.udir.rail}</span>
+              <span style={{ marginLeft: 'auto', fontSize: '10px', color: dispute.udir.status === 'resolved_in_favour' ? colors.teal : '#B48C3C', fontWeight: 500 }}>
+                {dispute.udir.status === 'resolved_in_favour' ? '✓ Resolved in customer\'s favour' :
+                 dispute.udir.status === 'in_investigation'   ? 'In investigation · NPCI TAT active' : dispute.udir.status.replace(/_/g, ' ')}
+              </span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', padding: '12px 14px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.sm, marginBottom: '14px' }}>
+              <div>
+                <div style={{ fontSize: '9px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>UDIR reference</div>
+                <div style={{ fontSize: '13px', fontWeight: 600, color: colors.ink, fontFamily: typography.family.mono }}>{dispute.udir.ref}</div>
+                <div style={{ fontSize: '10px', color: colors.text3, marginTop: '2px' }}>Raised {dispute.udir.raisedAt}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '9px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>NPCI TAT</div>
+                <div style={{ fontSize: '13px', fontWeight: 600, color: colors.ink, fontFamily: typography.family.mono }}>{dispute.udir.tatElapsed} / {dispute.udir.npciTat}</div>
+                <div style={{ fontSize: '10px', color: colors.text3, marginTop: '2px' }}>
+                  {dispute.udir.tatRemaining === '—' ? dispute.udir.expectedBy : `${dispute.udir.tatRemaining} remaining`}
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: '9px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>Customer PSP</div>
+                <div style={{ fontSize: '11px', color: colors.ink }}>{dispute.udir.customerPsp}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '9px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>Beneficiary PSP</div>
+                <div style={{ fontSize: '11px', color: colors.ink }}>{dispute.udir.beneficiaryPsp}</div>
+              </div>
+            </div>
+
+            <div style={{ fontSize: '9px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '8px' }}>UDIR timeline</div>
+            {dispute.udir.timeline.map((t: any, i: number) => {
+              const dotColor = t.status === 'done' ? colors.teal : t.status === 'pending' ? '#B48C3C' : colors.text3;
+              return (
+                <div key={i} style={{ display: 'flex', gap: '12px', padding: '8px 0', borderBottom: i < dispute.udir.timeline.length - 1 ? `0.5px solid ${colors.border}` : 'none', alignItems: 'flex-start' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: dotColor, marginTop: '5px', flexShrink: 0, opacity: t.status === 'upcoming' ? 0.4 : 1 }} />
+                  <div style={{ minWidth: '94px', fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono, marginTop: '1px' }}>{t.at}</div>
+                  <div style={{ flex: 1, minWidth: 0, opacity: t.status === 'upcoming' ? 0.6 : 1 }}>
+                    <div style={{ fontSize: '12px', color: colors.ink, fontWeight: 500, marginBottom: '2px' }}>{t.event}</div>
+                    <div style={{ fontSize: '11px', color: colors.text2, lineHeight: 1.45 }}>{t.detail}</div>
+                  </div>
+                </div>
+              );
+            })}
+
+            {dispute.udir.status === 'in_investigation' && (
+              <div style={{ display: 'flex', gap: '6px', marginTop: '12px', paddingTop: '12px', borderTop: `0.5px solid ${colors.border}` }}>
+                <Button variant="secondary" size="sm" onClick={() => toast.success('UDIR status refreshed from NPCI')}>Refresh UDIR</Button>
+                <Button variant="ghost" size="sm" onClick={() => toast.success('Escalation to NPCI arbitration queued · requires 2-of-3 custodian sign-off')}>Escalate to NPCI</Button>
+              </div>
+            )}
+          </div>
+        )}
+
         {!evidence ? (
           <div style={{ padding: '20px', background: colors.bg, borderRadius: radius.md, fontSize: '13px', color: colors.text2, lineHeight: 1.6, marginBottom: '20px' }}>
             {fallback}

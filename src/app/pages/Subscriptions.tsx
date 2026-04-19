@@ -84,6 +84,74 @@ export function Subscriptions() {
         </Card>
       )}
 
+      {data.eMandate && (
+        <Card padded={false} style={{ marginBottom: '20px' }}>
+          <div style={{ padding: '16px 24px', borderBottom: `0.5px solid ${colors.border}` }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+              <Kicker color={colors.teal}>{data.eMandate.kicker}</Kicker>
+              <span style={{ fontSize: '9px', color: colors.teal, letterSpacing: '0.08em', fontWeight: 600, padding: '2px 8px', background: 'rgba(28,111,107,0.08)', border: '0.5px solid rgba(28,111,107,0.25)', borderRadius: radius.pill }}>RBI MANDATE</span>
+            </div>
+            <div style={{ fontSize: '12px', color: colors.text2, lineHeight: 1.55, marginBottom: '4px' }}>{data.eMandate.summary}</div>
+            <div style={{ fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono }}>{data.eMandate.regulationRef}</div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', borderBottom: `0.5px solid ${colors.border}` }}>
+            {data.eMandate.stats.map((s: any, idx: number) => (
+              <div key={s.label} style={{ padding: '14px 20px', borderRight: idx < 3 ? `0.5px solid ${colors.border}` : 'none' }}>
+                <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, marginBottom: '4px' }}>{s.label}</div>
+                <div style={{ fontSize: '20px', fontWeight: 600, color: colors.ink, letterSpacing: '-0.015em', fontFamily: typography.family.mono, marginBottom: '2px' }}>{s.value}</div>
+                <div style={{ fontSize: '10px', color: colors.text2 }}>{s.sub}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr' }}>
+            <div style={{ padding: '14px 20px', borderRight: `0.5px solid ${colors.border}` }}>
+              <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '10px' }}>Pre-debit notification queue · next 48h</div>
+              {data.eMandate.pdnQueue.slice(0, 4).map((p: any) => {
+                const tone = p.status === 'overdue' ? '#D64545' : p.status === 'pending' ? '#B48C3C' : p.status === 'scheduled' ? colors.text3 : colors.teal;
+                return (
+                  <div key={p.subId} style={{ padding: '8px 0', borderBottom: `0.5px solid ${colors.border}`, fontSize: '11px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px', gap: '8px' }}>
+                      <span style={{ color: colors.ink, fontWeight: 500 }}>{p.customer}</span>
+                      <span style={{ fontFamily: typography.family.mono, color: colors.ink, fontWeight: 600 }}>{p.amount}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', gap: '8px' }}>
+                      <span style={{ color: colors.text3 }}>{p.merchant} · charge {p.chargeAt}</span>
+                      <span style={{ color: tone, fontWeight: 500 }}>{p.pdnStatus}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ padding: '14px 20px', borderRight: `0.5px solid ${colors.border}` }}>
+              <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '10px' }}>AFA audit · recent</div>
+              {data.eMandate.afaRecentAudit.map((a: any) => (
+                <div key={a.subId} style={{ padding: '8px 0', borderBottom: `0.5px solid ${colors.border}`, fontSize: '11px' }}>
+                  <div style={{ color: colors.ink, fontWeight: 500, marginBottom: '2px' }}>{a.mandateType}</div>
+                  <div style={{ fontSize: '10px', color: colors.text2 }}>{a.afaMethod}</div>
+                  <div style={{ fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono, marginTop: '2px' }}>{a.afaRef} · {a.afaTimestamp.replace(/(\d{4}) /, ' ')}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ padding: '14px 20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600 }}>Recent revocations</div>
+                <span style={{ fontSize: '9px', color: colors.teal, fontWeight: 500 }}>1-click · frictionless</span>
+              </div>
+              {data.eMandate.recentRevocations.map((r: any) => (
+                <div key={r.subId} style={{ padding: '8px 0', borderBottom: `0.5px solid ${colors.border}`, fontSize: '11px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px', gap: '6px' }}>
+                    <span style={{ color: colors.ink, fontWeight: 500 }}>{r.customer}</span>
+                    <span style={{ fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono }}>{r.confirmationSec}s</span>
+                  </div>
+                  <div style={{ fontSize: '10px', color: colors.text2 }}>{r.revokedAt} · {r.channel}</div>
+                  <div style={{ fontSize: '10px', color: colors.text3, marginTop: '2px' }}>{r.refund}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
+      )}
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '20px' }}>
         {stats.map((s: any) => <StatCard key={s.label} {...s} />)}
       </div>
