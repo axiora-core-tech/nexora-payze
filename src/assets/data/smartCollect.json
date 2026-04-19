@@ -1,0 +1,39 @@
+{
+  "header": {
+    "kicker": "Money · Smart Collect",
+    "title": "Smart Collect · Virtual accounts",
+    "subtitle": "Every customer or invoice gets a unique virtual account number. NEFT/IMPS/RTGS arrives? Auto-reconciled in real time."
+  },
+  "stats": [
+    { "label": "Active VAs",          "value": "284",        "sub": "across 47 merchants" },
+    { "label": "Collected · 30d",      "value": "₹14.82 Cr", "sub": "via virtual accounts" },
+    { "label": "Auto-reconcile rate",  "value": "99.8%",     "sub": "no manual matching needed" },
+    { "label": "Avg time to reconcile", "value": "4.2 sec",  "sub": "bank webhook → invoice paid" }
+  ],
+  "howItWorks": {
+    "kicker": "How Smart Collect works",
+    "summary": "Create a virtual account per customer or per invoice. When the customer transfers via NEFT/IMPS/RTGS to that VA, Payze matches it to the invoice and fires payment.succeeded — all without you doing reconciliation.",
+    "steps": [
+      { "num": 1, "label": "Create VA",                      "detail": "API call or click · Payze assigns a unique virtual account (11-digit number + IFSC)" },
+      { "num": 2, "label": "Share with customer",            "detail": "On your invoice · branded with your name · customer sees it as your bank account" },
+      { "num": 3, "label": "Customer transfers via NEFT/IMPS/RTGS", "detail": "From their bank to the VA · as if paying into your account" },
+      { "num": 4, "label": "Payze receives webhook from nodal bank","detail": "Within 4 seconds · includes sender name + amount + narration" },
+      { "num": 5, "label": "Auto-match + fire webhook",      "detail": "Payze matches to invoice · fires `payment.succeeded` · updates GL" }
+    ],
+    "regulationRef": "VA issuance via nodal escrow · RBI PA/PG Guidelines para 5.4 · all VAs pass-through to HDFC nodal"
+  },
+  "virtualAccounts": [
+    { "id": "va_8472", "customerName": "Zomato Foods",          "merchantName": "Studio Lumière",  "accountNumber": "ZOMLUMN8472142384", "ifsc": "HDFC0000001", "createdAt": "14 Apr 2026", "status": "active", "receivedCount": 1,  "receivedTotal": "₹4,50,000", "lastInflow": "Yesterday 16:42", "linkedTo": { "type": "invoice", "ref": "INV-842" } },
+    { "id": "va_8471", "customerName": "Cred Club Technologies","merchantName": "Nykaa Beauty",   "accountNumber": "CREDNYK8471284921", "ifsc": "HDFC0000001", "createdAt": "08 Apr 2026", "status": "active", "receivedCount": 3,  "receivedTotal": "₹42,84,000","lastInflow": "Today 11:42",      "linkedTo": { "type": "customer", "ref": "cus_b9183" } },
+    { "id": "va_8470", "customerName": "Razorpay Technologies", "merchantName": "Studio Lumière", "accountNumber": "RAZLUMN8470291038", "ifsc": "HDFC0000001", "createdAt": "02 Apr 2026", "status": "active", "receivedCount": 2,  "receivedTotal": "₹12,00,000","lastInflow": "16 Apr",           "linkedTo": { "type": "customer", "ref": "cus_d6541" } },
+    { "id": "va_8469", "customerName": "Aanya Films Invoice 9", "merchantName": "Mumbai Street Kitchen","accountNumber": "AANMUM8469192847", "ifsc": "HDFC0000001", "createdAt": "Today",       "status": "awaiting_inflow", "receivedCount": 0, "receivedTotal": "₹0", "lastInflow": "—", "linkedTo": { "type": "invoice", "ref": "INV-901" } },
+    { "id": "va_8468", "customerName": "Urban Company Services","merchantName": "BookMyShow",     "accountNumber": "URBBMS8468048194", "ifsc": "HDFC0000001", "createdAt": "28 Mar 2026", "status": "active", "receivedCount": 8,  "receivedTotal": "₹2,84,200", "lastInflow": "Yesterday",        "linkedTo": { "type": "customer", "ref": "cus_urban" } },
+    { "id": "va_8467", "customerName": "MakeMyTrip Invoice 14", "merchantName": "Studio Lumière","accountNumber": "MMTLUMN8467492817", "ifsc": "HDFC0000001", "createdAt": "22 Mar 2026", "status": "deactivated", "receivedCount": 1, "receivedTotal": "₹1,84,000", "lastInflow": "22 Mar", "linkedTo": { "type": "invoice", "ref": "INV-799 · paid" } }
+  ],
+  "recentInflows": [
+    { "id": "inf_00284", "va": "va_8471", "sender": "Cred Club Technologies", "amount": "₹14,28,000", "rail": "RTGS",  "receivedAt": "Today 11:42", "reconciledIn": "3.8s", "matchedTo": "invoice INV-892 (Nykaa Beauty)",      "narration": "INV-892 APR STATEMENT" },
+    { "id": "inf_00283", "va": "va_8472", "sender": "Zomato Foods",           "amount": "₹4,50,000",  "rail": "RTGS",  "receivedAt": "Yesterday 16:42", "reconciledIn": "4.2s", "matchedTo": "invoice INV-842 (Studio Lumière)","narration": "BRAND IDENTITY Q2 INV842" },
+    { "id": "inf_00282", "va": "va_8468", "sender": "Urban Company Services",  "amount": "₹28,400",    "rail": "IMPS",  "receivedAt": "Yesterday 14:32", "reconciledIn": "2.1s", "matchedTo": "invoice INV-887 (BookMyShow)",       "narration": "MAR BOOKINGS SETTLEMENT" },
+    { "id": "inf_00281", "va": "va_8470", "sender": "Razorpay Technologies",   "amount": "₹6,00,000",  "rail": "NEFT",  "receivedAt": "16 Apr 10:18", "reconciledIn": "5.4s", "matchedTo": "customer cus_d6541 (Studio Lumière)", "narration": "RETAINER APR STUDIO LUMIERE" }
+  ]
+}

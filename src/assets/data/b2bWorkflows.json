@@ -1,0 +1,100 @@
+{
+  "quotes": {
+    "kicker": "Quotes",
+    "summary": "Send a quote, customer accepts, invoice auto-generates, payment flows. No manual re-keying.",
+    "stats": [
+      { "label": "Open quotes",        "value": "8",         "sub": "₹42.4 L pending acceptance" },
+      { "label": "Accepted · 30d",     "value": "14 of 22",  "sub": "64% win rate" },
+      { "label": "Avg time to accept", "value": "2.8 days",  "sub": "p50 · B2B service deals" }
+    ],
+    "records": [
+      { "id": "q_08274", "title": "Brand identity overhaul · Q3", "merchant": "Studio Lumière",    "customer": "Zomato Foods",     "amount": "₹6,50,000", "status": "sent",      "sentAt": "2 days ago",   "expiresIn": "12 days",   "acceptedAt": null,       "convertedInvoice": null },
+      { "id": "q_08273", "title": "6-episode branded series",     "merchant": "Aanya Films",       "customer": "Rhea Yoga",         "amount": "₹18,50,000","status": "accepted",  "sentAt": "Today 10:14",  "expiresIn": null,        "acceptedAt": "Today 12:38","convertedInvoice": "INV-903" },
+      { "id": "q_08272", "title": "Q2 retainer · ad films",        "merchant": "Aanya Films",       "customer": "BookMyShow",        "amount": "₹8,40,000", "status": "sent",      "sentAt": "5 days ago",   "expiresIn": "9 days",    "acceptedAt": null,       "convertedInvoice": null },
+      { "id": "q_08271", "title": "Kitchen branding photography", "merchant": "Karan Mehta",        "customer": "Mumbai Street Kitchen","amount": "₹1,24,000","status": "accepted",  "sentAt": "14 Apr",        "expiresIn": null,        "acceptedAt": "15 Apr",    "convertedInvoice": "INV-894" },
+      { "id": "q_08270", "title": "Ceramic set · 12 pieces",       "merchant": "Maitri Ceramics",    "customer": "Rhea Yoga",         "amount": "₹84,000",   "status": "expired",   "sentAt": "22 Mar",        "expiresIn": "-4 days",   "acceptedAt": null,       "convertedInvoice": null }
+    ]
+  },
+  "recurringInvoices": {
+    "kicker": "Recurring invoices",
+    "summary": "Auto-generate invoices on a schedule. Monthly retainer? Quarterly subscription? Set it up once.",
+    "stats": [
+      { "label": "Active schedules",   "value": "18",        "sub": "₹24.2 L/mo recurring" },
+      { "label": "Next 7 days",         "value": "12",       "sub": "will auto-generate" },
+      { "label": "Auto-paid · 30d",     "value": "82%",      "sub": "via saved payment method" }
+    ],
+    "schedules": [
+      { "id": "rs_042", "title": "Monthly retainer · Zomato",      "merchant": "Studio Lumière", "customer": "Zomato Foods",     "amount": "₹1,50,000", "cadence": "monthly", "nextRun": "01 May 2026", "lastRun": "01 Apr 2026 · paid 02 Apr", "autoSend": true,  "autoCharge": false, "occurrencesLeft": "∞" },
+      { "id": "rs_041", "title": "Quarterly retainer · Razorpay",  "merchant": "Studio Lumière", "customer": "Razorpay Technologies","amount": "₹4,50,000","cadence": "quarterly","nextRun": "01 Jul 2026", "lastRun": "01 Apr 2026 · paid 16 Apr", "autoSend": true,  "autoCharge": false, "occurrencesLeft": "∞" },
+      { "id": "rs_040", "title": "Monthly retainer · Cred",         "merchant": "Aanya Films",    "customer": "Cred Club",         "amount": "₹2,40,000", "cadence": "monthly", "nextRun": "01 May 2026", "lastRun": "01 Apr 2026 · paid 04 Apr", "autoSend": true,  "autoCharge": true,  "occurrencesLeft": "9 more" },
+      { "id": "rs_039", "title": "Weekly class invoice · Rhea",     "merchant": "Rhea Yoga",       "customer": "Urban Company",    "amount": "₹12,000",    "cadence": "weekly",  "nextRun": "22 Apr 2026", "lastRun": "15 Apr 2026 · paid 15 Apr", "autoSend": true,  "autoCharge": true,  "occurrencesLeft": "∞" },
+      { "id": "rs_038", "title": "Annual contract · Aanya Films",   "merchant": "Aanya Films",    "customer": "MakeMyTrip",        "amount": "₹48,00,000","cadence": "yearly",  "nextRun": "14 Apr 2027", "lastRun": "14 Apr 2026 · paid 16 Apr", "autoSend": true,  "autoCharge": false, "occurrencesLeft": "2 more" }
+    ]
+  },
+  "subscriptionPlans": {
+    "kicker": "Subscription plans · customer-facing",
+    "summary": "Create plans customers browse and pick. One link per merchant · hosted by Payze.",
+    "stats": [
+      { "label": "Active plans",       "value": "12",         "sub": "across 6 merchants" },
+      { "label": "New signups · 7d",   "value": "48",         "sub": "+28% vs prior week" },
+      { "label": "MRR from plans",     "value": "₹14.8 L",   "sub": "+18% MoM" }
+    ],
+    "plans": [
+      { "id": "plan_rhea_monthly", "merchant": "Rhea Yoga", "name": "Monthly unlimited",  "price": "₹4,800/mo",   "billingCycle": "monthly",  "activeSubs": 284, "mrr": "₹13,63,200", "trial": "7 days", "featured": true },
+      { "id": "plan_rhea_quarterly","merchant": "Rhea Yoga","name": "Quarterly · 10% off","price": "₹12,960/quarter","billingCycle": "quarterly","activeSubs": 42,  "mrr": "₹1,81,440",  "trial": "7 days", "featured": false },
+      { "id": "plan_rhea_annual",  "merchant": "Rhea Yoga", "name": "Annual · 20% off",    "price": "₹46,080/yr",  "billingCycle": "yearly",   "activeSubs": 18,  "mrr": "₹69,120",    "trial": null,       "featured": false },
+      { "id": "plan_cred_scale",   "merchant": "Cred Club",  "name": "Scale · full suite", "price": "₹9,999/mo",   "billingCycle": "monthly", "activeSubs": 142, "mrr": "₹14,19,858", "trial": null,       "featured": true  },
+      { "id": "plan_nykaa_prime",  "merchant": "Nykaa Beauty","name": "Nykaa Prime",       "price": "₹499/mo",     "billingCycle": "monthly", "activeSubs": 2842,"mrr": "₹14,18,158", "trial": "14 days", "featured": false }
+    ],
+    "browsePageLink": "payze.app/browse/rhea-yoga"
+  },
+  "autoTaxInvoices": {
+    "kicker": "Auto tax invoices",
+    "summary": "Fire a GSTR-1-compliant signed invoice PDF on every payment. Required for B2B at any meaningful scale.",
+    "enabled": true,
+    "stats": [
+      { "label": "Generated · 30d",    "value": "2,482",     "sub": "14,820 auto · 18 manual" },
+      { "label": "GSTR-1 ready",       "value": "100%",      "sub": "all fields present" },
+      { "label": "Signed PDF",         "value": "2,482/2,482","sub": "digital signature affixed" },
+      { "label": "Cost",                "value": "₹0",        "sub": "included in every plan" }
+    ],
+    "rules": [
+      { "id": "tax_rule_1", "condition": "Every payment",                           "action": "Generate GSTR-1 invoice + sign + email to customer", "active": true },
+      { "id": "tax_rule_2", "condition": "International payment",                   "action": "Also generate FIRC-ready companion document",         "active": true },
+      { "id": "tax_rule_3", "condition": "Subscription renewal (auto-charge)",      "action": "Generate but don't email · customer sees in portal",   "active": true },
+      { "id": "tax_rule_4", "condition": "Refund issued",                           "action": "Generate credit note · link to original invoice",     "active": true }
+    ]
+  },
+  "standingOrders": {
+    "kicker": "ERP · standing orders",
+    "summary": "Payze pushes your reconciled data into your ERP every night · or into SFTP for your auditor. Set it up once.",
+    "integrations": [
+      { "id": "so_tally",  "name": "Tally ERP 9",       "type": "daily_push",   "destination": "localhost:9000 via Payze Bridge · signed TDL XML", "lastRun": "Today 01:00", "nextRun": "Tomorrow 01:00", "status": "healthy",  "setupBy": "Meera S.",   "rowsSentLast": "1,482 payments · 47 refunds" },
+      { "id": "so_zoho",   "name": "Zoho Books",         "type": "daily_push",   "destination": "Zoho Books API · organization 82742184",            "lastRun": "Today 01:00", "nextRun": "Tomorrow 01:00", "status": "healthy",  "setupBy": "Kavya V.",   "rowsSentLast": "1,482 payments · 47 refunds" },
+      { "id": "so_sftp",   "name": "SFTP · auditor",     "type": "weekly_push",  "destination": "sftp.srb-associates.com · /payze/payze-tech/weekly", "lastRun": "Sunday 04:00","nextRun": "Sunday 04:00",  "status": "healthy",  "setupBy": "Meera S.",   "rowsSentLast": "reconciliation pack · PGP encrypted" },
+      { "id": "so_qbooks", "name": "QuickBooks Online",  "type": "daily_push",   "destination": "QBO realm 4920183742 · OAuth2",                     "lastRun": "Yesterday",    "nextRun": "Tonight 01:00", "status": "warning",  "setupBy": "Kavya V.",   "rowsSentLast": "expired token · reconnect needed" }
+    ]
+  },
+  "reserve": {
+    "kicker": "Rolling reserve",
+    "summary": "Per RBI · PAs hold a reserve against high-risk merchants. Reserve released on rolling schedule when no disputes surface.",
+    "regulationRef": "RBI PA/PG Guidelines · Annex A para 3.2 · reserve guidance for merchants > 1% chargeback rate or new-age categories",
+    "stats": [
+      { "label": "Reserve held",           "value": "₹28.4 L",  "sub": "across 4 merchants" },
+      { "label": "Scheduled release",       "value": "₹14.2 L", "sub": "next 30 days" },
+      { "label": "Merchants on reserve",    "value": "4 of 47",  "sub": "8.5% · expected" },
+      { "label": "Avg reserve %",           "value": "5.8%",     "sub": "vs industry 7-10% for PA/PG" }
+    ],
+    "heldBy": [
+      { "merchant": "Crypto Arcadia",  "reservePct": 10.0, "heldINR": "₹12,40,000", "releaseSchedule": "Rolling · 180d · per VDA advisory", "reason": "VDA category · RBI 2024-25/84 enhanced DD" },
+      { "merchant": "Cred Club",        "reservePct": 5.0,  "heldINR": "₹8,20,000",  "releaseSchedule": "Rolling · 90d · since disputes > 1%",  "reason": "2 disputes last 30d · hitting threshold"  },
+      { "merchant": "Aanya Films",      "reservePct": 5.0,  "heldINR": "₹4,80,000",  "releaseSchedule": "Rolling · 90d · until first-90d clears","reason": "New merchant · first 90 days standard"    },
+      { "merchant": "Mumbai Street Kitchen","reservePct":5.0, "heldINR": "₹3,00,000", "releaseSchedule": "Rolling · 90d · until first-90d clears","reason": "New merchant · first 90 days standard"    }
+    ],
+    "upcomingReleases": [
+      { "date": "22 Apr 2026", "merchant": "Urban Company",       "amount": "₹2,40,000", "reason": "90-day rolling release · clean period" },
+      { "date": "28 Apr 2026", "merchant": "Aanya Films",         "amount": "₹1,20,000", "reason": "First tranche of 90-day reserve" },
+      { "date": "04 May 2026", "merchant": "Mumbai Street Kitchen","amount": "₹1,00,000","reason": "First tranche of 90-day reserve" }
+    ]
+  }
+}

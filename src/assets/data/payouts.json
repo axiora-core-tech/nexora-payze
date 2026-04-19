@@ -1,0 +1,47 @@
+{
+  "header": {
+    "kicker": "Payouts",
+    "title": "Pay vendors, contractors, partners",
+    "subtitle": "Send money out via IMPS, NEFT, RTGS, UPI, or to cards. Batch or single. All with Payze's routing intelligence."
+  },
+  "stats": [
+    { "label": "Paid out · 30d",     "value": "₹84.2 L",     "sub": "1,284 payouts · 47 vendors" },
+    { "label": "In-flight",           "value": "₹6.8 L",     "sub": "142 payouts · all on track" },
+    { "label": "Success rate · 30d",  "value": "99.6%",      "sub": "Industry 96.8%" },
+    { "label": "Avg landing time",    "value": "42 sec",      "sub": "IMPS · p50" }
+  ],
+  "railIntelligence": {
+    "summary": "Payze picks the cheapest rail that meets your speed need. IMPS by default · RTGS for >₹2L · NEFT for non-urgent bulk.",
+    "rails": [
+      { "rail": "IMPS",        "speed": "Instant (24×7)",    "costRupees": 5.0,  "limitINR": "₹5,00,000",         "bestFor": "Most payouts · vendor bills, creator payouts" },
+      { "rail": "NEFT",        "speed": "30-90 min",          "costRupees": 2.5,  "limitINR": "Unlimited",          "bestFor": "Non-urgent bulk · payroll" },
+      { "rail": "RTGS",        "speed": "Instant (10:00-16:30 business days)", "costRupees": 20.0, "limitINR": "Minimum ₹2,00,000", "bestFor": "Large B2B invoices" },
+      { "rail": "UPI Payout",  "speed": "Instant (24×7)",     "costRupees": 1.0,  "limitINR": "₹2,00,000/txn",      "bestFor": "Small payouts · creator economy" },
+      { "rail": "Card Payout", "speed": "Instant",            "costRupees": 18.0, "limitINR": "₹2,00,000/txn",      "bestFor": "Refunds beyond original window · US-style pay-to-card" }
+    ]
+  },
+  "beneficiaries": [
+    { "id": "ben_9201", "name": "Studio Lumière LLP",        "type": "Vendor",     "kind": "bank",  "verified": true,  "upi": null, "bank": { "ifsc": "HDFC0000482", "account": "••••4821", "holder": "Studio Lumière LLP" },         "pan": "AAFCS8472M", "lastPaid": "Today 09:14",     "totalPaid": "₹4,50,000", "txnCount": 1 },
+    { "id": "ben_9202", "name": "Rhea Menon",                 "type": "Instructor", "kind": "upi",   "verified": true,  "upi": "rheamenon@okhdfcbank", "bank": null, "pan": "AAGPR9281K", "lastPaid": "Yesterday",       "totalPaid": "₹1,24,500", "txnCount": 8 },
+    { "id": "ben_9203", "name": "Aanya Films Productions",    "type": "Contractor", "kind": "bank",  "verified": true,  "upi": null, "bank": { "ifsc": "ICIC0000142", "account": "••••1183", "holder": "Aanya Films Productions" },   "pan": "AAJCA9281L", "lastPaid": "16 Apr",         "totalPaid": "₹28,40,000","txnCount": 4 },
+    { "id": "ben_9204", "name": "Maitri Sharma",              "type": "Creator",    "kind": "upi",   "verified": true,  "upi": "maitri.art@paytm",      "bank": null, "pan": "ALMPS8472P", "lastPaid": "15 Apr",         "totalPaid": "₹82,400",   "txnCount": 12 },
+    { "id": "ben_9205", "name": "Bombay Mission Collective",   "type": "NGO",        "kind": "bank",  "verified": true,  "upi": null, "bank": { "ifsc": "AXIS0000291", "account": "••••2938", "holder": "Bombay Mission Collective" }, "pan": "AAABM2742K", "lastPaid": "12 Apr",         "totalPaid": "₹8,42,000", "txnCount": 2 },
+    { "id": "ben_9206", "name": "Verdant Climate Pvt Ltd",    "type": "Vendor",     "kind": "bank",  "verified": false, "upi": null, "bank": { "ifsc": "KKBK0000381", "account": "••••7482", "holder": "Verdant Climate Pvt Ltd" },   "pan": "pending",     "lastPaid": "—",                "totalPaid": "₹0",        "txnCount": 0 },
+    { "id": "ben_9207", "name": "Karan Mehta (photographer)","type": "Contractor", "kind": "upi",   "verified": true,  "upi": "karanmphoto@paytm",      "bank": null, "pan": "AFKPM8742L", "lastPaid": "08 Apr",         "totalPaid": "₹1,84,000", "txnCount": 6 },
+    { "id": "ben_9208", "name": "Studio Lumière LLP · Saving", "type": "Vendor",    "kind": "bank",  "verified": true,  "upi": null, "bank": { "ifsc": "HDFC0000482", "account": "••••8472", "holder": "Studio Lumière LLP" },         "pan": "AAFCS8472M", "lastPaid": "04 Apr",         "totalPaid": "₹12,00,000","txnCount": 3 }
+  ],
+  "recentPayouts": [
+    { "id": "po_08247", "beneficiary": "Rhea Menon",                   "kind": "upi",  "rail": "UPI Payout", "amount": "₹24,500",   "purpose": "Apr instructor fee · 18 classes",      "status": "succeeded",   "initiatedAt": "Today 14:38",    "landedAt": "Today 14:38:42", "ref": "UPI 3847291092",     "fee": "₹1.00",  "initiatedBy": "Kavya V." },
+    { "id": "po_08246", "beneficiary": "Studio Lumière LLP",           "kind": "bank", "rail": "RTGS",        "amount": "₹4,50,000", "purpose": "Q2 Brand Identity · invoice #INV-842","status": "succeeded",   "initiatedAt": "Today 09:14",    "landedAt": "Today 09:15:12", "ref": "UTR HDFC26109824",    "fee": "₹20.00", "initiatedBy": "Kavya V." },
+    { "id": "po_08245", "beneficiary": "Karan Mehta (photographer)",   "kind": "upi",  "rail": "UPI Payout", "amount": "₹14,000",   "purpose": "Apr wedding shoot",                     "status": "succeeded",   "initiatedAt": "Yesterday 18:22","landedAt": "Yesterday 18:22:28", "ref": "UPI 4821902738", "fee": "₹1.00",  "initiatedBy": "Auto · Nexora" },
+    { "id": "po_08244", "beneficiary": "Aanya Films Productions",      "kind": "bank", "rail": "NEFT",        "amount": "₹8,24,000", "purpose": "Ep 4-6 production advance",             "status": "succeeded",   "initiatedAt": "Yesterday 14:08","landedAt": "Yesterday 14:52", "ref": "NEFT ICIC284721",      "fee": "₹2.50",  "initiatedBy": "Meera S." },
+    { "id": "po_08243", "beneficiary": "Bombay Mission Collective",    "kind": "bank", "rail": "IMPS",        "amount": "₹82,500",   "purpose": "Monsoon relief disbursement",           "status": "succeeded",   "initiatedAt": "16 Apr 11:00",   "landedAt": "16 Apr 11:00:38", "ref": "IMPS AXIS184729",   "fee": "₹5.00",  "initiatedBy": "Meera S." },
+    { "id": "po_08242", "beneficiary": "Verdant Climate Pvt Ltd",     "kind": "bank", "rail": "IMPS",        "amount": "₹1,20,000", "purpose": "Q1 climate offset partnership",         "status": "awaiting_kyc","initiatedAt": "15 Apr 16:42",    "landedAt": null,              "ref": null,                 "fee": "—",       "initiatedBy": "Kavya V.", "blockReason": "Beneficiary KYC pending · PAN not verified with NSDL" },
+    { "id": "po_08241", "beneficiary": "Maitri Sharma",               "kind": "upi",  "rail": "UPI Payout", "amount": "₹12,400",   "purpose": "Commissioned ceramic set",              "status": "succeeded",   "initiatedAt": "15 Apr 14:20",   "landedAt": "15 Apr 14:20:18", "ref": "UPI 5820491028",    "fee": "₹1.00",  "initiatedBy": "Kavya V." },
+    { "id": "po_08240", "beneficiary": "Rhea Menon",                   "kind": "upi",  "rail": "UPI Payout", "amount": "₹8,500",    "purpose": "Guest workshop · Koramangala",          "status": "failed",      "initiatedAt": "14 Apr 10:32",   "landedAt": null,              "ref": null,                 "fee": "—",       "initiatedBy": "Auto · Nexora", "blockReason": "Customer UPI app offline · retry scheduled" }
+  ],
+  "batchUploads": [
+    { "id": "batch_2026_04_18", "uploadedAt": "18 Apr 2026 · 14:32", "uploadedBy": "Kavya V.", "fileName": "instructor-payouts-apr.csv", "rows": 28, "processed": 28, "succeeded": 27, "failed": 1, "totalAmount": "₹6,84,000", "rail": "UPI Payout", "status": "completed" },
+    { "id": "batch_2026_04_11", "uploadedAt": "11 Apr 2026 · 10:15", "uploadedBy": "Kavya V.", "fileName": "mar-vendor-invoices.csv",     "rows": 12, "processed": 12, "succeeded": 12, "failed": 0, "totalAmount": "₹14,82,000", "rail": "NEFT",       "status": "completed" }
+  ]
+}

@@ -11,8 +11,9 @@ import { Subscriptions } from './Subscriptions';
 import { Send } from './Send';
 import { PaymentPages } from './PaymentPages';
 import { CheckoutStudio } from './CheckoutStudio';
+import { B2BWorkflows } from './B2BWorkflows';
 
-type SectionId = 'surfaces' | 'pages' | 'invoices' | 'subscriptions' | 'send' | 'studio';
+type SectionId = 'surfaces' | 'pages' | 'invoices' | 'subscriptions' | 'send' | 'studio' | 'b2b';
 
 type Surface = {
   id: string;
@@ -57,6 +58,7 @@ export function Collect() {
           { id: 'subscriptions', label: 'Subscriptions', hint: 'Active mandates' },
           { id: 'send',          label: 'Send',          hint: 'UPI push · SMS · WhatsApp' },
           { id: 'studio',        label: 'Studio',        hint: 'Customize · A/B test' },
+          { id: 'b2b',           label: 'B2B',           hint: 'Quotes · recurring · ERP' },
         ]}
       />
       {section === 'surfaces'      && <SurfacesSection />}
@@ -65,6 +67,7 @@ export function Collect() {
       {section === 'subscriptions' && <Subscriptions />}
       {section === 'send'          && <Send />}
       {section === 'studio'        && <CheckoutStudio />}
+      {section === 'b2b'           && <B2BWorkflows />}
     </div>
   );
 }
