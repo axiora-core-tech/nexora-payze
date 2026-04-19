@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router';
 import { colors, radius, typography } from '../../design/tokens';
 import { PageLoader, ErrorState } from '../../design/primitives';
@@ -17,7 +17,7 @@ export function Home() {
   if (error) return <ErrorState message={`Couldn't load homepage — ${error.message}`} onRetry={refetch} />;
   if (loading || !data) return <PageLoader label="Loading Payze" />;
 
-  const { nav, hero, trustStrip, how, features, numbers, testimonial, pricing, finalCta, footer } = data;
+  const { nav, hero, trustStrip, dashboardPreview, how, features, developers, numbers, security, testimonials, pricing, finalCta, footer } = data;
 
   return (
     <div style={{ background: colors.bg, color: colors.ink, minHeight: '100vh', position: 'relative' }}>
@@ -25,6 +25,7 @@ export function Home() {
 
       <div style={{ position: 'relative', zIndex: 1, maxWidth: '1280px', margin: '0 auto', padding: '0 40px' }}>
 
+        {/* ── Nav ───────────────────────────────────────────────── */}
         <nav style={{ padding: '24px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Icons.PayzeMark size={22} />
@@ -41,7 +42,8 @@ export function Home() {
           </div>
         </nav>
 
-        <section style={{ padding: '80px 0 56px 0', textAlign: 'center' }}>
+        {/* ── Hero ──────────────────────────────────────────────── */}
+        <section style={{ padding: '72px 0 40px 0', textAlign: 'center' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: colors.card, border: `0.5px solid ${colors.border}`, padding: '6px 14px 6px 8px', borderRadius: radius.pill, marginBottom: '36px' }}>
             <span style={{ width: '18px', height: '18px', borderRadius: '50%', background: colors.teal, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
               <Icons.IconCheck size={10} color="#fff" strokeWidth={3} />
@@ -66,19 +68,22 @@ export function Home() {
           </div>
         </section>
 
-        <div style={{ padding: '32px 0 56px 0' }}>
+        {/* ── Dashboard preview (new) ───────────────────────────── */}
+        <section style={{ padding: '0 0 48px 0' }}>
+          <DashboardPreview subtitle={dashboardPreview.subtitle} title={dashboardPreview.title} kicker={dashboardPreview.kicker} />
+        </section>
+
+        {/* ── Trust strip ───────────────────────────────────────── */}
+        <div style={{ padding: '24px 0 56px 0' }}>
           <div style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.15em', color: colors.text3, textTransform: 'uppercase', textAlign: 'center', marginBottom: '22px' }}>{trustStrip.label}</div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '52px', opacity: 0.7, flexWrap: 'wrap' }}>
             {trustStrip.logos.map((l: any, i: number) => (
-              <span key={i} style={{
-                fontSize: `${l.style.size}px`, fontWeight: l.style.weight, color: colors.text2,
-                fontStyle: l.style.italic ? 'italic' : 'normal',
-                letterSpacing: l.style.letterSpacing || 'normal',
-              }}>{l.text}</span>
+              <span key={i} style={{ fontSize: `${l.style.size}px`, fontWeight: l.style.weight, color: colors.text2, fontStyle: l.style.italic ? 'italic' : 'normal', letterSpacing: l.style.letterSpacing || 'normal' }}>{l.text}</span>
             ))}
           </div>
         </div>
 
+        {/* ── How it works ─────────────────────────────────────── */}
         <section id="how" style={{ padding: '80px 0 60px 0', borderTop: `0.5px solid ${colors.border}` }}>
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <div style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.2em', color: colors.teal, textTransform: 'uppercase', marginBottom: '18px' }}>{how.kicker}</div>
@@ -89,14 +94,12 @@ export function Home() {
           <InfrastructureDiagram />
         </section>
 
+        {/* ── Features ─────────────────────────────────────────── */}
         <section id="product" style={{ padding: '80px 0 72px 0', borderTop: `0.5px solid ${colors.border}` }}>
           <div style={{ marginBottom: '48px' }}>
             <div style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.2em', color: colors.teal, textTransform: 'uppercase', marginBottom: '18px' }}>{features.kicker}</div>
-            <div style={{ fontSize: '42px', fontWeight: 600, lineHeight: 1.1, letterSpacing: '-0.02em', maxWidth: '720px', whiteSpace: 'pre-line' }}>
-              {features.title}
-            </div>
+            <div style={{ fontSize: '42px', fontWeight: 600, lineHeight: 1.1, letterSpacing: '-0.02em', maxWidth: '720px', whiteSpace: 'pre-line' }}>{features.title}</div>
           </div>
-
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
             {features.items.map((f: any) => {
               const Icon = iconMap[f.icon] || Icons.IconShield;
@@ -113,6 +116,12 @@ export function Home() {
           </div>
         </section>
 
+        {/* ── Developers (new) ─────────────────────────────────── */}
+        <section id="developers" style={{ padding: '80px 0', borderTop: `0.5px solid ${colors.border}` }}>
+          <DevelopersSection developers={developers} />
+        </section>
+
+        {/* ── Numbers ──────────────────────────────────────────── */}
         <section style={{ padding: '80px 0', borderTop: `0.5px solid ${colors.border}`, textAlign: 'center' }}>
           <div style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.2em', color: colors.teal, textTransform: 'uppercase', marginBottom: '28px' }}>{numbers.kicker}</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', maxWidth: '880px', margin: '0 auto' }}>
@@ -127,22 +136,34 @@ export function Home() {
           </div>
         </section>
 
+        {/* ── Security & compliance (new) ──────────────────────── */}
+        <section id="security" style={{ padding: '80px 0', borderTop: `0.5px solid ${colors.border}` }}>
+          <SecuritySection security={security} />
+        </section>
+
+        {/* ── Testimonials (expanded) ──────────────────────────── */}
         <section id="customers" style={{ padding: '80px 0', borderTop: `0.5px solid ${colors.border}` }}>
-          <div style={{ maxWidth: '820px', margin: '0 auto' }}>
-            <div style={{ fontSize: '32px', fontWeight: 500, lineHeight: 1.3, letterSpacing: '-0.015em', marginBottom: '32px', color: colors.ink }}>
-              <span style={{ color: colors.teal, marginRight: '8px' }}>"</span>
-              {testimonial.quote}
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: colors.ink, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 600 }}>{testimonial.initials}</div>
-              <div>
-                <div style={{ fontSize: '15px', fontWeight: 500, color: colors.ink }}>{testimonial.name}</div>
-                <div style={{ fontSize: '13px', color: colors.text2 }}>{testimonial.role}</div>
+          <div style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.2em', color: colors.teal, textTransform: 'uppercase', marginBottom: '40px', textAlign: 'center' }}>{testimonials.kicker}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+            {testimonials.items.map((t: any, i: number) => (
+              <div key={i} style={{ background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.xl, padding: '28px', boxShadow: colors.shadow, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div style={{ fontSize: '15px', lineHeight: 1.55, color: colors.ink, marginBottom: '24px', letterSpacing: '-0.005em' }}>
+                  <span style={{ color: colors.teal, marginRight: '4px' }}>"</span>
+                  {t.quote}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: colors.ink, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 600 }}>{t.initials}</div>
+                  <div>
+                    <div style={{ fontSize: '13px', fontWeight: 500, color: colors.ink }}>{t.name}</div>
+                    <div style={{ fontSize: '12px', color: colors.text2 }}>{t.role} · {t.company}</div>
+                  </div>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </section>
 
+        {/* ── Pricing ──────────────────────────────────────────── */}
         <section id="pricing" style={{ padding: '80px 0', borderTop: `0.5px solid ${colors.border}` }}>
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
             <div style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.2em', color: colors.teal, textTransform: 'uppercase', marginBottom: '18px' }}>{pricing.kicker}</div>
@@ -174,11 +195,10 @@ export function Home() {
         </section>
       </div>
 
+      {/* ── Final CTA (dark) ──────────────────────────────────── */}
       <section style={{ padding: '80px 40px', background: colors.ink, color: '#F6F6F2', textAlign: 'center', borderTop: `0.5px solid ${colors.border}` }}>
         <div style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.2em', color: '#8A9E9C', textTransform: 'uppercase', marginBottom: '22px' }}>{finalCta.kicker}</div>
-        <div style={{ fontSize: '60px', fontWeight: 600, lineHeight: 1.05, letterSpacing: '-0.03em', maxWidth: '760px', margin: '0 auto 24px auto', whiteSpace: 'pre-line' }}>
-          {finalCta.title}
-        </div>
+        <div style={{ fontSize: '60px', fontWeight: 600, lineHeight: 1.05, letterSpacing: '-0.03em', maxWidth: '760px', margin: '0 auto 24px auto', whiteSpace: 'pre-line' }}>{finalCta.title}</div>
         <div style={{ fontSize: '16px', lineHeight: 1.55, color: '#B4B4B0', maxWidth: '480px', margin: '0 auto 40px auto' }}>{finalCta.desc}</div>
         <div style={{ display: 'inline-flex', gap: '10px' }}>
           <Link to={finalCta.primary.href} style={{ padding: '14px 24px', background: colors.teal, color: '#fff', borderRadius: radius.pill, fontSize: '14px', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
@@ -190,20 +210,267 @@ export function Home() {
         </div>
       </section>
 
-      <footer style={{ padding: '32px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: colors.text3, maxWidth: '1280px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Icons.PayzeMark size={16} />
-          <span style={{ color: colors.ink, fontWeight: 500 }}>Payze</span>
-          <span>{footer.tagline}</span>
-        </div>
-        <div style={{ display: 'flex', gap: '28px' }}>
-          {footer.links.map((l: any) => <a key={l.label} href={l.href}>{l.label}</a>)}
-        </div>
-      </footer>
+      {/* ── Rich footer (new structure) ───────────────────────── */}
+      <RichFooter footer={footer} />
     </div>
   );
 }
 
+// ════════════════════════════════════════════════════════════════════
+// Dashboard preview — stylised mock of the operator UI in a browser frame
+// ════════════════════════════════════════════════════════════════════
+function DashboardPreview({ kicker, title, subtitle }: any) {
+  return (
+    <div>
+      <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+        <div style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.2em', color: colors.teal, textTransform: 'uppercase', marginBottom: '16px' }}>{kicker}</div>
+        <div style={{ fontSize: '40px', fontWeight: 600, lineHeight: 1.1, letterSpacing: '-0.02em', maxWidth: '680px', margin: '0 auto 14px auto' }}>{title}</div>
+        <div style={{ fontSize: '15px', lineHeight: 1.55, color: colors.text2, maxWidth: '580px', margin: '0 auto' }}>{subtitle}</div>
+      </div>
+
+      {/* Browser chrome */}
+      <div style={{ background: colors.card, border: `0.5px solid ${colors.borderStrong}`, borderRadius: radius.lg, boxShadow: '0 30px 80px -20px rgba(26,26,26,0.18), 0 10px 30px -5px rgba(26,26,26,0.08)', overflow: 'hidden', maxWidth: '1120px', margin: '0 auto' }}>
+        {/* Title bar */}
+        <div style={{ padding: '12px 16px', background: '#EDEDE9', borderBottom: `0.5px solid ${colors.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div style={{ display: 'flex', gap: '6px' }}>
+            <span style={{ width: '11px', height: '11px', borderRadius: '50%', background: '#E8766E' }} />
+            <span style={{ width: '11px', height: '11px', borderRadius: '50%', background: '#E8B05C' }} />
+            <span style={{ width: '11px', height: '11px', borderRadius: '50%', background: '#72BB88' }} />
+          </div>
+          <div style={{ flex: 1, maxWidth: '340px', margin: '0 auto', background: colors.card, padding: '4px 12px', borderRadius: radius.sm, fontSize: '11px', fontFamily: typography.family.mono, color: colors.text3, textAlign: 'center' }}>
+            payze.app/dashboard
+          </div>
+          <div style={{ width: '48px' }} />
+        </div>
+
+        {/* Dashboard body */}
+        <div style={{ padding: '22px 24px 28px 24px', background: colors.bg }}>
+          {/* Header greeting */}
+          <div style={{ marginBottom: '16px' }}>
+            <div style={{ fontSize: '9px', fontWeight: 500, letterSpacing: '0.2em', color: colors.teal, textTransform: 'uppercase', marginBottom: '4px' }}>Good morning, Kavya</div>
+            <div style={{ fontSize: '20px', fontWeight: 600, letterSpacing: '-0.015em', color: colors.ink }}>Today · Friday, 19 April</div>
+          </div>
+
+          {/* Intelligence strip · 3 cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '14px' }}>
+            {[
+              { tone: '#D64545', label: 'Priority',    title: '4 settlements due before 5pm' },
+              { tone: '#B48C3C', label: 'Watch',       title: 'STR filing due in 3 days'    },
+              { tone: colors.teal, label: 'Opportunity', title: 'Ombudsman SLA approaching' },
+            ].map((c, i) => (
+              <div key={i} style={{ background: colors.card, border: `0.5px solid ${colors.border}`, borderLeft: `3px solid ${c.tone}`, borderRadius: `0 ${radius.md} ${radius.md} 0`, padding: '10px 12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '5px' }}>
+                  <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: c.tone }} />
+                  <span style={{ fontSize: '8px', color: c.tone, letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>{c.label}</span>
+                </div>
+                <div style={{ fontSize: '11px', fontWeight: 600, color: colors.ink, lineHeight: 1.3 }}>{c.title}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Today hero */}
+          <div style={{ background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.md, padding: '14px 18px', marginBottom: '12px', display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: '24px', alignItems: 'center' }}>
+            <div>
+              <div style={{ fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', color: colors.text3, fontWeight: 500, marginBottom: '4px' }}>Volume processed today</div>
+              <div style={{ fontSize: '26px', fontWeight: 600, letterSpacing: '-0.02em', color: colors.ink, fontFamily: typography.family.mono, marginBottom: '4px' }}>₹6,42,18,240</div>
+              <div style={{ fontSize: '10px', color: colors.teal, fontFamily: typography.family.mono, fontWeight: 500 }}>↗ +18.4% vs yesterday</div>
+            </div>
+            {/* Mini hourly bars */}
+            <div style={{ display: 'flex', gap: '2px', alignItems: 'flex-end', height: '40px' }}>
+              {[2, 3, 4, 6, 8, 12, 18, 28, 42, 58, 72, 82, 88, 94, 96, 92, 84, 72, 58, 44, 32, 22, 14, 8].map((h, i) => {
+                const now = 14;
+                const color = i === now ? colors.teal : i <= now ? 'rgba(26,26,26,0.55)' : 'rgba(26,26,26,0.1)';
+                return <div key={i} style={{ flex: 1, height: `${h}%`, background: color, borderRadius: '1.5px', minHeight: '2px' }} />;
+              })}
+            </div>
+          </div>
+
+          {/* Row: live activity + platform health */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '10px' }}>
+            <div style={{ background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.md, padding: '10px 14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: colors.teal, boxShadow: `0 0 0 2px ${colors.tealTintStrong}` }} />
+                <span style={{ fontSize: '10px', fontWeight: 600, color: colors.ink }}>Live activity</span>
+              </div>
+              {[
+                { m: 'Nykaa Beauty',  d: 'SEPA · Amélie Dubois', amt: '€1,890',  tag: 'ROUTED',  tone: colors.teal },
+                { m: 'Cred Club',     d: 'UPI · Priya V.',        amt: '₹9,999',  tag: 'SUCCESS', tone: colors.text3 },
+                { m: 'Crypto Arcadia','d': 'UPI · velocity rule', amt: '₹52,000', tag: 'FLAGGED', tone: '#D64545' },
+              ].map((r, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '5px 0', borderTop: i === 0 ? 'none' : `0.5px solid ${colors.border}`, gap: '10px' }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: '11px', color: colors.ink, fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.m}</div>
+                    <div style={{ fontSize: '9px', color: colors.text3 }}>{r.d}</div>
+                  </div>
+                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                    <div style={{ fontSize: '11px', fontWeight: 600, color: r.tag === 'FLAGGED' ? colors.text2 : colors.ink, fontFamily: typography.family.mono, textDecoration: r.tag === 'FLAGGED' ? 'line-through' : 'none' }}>{r.amt}</div>
+                    <div style={{ fontSize: '8px', fontWeight: 600, color: r.tone, fontFamily: typography.family.mono, letterSpacing: '0.08em' }}>{r.tag}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.md, padding: '10px 14px' }}>
+              <div style={{ fontSize: '10px', fontWeight: 600, color: colors.ink, marginBottom: '8px' }}>Platform health</div>
+              {[
+                { n: 'UPI · NPCI',      l: '98ms',  s: colors.teal },
+                { n: 'Cards · Visa',    l: '412ms', s: colors.teal },
+                { n: 'Cards · MC',      l: '680ms', s: '#B48C3C' },
+                { n: 'NetBanking',      l: '1.2s',  s: colors.teal },
+              ].map((r, i) => (
+                <div key={r.n} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '4px 0', borderTop: i === 0 ? 'none' : `0.5px solid ${colors.border}` }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: r.s }} />
+                    <span style={{ fontSize: '10px', color: colors.ink }}>{r.n}</span>
+                  </div>
+                  <span style={{ fontSize: '9px', color: colors.text2, fontFamily: typography.family.mono }}>{r.l}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Developers · tabbed code snippet
+// ════════════════════════════════════════════════════════════════════
+function DevelopersSection({ developers }: any) {
+  const [activeTab, setActiveTab] = useState(developers.tabs[0].id);
+  const current = developers.tabs.find((t: any) => t.id === activeTab) || developers.tabs[0];
+
+  return (
+    <div>
+      <div style={{ marginBottom: '40px' }}>
+        <div style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.2em', color: colors.teal, textTransform: 'uppercase', marginBottom: '18px' }}>{developers.kicker}</div>
+        <div style={{ fontSize: '42px', fontWeight: 600, lineHeight: 1.1, letterSpacing: '-0.02em', maxWidth: '720px', marginBottom: '14px' }}>{developers.title}</div>
+        <div style={{ fontSize: '15px', lineHeight: 1.55, color: colors.text2, maxWidth: '640px' }}>{developers.subtitle}</div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: '24px', alignItems: 'start' }}>
+        {/* Code card */}
+        <div style={{ background: '#1A1A1A', border: `0.5px solid #2A2A2A`, borderRadius: radius.xl, overflow: 'hidden', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.25)' }}>
+          {/* Tabs */}
+          <div style={{ display: 'flex', borderBottom: `0.5px solid #2A2A2A`, background: '#141414' }}>
+            {developers.tabs.map((t: any) => (
+              <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
+                padding: '12px 20px', background: activeTab === t.id ? '#1A1A1A' : 'transparent',
+                border: 'none', borderBottom: activeTab === t.id ? `2px solid ${colors.teal}` : '2px solid transparent',
+                color: activeTab === t.id ? '#F6F6F2' : '#8A8A88',
+                fontSize: '12px', fontWeight: 500, fontFamily: typography.family.mono,
+                letterSpacing: '0.02em', cursor: 'pointer', transition: 'all 0.15s ease',
+              }}>{t.label}</button>
+            ))}
+            <div style={{ flex: 1 }} />
+            <div style={{ padding: '12px 16px', fontSize: '10px', color: '#6A6A68', fontFamily: typography.family.mono, letterSpacing: '0.08em' }}>POST /v1/collect</div>
+          </div>
+          {/* Code */}
+          <pre style={{
+            margin: 0, padding: '22px 24px', fontFamily: typography.family.mono,
+            fontSize: '13px', lineHeight: 1.65, color: '#E4E4E0', overflowX: 'auto',
+            whiteSpace: 'pre', letterSpacing: '-0.005em',
+          }}>{current.code}</pre>
+        </div>
+
+        {/* Bullets */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {developers.bullets.map((b: any) => (
+            <div key={b.title}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: colors.teal }} />
+                <span style={{ fontSize: '15px', fontWeight: 600, color: colors.ink, letterSpacing: '-0.005em' }}>{b.title}</span>
+              </div>
+              <div style={{ fontSize: '13px', lineHeight: 1.55, color: colors.text2, paddingLeft: '14px' }}>{b.desc}</div>
+            </div>
+          ))}
+          <a href={developers.tabs[0].id ? '#' : '#'} style={{ marginTop: '4px', fontSize: '13px', fontWeight: 500, color: colors.ink, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            Read the full API reference <Icons.IconArrowUpRight size={13} />
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Security & compliance · certification grid
+// ════════════════════════════════════════════════════════════════════
+function SecuritySection({ security }: any) {
+  return (
+    <div>
+      <div style={{ marginBottom: '40px' }}>
+        <div style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.2em', color: colors.teal, textTransform: 'uppercase', marginBottom: '18px' }}>{security.kicker}</div>
+        <div style={{ fontSize: '42px', fontWeight: 600, lineHeight: 1.1, letterSpacing: '-0.02em', maxWidth: '720px', whiteSpace: 'pre-line', marginBottom: '14px' }}>{security.title}</div>
+        <div style={{ fontSize: '15px', lineHeight: 1.55, color: colors.text2, maxWidth: '640px' }}>{security.subtitle}</div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+        {security.certifications.map((c: any) => (
+          <div key={c.name} style={{
+            background: colors.card, border: `0.5px solid ${colors.border}`,
+            borderRadius: radius.lg, padding: '22px 24px', boxShadow: colors.shadow,
+            display: 'flex', flexDirection: 'column', gap: '4px',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+              <div style={{ width: '28px', height: '28px', borderRadius: radius.sm, background: 'rgba(28,111,107,0.08)', border: `0.5px solid rgba(28,111,107,0.25)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Icons.IconShield size={14} color={colors.teal} />
+              </div>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: colors.ink, letterSpacing: '-0.005em' }}>{c.name}</div>
+            </div>
+            <div style={{ fontSize: '13px', color: colors.ink, fontWeight: 500 }}>{c.line1}</div>
+            <div style={{ fontSize: '13px', color: colors.text2 }}>{c.line2}</div>
+            <div style={{ fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono, marginTop: '6px', letterSpacing: '0.02em' }}>{c.ref}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Rich footer · multi-column
+// ════════════════════════════════════════════════════════════════════
+function RichFooter({ footer }: any) {
+  return (
+    <footer style={{ maxWidth: '1280px', margin: '0 auto', padding: '56px 40px 32px 40px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.3fr repeat(4, 1fr)', gap: '40px', marginBottom: '40px' }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+            <Icons.PayzeMark size={22} />
+            <span style={{ fontSize: '17px', fontWeight: 600, letterSpacing: '-0.01em', color: colors.ink }}>Payze</span>
+          </div>
+          <div style={{ fontSize: '13px', color: colors.text2, lineHeight: 1.55, marginBottom: '8px', maxWidth: '220px' }}>
+            Payments infrastructure built for Indian merchants — with cross-border baked in.
+          </div>
+          <div style={{ fontSize: '11px', color: colors.text3, fontFamily: typography.family.mono }}>{footer.cin}</div>
+        </div>
+        {footer.columns.map((col: any) => (
+          <div key={col.heading}>
+            <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.15em', color: colors.text3, textTransform: 'uppercase', marginBottom: '14px' }}>{col.heading}</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {col.links.map((l: any) => (
+                <a key={l.label} href={l.href} style={{ fontSize: '13px', color: colors.text2 }}>{l.label}</a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ paddingTop: '24px', borderTop: `0.5px solid ${colors.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', color: colors.text3, flexWrap: 'wrap', gap: '12px' }}>
+        <div>{footer.tagline}</div>
+        <div style={{ display: 'flex', gap: '20px' }}>
+          <span>Bengaluru · India</span>
+          <a href="mailto:hello@payze.com">hello@payze.com</a>
+          <a href="#">Status</a>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Infrastructure diagram (preserved as-is from prior design)
+// ════════════════════════════════════════════════════════════════════
 function InfrastructureDiagram() {
   return (
     <svg viewBox="0 0 960 620" style={{ width: '100%', maxWidth: '1080px', margin: '0 auto', display: 'block' }} role="img" aria-label="Payze payment infrastructure">
@@ -222,11 +489,11 @@ function InfrastructureDiagram() {
         <path d="M 520 240 Q 480 330, 480 400 Q 480 460, 540 490" />
         <path d="M 540 490 Q 600 510, 680 490" />
       </g>
-      <Block x={100} y={160} label="UPI" emblem="UPI" />
+      <Block x={100} y={160} label="UPI"   emblem="UPI"  />
       <Block x={400} y={120} label="Cards" emblem="VISA" />
-      <Block x={700} y={160} label="SEPA" emblem="SEPA" emblemSize={12} />
+      <Block x={700} y={160} label="SEPA"  emblem="SEPA" emblemSize={12} />
       <Block x={300} y={410} label="Wallets" emblem="GPay" emblemSize={12} />
-      <Block x={580} y={440} label="Payze" emblem="P" highlight />
+      <Block x={580} y={440} label="Payze"   emblem="P"    highlight />
 
       <g>
         <rect x="438" y="280" width="82" height="26" rx="4" fill={colors.teal} />

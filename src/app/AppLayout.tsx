@@ -85,13 +85,33 @@ export function AppLayout() {
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
+  // Close header dropdowns when the user clicks outside any [data-menu-anchor].
+  // Replaces the previous full-viewport overlay which was being clamped below
+  // the sticky header's stacking context and intercepting dropdown clicks.
+  useEffect(() => {
+    if (!profileOpen && !notifOpen && !currencyOpen) return;
+    const handle = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target && target.closest('[data-menu-anchor]')) return;
+      setProfileOpen(false);
+      setNotifOpen(false);
+      setCurrencyOpen(false);
+    };
+    // Defer attachment so the click that opened the menu doesn't immediately close it.
+    const t = setTimeout(() => document.addEventListener('mousedown', handle), 0);
+    return () => {
+      clearTimeout(t);
+      document.removeEventListener('mousedown', handle);
+    };
+  }, [profileOpen, notifOpen, currencyOpen]);
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: colors.bg, position: 'relative' }}>
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', backgroundImage: `radial-gradient(circle, rgba(30,30,30,0.04) 1px, transparent 1px)`, backgroundSize: '26px 26px', zIndex: 0 }} />
 
       <Dock mainItems={mainItems} superAdminItem={superAdminItem} basePath={basePath} isActive={isActive} dockOpen={dockOpen} setDockOpen={setDockOpen} />
 
-      <div style={{ flex: 1, position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+      <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         <Header
           tenant={tenant}
           session={session}
@@ -121,9 +141,6 @@ export function AppLayout() {
         session={session}
         onSignOut={() => { setProfileModalOpen(false); handleSignOut(); }}
       />
-      {(profileOpen || notifOpen || currencyOpen) && (
-        <div onClick={() => { setProfileOpen(false); setNotifOpen(false); setCurrencyOpen(false); }} style={{ position: 'fixed', inset: 0, zIndex: 40 }} />
-      )}
     </div>
   );
 }
@@ -234,7 +251,7 @@ function Header({ tenant, session, currency, setCurrency, currencyOpen, setCurre
       </div>
 
       <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ position: 'relative' }}>
+        <div data-menu-anchor="currency" style={{ position: 'relative' }}>
           <button onClick={() => setCurrencyOpen(!currencyOpen)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 12px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.pill, fontSize: '13px', fontWeight: 500, color: colors.ink, cursor: 'pointer', fontFamily: 'inherit' }}>
             <span style={{ fontFamily: typography.family.mono, fontSize: '11px', letterSpacing: '0.05em' }}>{currency}</span>
             <Icons.IconChevronDown size={12} color={colors.text2} />
@@ -251,7 +268,7 @@ function Header({ tenant, session, currency, setCurrency, currencyOpen, setCurre
           )}
         </div>
 
-        <div style={{ position: 'relative' }}>
+        <div data-menu-anchor="notifications" style={{ position: 'relative' }}>
           <button onClick={() => setNotifOpen(!notifOpen)} style={{ width: '36px', height: '36px', borderRadius: '50%', background: colors.card, border: `0.5px solid ${colors.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', position: 'relative' }}>
             <Icons.IconBell size={15} color={colors.ink} />
             <span style={{ position: 'absolute', top: '7px', right: '7px', width: '7px', height: '7px', borderRadius: '50%', background: colors.teal, border: `1.5px solid ${colors.card}` }} />
@@ -259,7 +276,7 @@ function Header({ tenant, session, currency, setCurrency, currencyOpen, setCurre
           {notifOpen && <NotificationsPanel />}
         </div>
 
-        <div style={{ position: 'relative' }}>
+        <div data-menu-anchor="profile" style={{ position: 'relative' }}>
           <button onClick={() => setProfileOpen(!profileOpen)} style={{ width: '36px', height: '36px', borderRadius: '50%', background: colors.ink, color: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
             {session?.initials || 'U'}
           </button>

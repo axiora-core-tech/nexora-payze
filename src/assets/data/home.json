@@ -1,30 +1,35 @@
 {
   "nav": [
-    { "label": "Product", "href": "#product" },
-    { "label": "How it works", "href": "#how" },
-    { "label": "Developers", "href": "#developers" },
-    { "label": "Pricing", "href": "#pricing" },
-    { "label": "Customers", "href": "#customers" }
+    { "label": "Product",     "href": "#product" },
+    { "label": "Developers",  "href": "#developers" },
+    { "label": "Security",    "href": "#security" },
+    { "label": "Pricing",     "href": "#pricing" },
+    { "label": "Customers",   "href": "#customers" }
   ],
   "hero": {
     "badge": "RBI-licensed · PCI-DSS Level 1 · Made in Bengaluru",
-    "lineOne": "Payments infrastructure",
-    "lineTwo": "for",
-    "accent": "every payment.",
-    "subtitle": "UPI, cards, NetBanking, wallets, SEPA, ACH — 135 currencies, one integration. When a card fails at HDFC, we route to ICICI, then RuPay, then UPI. Customers don't notice. You don't lose the sale.",
-    "primaryCta": { "label": "Get started", "href": "/book-demo" },
-    "secondaryCta": { "label": "View the docs", "href": "#developers" }
+    "lineOne": "Payments that",
+    "lineTwo": "don't",
+    "accent": "lose you revenue.",
+    "subtitle": "UPI, cards, NetBanking, wallets, SEPA, ACH — 135 currencies, one integration. When a card fails at HDFC, Payze re-routes through ICICI, RuPay, then UPI. Your customer never notices. You don't lose the sale.",
+    "primaryCta": { "label": "Book a demo",   "href": "/book-demo" },
+    "secondaryCta": { "label": "See the docs", "href": "#developers" }
   },
   "trustStrip": {
-    "label": "Trusted by 47+ teams, including",
+    "label": "Live across 47+ teams · ₹18.4 Cr processed today",
     "logos": [
-      { "text": "zomato", "style": { "size": 22, "weight": 600, "italic": true } },
-      { "text": "Razorpay", "style": { "size": 19, "weight": 700 } },
-      { "text": "NYKAA", "style": { "size": 17, "weight": 500, "letterSpacing": "0.25em" } },
-      { "text": "CRED", "style": { "size": 21, "weight": 700 } },
+      { "text": "zomato",     "style": { "size": 22, "weight": 600, "italic": true } },
+      { "text": "Razorpay",   "style": { "size": 19, "weight": 700 } },
+      { "text": "NYKAA",      "style": { "size": 17, "weight": 500, "letterSpacing": "0.25em" } },
+      { "text": "CRED",       "style": { "size": 21, "weight": 700 } },
       { "text": "BOOKMYSHOW", "style": { "size": 17, "weight": 500, "letterSpacing": "0.08em" } },
-      { "text": "urban co.", "style": { "size": 18, "weight": 500 } }
+      { "text": "urban co.",  "style": { "size": 18, "weight": 500 } }
     ]
+  },
+  "dashboardPreview": {
+    "kicker": "Built for operators",
+    "title": "The dashboard your finance team will actually open.",
+    "subtitle": "Auto-surfaced intelligence every morning. Platform health, compliance attention, and a live read of your volume — without building the report yourself."
   },
   "how": {
     "kicker": "How it works",
@@ -35,53 +40,150 @@
     "kicker": "What you get",
     "title": "Everything an Indian payments stack needs,\nnothing your engineering team has to wire up.",
     "items": [
-      { "icon": "IconRoute", "title": "Intelligent routing", "desc": "Card declined at HDFC? We'll try ICICI, then RuPay, then UPI. The model learns per-bank, per-BIN, per-hour." },
-      { "icon": "IconRecurring", "title": "UPI Autopay & NACH", "desc": "Native support for every Indian recurring rail. Mandate onboarding that actually completes — 94% success vs industry 72%." },
-      { "icon": "IconShield", "title": "Fraud that stays quiet", "desc": "ML trained on 180M+ Indian transactions. False-positive rate 4× lower than rule-based systems. Dispute win rate 2.3× industry average." },
-      { "icon": "IconGlobe", "title": "Collect from anywhere", "desc": "135 currencies, every major local method — UPI, cards, SEPA, ACH, Pix, Alipay, FPX. Unified in INR in your dashboard." },
-      { "icon": "IconDeveloper", "title": "One-day integration", "desc": "Node, Python, PHP, Go, Ruby SDKs. Webhooks with retry & signing. Test in test mode, flip a toggle, you're live." },
-      { "icon": "IconChart", "title": "Reports that explain themselves", "desc": "Every anomaly described in plain English. Reconciliation reports auto-emailed. GST-ready exports." }
+      { "icon": "IconRoute",     "title": "Intelligent routing",          "desc": "Card declined at HDFC? Payze tries ICICI, then RuPay, then UPI. The model learns per-bank, per-BIN, per-hour." },
+      { "icon": "IconRecurring", "title": "UPI Autopay & NACH",            "desc": "Native support for every Indian recurring rail. Mandate onboarding that actually completes — 94% success vs industry 72%." },
+      { "icon": "IconShield",    "title": "Fraud that stays quiet",        "desc": "ML trained on 180M+ Indian transactions. False-positive rate 4× lower than rule-based systems. Dispute win rate 2.3× industry average." },
+      { "icon": "IconGlobe",     "title": "Collect from anywhere",         "desc": "135 currencies, every major local method — UPI, cards, SEPA, ACH, Pix, Alipay, FPX. Unified in INR in your dashboard." },
+      { "icon": "IconDeveloper", "title": "One-day integration",           "desc": "Node, Python, PHP, Go, Ruby SDKs. Webhooks with retry & signing. Test in test mode, flip a toggle, you're live." },
+      { "icon": "IconChart",     "title": "Reports that explain themselves","desc": "Every anomaly described in plain English. Reconciliation reports auto-emailed. GST-ready exports." }
+    ]
+  },
+  "developers": {
+    "kicker": "For developers",
+    "title": "A clean API your team will actually like.",
+    "subtitle": "Typed SDKs, signed webhooks, test-mode parity. The kind of surface area you can stand up in an afternoon and sleep well behind at scale.",
+    "tabs": [
+      {
+        "id": "node",
+        "label": "Node.js",
+        "code": "import Payze from 'payze';\n\nconst payze = new Payze(process.env.PAYZE_KEY);\n\n// Create a payment link\nconst link = await payze.collect.create({\n  amount: 24999,            // paise — ₹249.99\n  currency: 'INR',\n  customer: { email: 'priya@studio.com' },\n  reference: 'INV-2026-00842',\n  allow_methods: ['upi', 'cards', 'netbanking']\n});\n\nconsole.log(link.url);\n// → https://pay.payze.com/rYo72a"
+      },
+      {
+        "id": "python",
+        "label": "Python",
+        "code": "import payze\n\nclient = payze.Client(api_key=os.environ['PAYZE_KEY'])\n\n# Create a payment link\nlink = client.collect.create(\n    amount=24999,            # paise — ₹249.99\n    currency='INR',\n    customer={'email': 'priya@studio.com'},\n    reference='INV-2026-00842',\n    allow_methods=['upi', 'cards', 'netbanking']\n)\n\nprint(link.url)\n# → https://pay.payze.com/rYo72a"
+      },
+      {
+        "id": "curl",
+        "label": "curl",
+        "code": "curl https://api.payze.com/v1/collect \\\n  -H \"Authorization: Bearer $PAYZE_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"amount\": 24999,\n    \"currency\": \"INR\",\n    \"customer\": { \"email\": \"priya@studio.com\" },\n    \"reference\": \"INV-2026-00842\",\n    \"allow_methods\": [\"upi\", \"cards\", \"netbanking\"]\n  }'\n\n# → { \"url\": \"https://pay.payze.com/rYo72a\", ... }"
+      }
+    ],
+    "bullets": [
+      { "title": "Typed SDKs",           "desc": "Node · Python · PHP · Go · Ruby · .NET · Java — first-class types, IDE autocomplete, semver contracts." },
+      { "title": "Signed webhooks",      "desc": "HMAC-signed with automatic retry, exponential backoff, replay protection out of the box." },
+      { "title": "Test = production",    "desc": "Test mode is a bit-for-bit mirror of live. No surprise schema changes when you flip the toggle." }
     ]
   },
   "numbers": {
     "kicker": "By the numbers",
     "items": [
-      { "value": "12.4", "unit": "%", "label": "More payments succeed vs bank-only" },
-      { "value": "180", "unit": "ms", "label": "Median authorisation latency" },
-      { "value": "135", "unit": "", "label": "Currencies, 47 local methods" },
-      { "value": "99.99", "unit": "%", "label": "Uptime, SLA-backed" }
+      { "value": "12.4",  "unit": "%",  "label": "More payments succeed vs bank-only" },
+      { "value": "180",   "unit": "ms", "label": "Median authorisation latency" },
+      { "value": "135",   "unit": "",   "label": "Currencies, 47 local methods" },
+      { "value": "99.99", "unit": "%",  "label": "Uptime, SLA-backed" }
     ]
   },
-  "testimonial": {
-    "quote": "We were losing 14% of checkouts to card declines we couldn't explain. Four weeks in on Payze, that number is 3.8%. Routing works, the integration was a day, and reconciliation reports now arrive on their own.",
-    "name": "Vikram Kothari",
-    "role": "Head of Payments, Zomato Foods",
-    "initials": "VK"
+  "security": {
+    "kicker": "Security & compliance",
+    "title": "Built for Indian regulations,\nvalidated against global standards.",
+    "subtitle": "Payze operates under RBI's Payment Aggregator licence with the full control stack you'd expect from a tier-1 payments provider.",
+    "certifications": [
+      { "name": "RBI PA-PG",     "line1": "Licensed under",            "line2": "RBI Guidelines (17 Mar 2020)", "ref": "DPSS.CO.PD.No.1810/02.14.008/2020-21" },
+      { "name": "PCI-DSS",       "line1": "Level 1 service provider",  "line2": "Audited by Control Case",     "ref": "Valid through Dec 2026" },
+      { "name": "Data localisation", "line1": "All transaction data",   "line2": "stored in India",             "ref": "Per RBI circular · April 2018" },
+      { "name": "SOC 2",         "line1": "Type II report",            "line2": "available on request",        "ref": "Audited 2026" },
+      { "name": "ISO 27001",     "line1": "Information security",      "line2": "management certified",        "ref": "Audited 2026" },
+      { "name": "GDPR & DPDP",   "line1": "Indian DPDP Act 2023",       "line2": "and EU GDPR compliant",       "ref": "DPA on request" }
+    ]
+  },
+  "testimonials": {
+    "kicker": "Trusted by operators",
+    "items": [
+      {
+        "quote": "We were losing 14% of checkouts to card declines we couldn't explain. Four weeks in on Payze, that number is 3.8%. Routing works, integration was a day, reconciliation reports now arrive on their own.",
+        "name": "Vikram Kothari",
+        "role": "Head of Payments",
+        "company": "Zomato Foods",
+        "initials": "VK"
+      },
+      {
+        "quote": "The cross-border piece is what sold us — one dashboard for INR, USD, EUR, and SGD collections with FEMA reporting done by default. It saved us three months of compliance work.",
+        "name": "Meera Subramanian",
+        "role": "CFO",
+        "company": "MakeMyTrip",
+        "initials": "MS"
+      },
+      {
+        "quote": "Our engineering team integrated Payze in a single afternoon. Test-mode parity is real — what we tested on Friday ran identically in production Monday. SDK types are strict, webhooks are reliable. Refreshing.",
+        "name": "Rohan Krishnan",
+        "role": "Head of Engineering",
+        "company": "Cred Club",
+        "initials": "RK"
+      }
+    ]
   },
   "pricing": {
     "kicker": "Pricing",
     "title": "Simple, transparent, no surprises",
     "tiers": [
-      { "tier": "Starter", "price": "₹499", "desc": "For small teams just starting out", "features": ["UPI + cards + NetBanking", "Up to ₹5L monthly volume", "Email support", "T+2 settlement"], "ctaLabel": "Get started" },
-      { "tier": "Growth", "price": "₹2,499", "featured": true, "desc": "For scaling merchants", "features": ["Everything in Starter", "Up to ₹50L monthly volume", "Priority support", "T+1 settlement", "Custom checkout branding"], "ctaLabel": "Get started" },
-      { "tier": "Scale", "price": "Custom", "desc": "For high-volume operations", "features": ["Everything in Growth", "Unlimited volume", "Dedicated CSM", "Custom routing rules", "SSO + SAML", "SLA 99.99%"], "ctaLabel": "Talk to sales" }
+      { "tier": "Starter", "price": "₹499",   "desc": "For small teams just starting out", "features": ["UPI + cards + NetBanking", "Up to ₹5L monthly volume", "Email support", "T+2 settlement"], "ctaLabel": "Get started" },
+      { "tier": "Growth",  "price": "₹2,499", "featured": true, "desc": "For scaling merchants", "features": ["Everything in Starter", "Up to ₹50L monthly volume", "Priority support", "T+1 settlement", "Custom checkout branding"], "ctaLabel": "Get started" },
+      { "tier": "Scale",   "price": "Custom", "desc": "For high-volume operations", "features": ["Everything in Growth", "Unlimited volume", "Dedicated CSM", "Custom routing rules", "SSO + SAML", "SLA 99.99%"], "ctaLabel": "Talk to sales" }
     ]
   },
   "finalCta": {
     "kicker": "Get started",
     "title": "Stop losing revenue\nto payments that fail.",
     "desc": "Book a 30-minute demo. We'll audit your current stack and show what you're leaving on the table — usually ₹5-15L per month for mid-size merchants.",
-    "primary": { "label": "Book a demo", "href": "/book-demo" },
-    "secondary": { "label": "Email us directly", "href": "mailto:hello@payze.com" }
+    "primary":   { "label": "Book a demo",        "href": "/book-demo" },
+    "secondary": { "label": "Email us directly",  "href": "mailto:hello@payze.com" }
   },
   "footer": {
-    "tagline": "© 2026 · Made in Bengaluru",
-    "links": [
-      { "label": "Privacy", "href": "#" },
-      { "label": "Terms", "href": "#" },
-      { "label": "Security", "href": "#" },
-      { "label": "RBI disclosures", "href": "#" },
-      { "label": "Status", "href": "#" }
+    "tagline": "© 2026 Payze Technologies Pvt Ltd · Made in Bengaluru",
+    "cin": "CIN U72900KA2023PTC178492",
+    "columns": [
+      {
+        "heading": "Product",
+        "links": [
+          { "label": "Dashboard",  "href": "/signin" },
+          { "label": "Money",      "href": "/signin" },
+          { "label": "Collect",    "href": "/signin" },
+          { "label": "Risk",       "href": "/signin" },
+          { "label": "Analytics",  "href": "/signin" },
+          { "label": "Compliance", "href": "/signin" }
+        ]
+      },
+      {
+        "heading": "Developers",
+        "links": [
+          { "label": "API docs",   "href": "#developers" },
+          { "label": "SDKs",       "href": "#developers" },
+          { "label": "Webhooks",   "href": "#developers" },
+          { "label": "Status",     "href": "#" },
+          { "label": "Changelog",  "href": "#" }
+        ]
+      },
+      {
+        "heading": "Company",
+        "links": [
+          { "label": "About",      "href": "#" },
+          { "label": "Careers",    "href": "#" },
+          { "label": "Blog",       "href": "#" },
+          { "label": "Press",      "href": "#" },
+          { "label": "Contact",    "href": "mailto:hello@payze.com" }
+        ]
+      },
+      {
+        "heading": "Legal",
+        "links": [
+          { "label": "Privacy",          "href": "#" },
+          { "label": "Terms",            "href": "#" },
+          { "label": "Security",         "href": "#security" },
+          { "label": "RBI disclosures",  "href": "#" },
+          { "label": "Cookie policy",    "href": "#" }
+        ]
+      }
     ]
   }
 }

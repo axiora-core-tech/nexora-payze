@@ -9,21 +9,21 @@
       "title": "4 settlements due before 5pm",
       "detail": "₹18.4 L still in the pipeline across 4 merchant payouts. HDFC nodal account has sufficient balance; no action required unless a rail fails in the next 3 hours.",
       "action": "Open Payouts",
-      "actionHref": "/app/money?tab=payouts"
+      "actionHref": "/money?tab=payouts"
     },
     {
       "severity": "watch",
       "title": "STR-2026-00014 filing due in 3 days",
       "detail": "Cred Club structuring pattern review still in draft. FIU-IND requires submission by end-of-day 22 April. Auto-reminder fires 48h before.",
       "action": "Open Compliance",
-      "actionHref": "/app/compliance"
+      "actionHref": "/compliance"
     },
     {
       "severity": "opportunity",
       "title": "Ombudsman SLA · GR-2026-00283 approaching",
       "detail": "BookMyShow merchant grievance hits 30-day SLA in 2 days. If unresolved, auto-escalates to RBI Integrated Ombudsman Scheme 2021. Principal Nodal Officer has the draft.",
       "action": "Review ticket",
-      "actionHref": "/app/compliance"
+      "actionHref": "/compliance"
     }
   ],
   "today": {
