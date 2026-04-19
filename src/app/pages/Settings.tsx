@@ -4,8 +4,9 @@ import { SectionTabs } from '../../design/primitives';
 import { Admin } from './Admin';
 import { DeveloperAndWebhooks } from './DeveloperAndWebhooks';
 import { ReceiptTemplates } from './ReceiptTemplates';
+import { Enterprise } from './Enterprise';
 
-type TabId = 'team' | 'developer' | 'receipts';
+type TabId = 'team' | 'developer' | 'receipts' | 'enterprise';
 
 export function Settings() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -24,14 +25,16 @@ export function Settings() {
         active={tab}
         onChange={setTab}
         tabs={[
-          { id: 'team',      label: 'Team',      hint: 'Users, roles, billing' },
-          { id: 'developer', label: 'Developer', hint: 'API keys · webhooks · test mode' },
-          { id: 'receipts',  label: 'Receipts',  hint: 'Branded confirmation emails' },
+          { id: 'team',       label: 'Team',       hint: 'Users, roles, billing' },
+          { id: 'developer',  label: 'Developer',  hint: 'API keys · webhooks · test mode' },
+          { id: 'receipts',   label: 'Receipts',   hint: 'Branded confirmation emails' },
+          { id: 'enterprise', label: 'Enterprise', hint: 'Multi-MID · splits · 2FA · audit' },
         ]}
       />
-      {tab === 'team'      && <Admin />}
-      {tab === 'developer' && <DeveloperAndWebhooks />}
-      {tab === 'receipts'  && <ReceiptTemplates />}
+      {tab === 'team'       && <Admin />}
+      {tab === 'developer'  && <DeveloperAndWebhooks />}
+      {tab === 'receipts'   && <ReceiptTemplates />}
+      {tab === 'enterprise' && <Enterprise />}
     </div>
   );
 }

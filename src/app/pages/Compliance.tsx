@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { useAsync } from '../../hooks/useAsync';
 import { configService } from '../../services';
 
-type TabId = 'overview' | 'escrow' | 'kyc' | 'reporting' | 'grievance' | 'capital' | 'infrastructure' | 'auditTrail';
+type TabId = 'overview' | 'escrow' | 'kyc' | 'reporting' | 'grievance' | 'capital' | 'infrastructure' | 'reserves' | 'auditTrail';
 
 const tabs: { id: TabId; label: string }[] = [
   { id: 'overview',       label: 'Overview' },
@@ -15,12 +15,14 @@ const tabs: { id: TabId; label: string }[] = [
   { id: 'reporting',      label: 'Regulatory reporting' },
   { id: 'grievance',      label: 'Grievance' },
   { id: 'capital',        label: 'Capital' },
+  { id: 'reserves',       label: 'Reserves' },
   { id: 'infrastructure', label: 'Data & infrastructure' },
   { id: 'auditTrail',     label: 'Audit trail' },
 ];
 
 export function Compliance() {
   const { data, loading, error, refetch } = useAsync(() => configService.getCompliance(), []);
+  const { data: b2bData } = useAsync(() => configService.getB2BWorkflows(), []);
   const [tab, setTab] = useState<TabId>('overview');
 
   if (error) return <ErrorState message={`Couldn't load Compliance — ${error.message}`} onRetry={refetch} />;
@@ -63,6 +65,7 @@ export function Compliance() {
       {tab === 'reporting'      && <ReportingTab data={data.reporting} />}
       {tab === 'grievance'      && <GrievanceTab data={data.grievance} />}
       {tab === 'capital'        && <CapitalTab data={data.capital} />}
+      {tab === 'reserves'       && <ReservesTab data={b2bData?.reserve} />}
       {tab === 'infrastructure' && <InfrastructureTab data={data.infrastructure} />}
       {tab === 'auditTrail'     && <AuditTrailTab data={data.auditTrail} />}
     </div>
@@ -1003,3 +1006,64 @@ const selectStyle: React.CSSProperties = {
   fontFamily: 'inherit',
   outline: 'none',
 };
+
+// ── P4.4 Reserves tab ──────────────────────────────────────────
+function ReservesTab({ data }: any) {
+  if (!data) return <PageLoader label="Loading reserves" />;
+  const AMBER = '#B48C3C';
+
+  return (
+    <div>
+      <div style={{ marginBottom: '16px', maxWidth: '760px' }}>
+        <div style={{ ...typography.sectionTitle, color: colors.ink, marginBottom: '6px' }}>{data.kicker}</div>
+        <div style={{ fontSize: '13px', color: colors.text2, lineHeight: 1.55 }}>{data.summary}</div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '20px' }}>
+        {data.stats.map((s: any) => (
+          <Card key={s.label} padded style={{ padding: '16px 18px' }}>
+            <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, marginBottom: '6px' }}>{s.label}</div>
+            <div style={{ fontSize: '20px', fontWeight: 600, color: colors.ink, fontFamily: typography.family.mono, letterSpacing: '-0.02em', marginBottom: '4px' }}>{s.value}</div>
+            <div style={{ fontSize: '11px', color: colors.text2 }}>{s.sub}</div>
+          </Card>
+        ))}
+      </div>
+
+      <Kicker style={{ marginBottom: '10px' }}>Currently held · {data.heldBy.length} merchants</Kicker>
+      <Card padded={false} style={{ marginBottom: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 0.6fr 1fr 1.4fr 1.6fr', gap: '14px', padding: '12px 24px', borderBottom: `0.5px solid ${colors.border}`, fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500 }}>
+          <div>Merchant</div><div style={{ textAlign: 'right' }}>%</div><div style={{ textAlign: 'right' }}>Held</div><div>Release schedule</div><div>Reason</div>
+        </div>
+        {data.heldBy.map((h: any, i: number) => (
+          <div key={h.merchant} style={{ display: 'grid', gridTemplateColumns: '1.4fr 0.6fr 1fr 1.4fr 1.6fr', gap: '14px', padding: '14px 24px', borderBottom: i < data.heldBy.length - 1 ? `0.5px solid ${colors.border}` : 'none', alignItems: 'center', fontSize: '12px' }}>
+            <div style={{ color: colors.ink, fontWeight: 500 }}>{h.merchant}</div>
+            <div style={{ textAlign: 'right', color: h.reservePct >= 10 ? AMBER : colors.ink, fontFamily: typography.family.mono, fontWeight: 600 }}>{h.reservePct}%</div>
+            <div style={{ textAlign: 'right', color: colors.ink, fontFamily: typography.family.mono, fontWeight: 600 }}>{h.heldINR}</div>
+            <div style={{ color: colors.text2, fontSize: '11px' }}>{h.releaseSchedule}</div>
+            <div style={{ color: colors.text3, fontSize: '11px' }}>{h.reason}</div>
+          </div>
+        ))}
+      </Card>
+
+      <Kicker style={{ marginBottom: '10px' }}>Upcoming releases · next 30 days</Kicker>
+      <Card padded={false} style={{ marginBottom: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr 1fr 1.6fr', gap: '14px', padding: '12px 24px', borderBottom: `0.5px solid ${colors.border}`, fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500 }}>
+          <div>Date</div><div>Merchant</div><div style={{ textAlign: 'right' }}>Releasing</div><div>Reason</div>
+        </div>
+        {data.upcomingReleases.map((r: any, i: number) => (
+          <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr 1fr 1.6fr', gap: '14px', padding: '12px 24px', borderBottom: i < data.upcomingReleases.length - 1 ? `0.5px solid ${colors.border}` : 'none', alignItems: 'center', fontSize: '12px' }}>
+            <div style={{ color: colors.ink, fontFamily: typography.family.mono }}>{r.date}</div>
+            <div style={{ color: colors.text2 }}>{r.merchant}</div>
+            <div style={{ textAlign: 'right', color: colors.teal, fontFamily: typography.family.mono, fontWeight: 600 }}>{r.amount}</div>
+            <div style={{ color: colors.text3, fontSize: '11px' }}>{r.reason}</div>
+          </div>
+        ))}
+      </Card>
+
+      <div style={{ padding: '10px 14px', background: 'rgba(28,111,107,0.05)', border: '0.5px solid rgba(28,111,107,0.2)', borderRadius: radius.md, fontSize: '11px', color: colors.text2, lineHeight: 1.55 }}>
+        <span style={{ fontSize: '9px', color: colors.teal, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginRight: '6px' }}>Regulatory</span>
+        {data.regulationRef}
+      </div>
+    </div>
+  );
+}

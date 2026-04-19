@@ -34,6 +34,7 @@ import checkoutStudioData from '../assets/data/checkoutStudio.json';
 import payoutsData from '../assets/data/payouts.json';
 import smartCollectData from '../assets/data/smartCollect.json';
 import b2bWorkflowsData from '../assets/data/b2bWorkflows.json';
+import enterpriseData from '../assets/data/enterprise.json';
 import taxRulesData from '../assets/data/taxRules.json';
 import testScenariosData from '../assets/data/testScenarios.json';
 import timelineData from '../assets/data/timeline.json';
@@ -85,6 +86,7 @@ export const configService = {
   getPayouts: () => mockFetch(payoutsData),
   getSmartCollect: () => mockFetch(smartCollectData),
   getB2BWorkflows: () => mockFetch(b2bWorkflowsData),
+  getEnterprise: () => mockFetch(enterpriseData),
   getTaxRules: () => mockFetch(taxRulesData),
   getTestScenarios: () => mockFetch(testScenariosData),
   getTimeline: () => mockFetch(timelineData),

@@ -1,0 +1,201 @@
+{
+  "header": {
+    "kicker": "Settings · Enterprise",
+    "title": "Enterprise configuration",
+    "subtitle": "Multi-entity, splits, multi-currency, role-based access, 2FA, audit. Everything a scale-stage merchant needs."
+  },
+  "entities": {
+    "kicker": "Multi-entity · multi-MID",
+    "summary": "One super-account · multiple legal entities · each with its own PAN, GSTIN, and settlement bank. Unified analytics, separated reporting.",
+    "superAccount": "Zomato Holdings Pvt Ltd",
+    "superAccountCIN": "U55101KA2010PTC053285",
+    "entities": [
+      { "id": "ent_foods",     "name": "Zomato Foods",       "pan": "AAACZ3572K", "gstin": "29AAACZ3572K1Z4", "settlementBank": "HDFC •••• 4821", "mid": "MID-ZMF-2026",   "active": true,  "monthlyVolume": "₹48.2 Cr", "category": "Food delivery" },
+      { "id": "ent_hyper",     "name": "Zomato Hyperpure",    "pan": "AABCH8472L", "gstin": "29AABCH8472L1Z2", "settlementBank": "ICICI •••• 9034", "mid": "MID-ZMH-2026",   "active": true,  "monthlyVolume": "₹12.4 Cr", "category": "B2B supply" },
+      { "id": "ent_blinkit",    "name": "Blinkit",             "pan": "AAFCB9281M", "gstin": "29AAFCB9281M1Z6", "settlementBank": "Axis •••• 2938",   "mid": "MID-BLK-2026",   "active": true,  "monthlyVolume": "₹28.4 Cr", "category": "Quick commerce" },
+      { "id": "ent_hyper_lab",  "name": "Zomato Hyperpure Lab","pan": "AAFCA7283P", "gstin": "29AAFCA7283P1Z8", "settlementBank": "HDFC •••• 7482",   "mid": "MID-ZHL-2026",   "active": false, "monthlyVolume": "—",          "category": "R&D · dormant" }
+    ],
+    "regulationRef": "Multi-MID under a single PA agreement · RBI PA/PG para 4.2 · each entity KYC'd independently"
+  },
+  "splits": {
+    "kicker": "Affiliate · referral · revenue splits",
+    "summary": "Auto-split every inbound payment between merchant, platform, and affiliate. Settled to each party according to rules.",
+    "stats": [
+      { "label": "Active split rules",  "value": "14",        "sub": "12 merchants using" },
+      { "label": "Split 30d",            "value": "₹8.42 L",  "sub": "to affiliates · 284 txns" },
+      { "label": "Platform fees 30d",    "value": "₹18.4 L",  "sub": "3% commission avg" }
+    ],
+    "rules": [
+      { "id": "split_r1", "name": "Rhea Yoga · instructor cut", "scope": "Rhea Yoga subscription revenue", "splits": [{ "party": "Rhea Yoga",    "pct": 70 }, { "party": "Instructor pool", "pct": 25 }, { "party": "Payze platform", "pct": 5 }], "active": true,  "lastFired": "Today 14:38", "cumulative": "₹2,84,000" },
+      { "id": "split_r2", "name": "Aanya Films · director 40%", "scope": "MakeMyTrip contract",            "splits": [{ "party": "Aanya Films",  "pct": 60 }, { "party": "Director (PEP)",  "pct": 40 }],                                 "active": true,  "lastFired": "16 Apr",        "cumulative": "₹48,00,000" },
+      { "id": "split_r3", "name": "Affiliate · BookMyShow ref", "scope": "New customer from partner",      "splits": [{ "party": "BookMyShow",   "pct": 95 }, { "party": "Affiliate",       "pct": 3 },  { "party": "Payze platform", "pct": 2 }], "active": true,  "lastFired": "Yesterday",     "cumulative": "₹14,82,000" },
+      { "id": "split_r4", "name": "Cred Club · scale plan",      "scope": "Scale plan subscribers",         "splits": [{ "party": "Cred Club",    "pct": 85 }, { "party": "Cred partners pool","pct": 12 }, { "party": "Payze platform", "pct": 3 }], "active": false, "lastFired": "14 Apr",        "cumulative": "₹8,42,000" }
+    ],
+    "recentSplits": [
+      { "id": "sp_00482", "ruleId": "split_r1", "txn": "txn_00478", "totalAmount": "₹4,800", "parts": [{ "party": "Rhea Yoga", "amount": "₹3,360" }, { "party": "Instructor pool", "amount": "₹1,200" }, { "party": "Payze", "amount": "₹240" }], "firedAt": "Today 14:38" },
+      { "id": "sp_00481", "ruleId": "split_r1", "txn": "txn_00471", "totalAmount": "₹4,800", "parts": [{ "party": "Rhea Yoga", "amount": "₹3,360" }, { "party": "Instructor pool", "amount": "₹1,200" }, { "party": "Payze", "amount": "₹240" }], "firedAt": "Today 09:14" },
+      { "id": "sp_00480", "ruleId": "split_r3", "txn": "txn_00412", "totalAmount": "₹1,120", "parts": [{ "party": "BookMyShow", "amount": "₹1,064" }, { "party": "Affiliate", "amount": "₹34" }, { "party": "Payze", "amount": "₹22" }], "firedAt": "Yesterday 18:22" }
+    ]
+  },
+  "multiCurrency": {
+    "kicker": "Multi-currency settlement",
+    "summary": "Settle non-INR collections to a foreign-currency holding account instead of auto-converting. Cheaper, treasury-friendly.",
+    "holdingAccounts": [
+      { "currency": "USD", "balance": "$48,290", "provider": "Silicon Valley Bank · via Brex Treasury", "accountHint": "•••• 4821", "createdAt": "22 Jan 2026", "settled30d": "$18,200", "fee": "Free under $50K/mo" },
+      { "currency": "EUR", "balance": "€12,480", "provider": "Wise · business",                         "accountHint": "•••• 9034", "createdAt": "08 Mar 2026", "settled30d": "€4,280",  "fee": "0.18% · FX spread" },
+      { "currency": "GBP", "balance": "£0",      "provider": "Pending · Wise onboarding",                 "accountHint": "—",         "createdAt": "—",            "settled30d": "£0",       "fee": "—" }
+    ],
+    "conversions": [
+      { "from": "USD", "to": "INR", "auto": true,  "rate": "83.84", "stickRate": "at T+0 on settlement" },
+      { "from": "EUR", "to": "USD", "auto": false, "rate": "—",     "stickRate": "hold as EUR until manual convert" },
+      { "from": "GBP", "to": "INR", "auto": true,  "rate": "106.42","stickRate": "at T+0 on settlement" }
+    ],
+    "regulationRef": "PA-CB licence holding · FEMA (Export of Services) rules · FIRC auto-generated for all USD/EUR inflows"
+  },
+  "rbac": {
+    "kicker": "Role-based access control",
+    "summary": "Beyond admin vs user. Fine-grained permissions per role — view payments but not issue refunds, edit fraud rules but not settle payouts.",
+    "roles": [
+      { "id": "role_owner",    "name": "Owner",         "userCount": 1, "description": "Full platform access · billing · entity management · cannot be deleted", "permissions": ["*"], "builtIn": true },
+      { "id": "role_admin",    "name": "Admin",          "userCount": 2, "description": "Everything except billing and user deletion",                            "permissions": ["payments:*", "refunds:*", "payouts:*", "customers:*", "settings:*_except_billing"], "builtIn": true },
+      { "id": "role_ops",      "name": "Operations",    "userCount": 4, "description": "Day-to-day ops · issue refunds · view payments · cannot change settings", "permissions": ["payments:view", "refunds:issue", "refunds:view", "dunning:manage", "customers:view", "customers:edit"], "builtIn": true },
+      { "id": "role_finance",  "name": "Finance",        "userCount": 2, "description": "Reconciliation + settlements + payouts · no operational surfaces",        "permissions": ["settlements:view", "settlements:approve", "payouts:view", "payouts:send", "reconciliation:*", "invoices:*"], "builtIn": true },
+      { "id": "role_risk",     "name": "Risk & fraud",  "userCount": 2, "description": "Edit fraud rules · review disputes · view high-risk flags",                "permissions": ["risk:*", "disputes:*", "str:file", "compliance:view"], "builtIn": true },
+      { "id": "role_developer","name": "Developer",      "userCount": 3, "description": "API keys + webhooks + test mode · cannot see production data",            "permissions": ["api:*", "webhooks:*", "testmode:*"], "builtIn": true },
+      { "id": "role_viewer",   "name": "View-only",      "userCount": 5, "description": "Read-only everywhere · useful for execs, auditors",                       "permissions": ["*:view"], "builtIn": true },
+      { "id": "role_custom_1", "name": "CS agent (custom)", "userCount": 8, "description": "Refunds under ₹10K + customer view only",                              "permissions": ["customers:view", "refunds:issue_under_10k"], "builtIn": false }
+    ],
+    "permissionMatrix": {
+      "scopes": ["Payments", "Refunds", "Payouts", "Settlements", "Customers", "Risk", "Disputes", "Settings", "API & webhooks", "Compliance"],
+      "actions": ["view", "edit", "approve", "delete"]
+    },
+    "users": [
+      { "id": "u_kavya",   "name": "Kavya Venkatesh",   "email": "kavya@payze.com",     "role": "role_owner",     "last2fa": "Today",      "twoFAMethod": "TOTP",           "lastActive": "Active now" },
+      { "id": "u_meera",   "name": "Meera Subramanian", "email": "meera@payze.com",     "role": "role_admin",     "last2fa": "Yesterday",  "twoFAMethod": "TOTP",           "lastActive": "4 min ago" },
+      { "id": "u_arjun",   "name": "Arjun Reddy",        "email": "arjun@payze.com",     "role": "role_risk",      "last2fa": "Today",      "twoFAMethod": "TOTP",           "lastActive": "18 min ago" },
+      { "id": "u_vikram",  "name": "Vikram Kothari",     "email": "vikram@payze.com",   "role": "role_finance",   "last2fa": "Yesterday",  "twoFAMethod": "Hardware key",   "lastActive": "1 h ago" },
+      { "id": "u_aanya_p", "name": "Aanya Pillai",        "email": "aanya.p@payze.com", "role": "role_ops",       "last2fa": "Today",      "twoFAMethod": "TOTP",           "lastActive": "2 h ago" },
+      { "id": "u_ravi",    "name": "Ravi Shankar",        "email": "ravi@payze.com",     "role": "role_developer", "last2fa": "14 Apr",     "twoFAMethod": "TOTP",           "lastActive": "Yesterday" },
+      { "id": "u_tushar",  "name": "Tushar Gupta",         "email": "tushar@payze.com",  "role": "role_custom_1",  "last2fa": "Not enrolled","twoFAMethod": "None",           "lastActive": "3 days ago", "needsAttention": true }
+    ]
+  },
+  "twoFA": {
+    "kicker": "Two-factor authentication",
+    "summary": "All operators must enrol 2FA within 30 days of account creation. TOTP recommended. Hardware keys supported for finance and admin roles.",
+    "stats": [
+      { "label": "Enrolment",     "value": "22 of 23", "sub": "95.6% · 1 pending" },
+      { "label": "TOTP users",    "value": "19",        "sub": "Google Auth · Authy · 1Password" },
+      { "label": "Hardware keys", "value": "3",         "sub": "YubiKey · 2 finance, 1 admin" },
+      { "label": "Recovery codes","value": "22",        "sub": "all enrolled users have 10 codes" }
+    ],
+    "policy": "2FA required for all operators (no exceptions). Hardware keys required for roles with payouts or settlement approval rights. Sessions re-verify 2FA every 30 days or on new-device login.",
+    "methods": [
+      { "method": "TOTP (Authenticator app)", "enrolledUsers": 19, "availableFor": "All roles",                           "secure": true,  "recommended": true },
+      { "method": "Hardware key (FIDO2)",     "enrolledUsers": 3,  "availableFor": "Owner · Admin · Finance",             "secure": true,  "recommended": "for payout-capable roles" },
+      { "method": "SMS OTP",                   "enrolledUsers": 0,  "availableFor": "Disabled · SIM swap risk",            "secure": false, "recommended": false }
+    ]
+  },
+  "operatorAudit": {
+    "kicker": "Operator audit trail",
+    "summary": "Who at your org changed what setting, when. Separate from platform audit (which tracks Payze employees). 7-year retention per RBI norms.",
+    "stats": [
+      { "label": "Events · 30d",   "value": "8,472", "sub": "14 actors · 142 distinct actions" },
+      { "label": "Sensitive · 30d","value": "142",   "sub": "permission changes · key rotations" },
+      { "label": "Failed logins",  "value": "4",     "sub": "all blocked at 2FA · no breach" },
+      { "label": "Retention",       "value": "7 yr",  "sub": "per RBI · PMLA s.12" }
+    ],
+    "events": [
+      { "id": "ae_00284", "actor": "Kavya Venkatesh",   "actorRole": "Owner",      "action": "Role updated",          "target": "Tushar Gupta → CS agent (custom)", "severity": "elevated", "at": "Today 14:42", "ip": "103.28.12.142 · Bengaluru" },
+      { "id": "ae_00283", "actor": "Meera Subramanian", "actorRole": "Admin",      "action": "Split rule activated",  "target": "Rhea Yoga · instructor cut",        "severity": "normal",   "at": "Today 11:28", "ip": "103.28.12.146 · Bengaluru" },
+      { "id": "ae_00282", "actor": "Arjun Reddy",        "actorRole": "Risk",       "action": "Fraud rule created",    "target": "velocity_anomaly_v2",                "severity": "normal",   "at": "Today 10:14", "ip": "103.28.12.148 · Bengaluru" },
+      { "id": "ae_00281", "actor": "Vikram Kothari",     "actorRole": "Finance",    "action": "Payout approved",       "target": "po_08246 · ₹4,50,000 · Studio Lumière", "severity": "elevated", "at": "Today 09:14", "ip": "192.168.1.24 · VPN" },
+      { "id": "ae_00280", "actor": "Tushar Gupta",       "actorRole": "CS agent",   "action": "Refund issued",         "target": "rf_4820 · ₹4,500 · Zomato",         "severity": "normal",   "at": "Yesterday 18:22", "ip": "103.28.12.152 · Bengaluru" },
+      { "id": "ae_00279", "actor": "Kavya Venkatesh",    "actorRole": "Owner",      "action": "Entity activated",      "target": "Blinkit · MID-BLK-2026",            "severity": "high",     "at": "Yesterday 11:08", "ip": "103.28.12.142 · Bengaluru" },
+      { "id": "ae_00278", "actor": "Ravi Shankar",        "actorRole": "Developer", "action": "API key rotated",       "target": "sk_live_… → sk_live_…",              "severity": "elevated", "at": "Yesterday 14:32", "ip": "203.194.82.104 · Mumbai" },
+      { "id": "ae_00277", "actor": "System",              "actorRole": "System",    "action": "Failed login blocked", "target": "u_tushar · 2FA challenge failed · 3/3", "severity": "high",    "at": "16 Apr 14:28", "ip": "198.51.100.14 · unknown · blocked" }
+    ]
+  },
+  "settlementSchedule": {
+    "kicker": "Settlement schedule",
+    "summary": "When money lands in your bank. Default T+1 for low-risk, slower for higher-risk. Same-day settlement available on Scale plan.",
+    "currentSchedule": {
+      "tier": "low",
+      "cadence": "T+1 · end of day",
+      "cutoffTime": "18:00 IST",
+      "firstLandingTime": "09:30 next business day",
+      "specialRails": {
+        "upi": "T+0 · instant (if volume < ₹5L/day)",
+        "rtgs_received": "same day",
+        "international": "T+2 · after FIRC"
+      }
+    },
+    "availableOptions": [
+      { "id": "tier_same_day", "name": "Same-day",       "cadence": "4× per day",            "cutoffs": "11:00 · 14:00 · 17:00 · 20:00 IST", "fee": "+0.08% MDR",  "availableTo": "Scale plan · verified merchants · <1% dispute rate" },
+      { "id": "tier_t1",       "name": "T+1 (default)",   "cadence": "Once · end of day",     "cutoffs": "18:00 IST",                           "fee": "Included",    "availableTo": "All merchants · default" },
+      { "id": "tier_t2",       "name": "T+2",             "cadence": "Once · 2 days",         "cutoffs": "18:00 IST",                           "fee": "−0.04% MDR",  "availableTo": "Merchants in first 90 days · or high-risk" },
+      { "id": "tier_t3",       "name": "T+3 + review",    "cadence": "Manual approval · 3 days", "cutoffs": "On demand",                         "fee": "No MDR discount","availableTo": "New-age categories (VDA, gaming)" }
+    ],
+    "mdrBreakdown": [
+      { "method": "UPI",         "mdr": "0%",    "payzeFee": "Free (< ₹2K)" },
+      { "method": "Debit card",   "mdr": "0.40%", "payzeFee": "0.40% of MDR kept" },
+      { "method": "Credit card",  "mdr": "1.80%", "payzeFee": "0.70% of MDR kept" },
+      { "method": "NetBanking",   "mdr": "0.90%", "payzeFee": "0.55% kept" },
+      { "method": "Wallet",       "mdr": "1.20%", "payzeFee": "0.65% kept" },
+      { "method": "International","mdr": "3.00%", "payzeFee": "1.20% kept · plus FX spread" }
+    ]
+  },
+  "mobileSDK": {
+    "kicker": "Mobile SDKs",
+    "summary": "Native iOS and Android SDKs for in-app payments. Drop-in checkout UI or headless · your choice.",
+    "sdks": [
+      {
+        "platform": "iOS",
+        "version": "2.8.0",
+        "language": "Swift",
+        "minOS": "iOS 14.0+",
+        "binarySize": "1.8 MB",
+        "install": "pod 'Payze', '~> 2.8'",
+        "installAlt": "SPM: https://github.com/payze/payze-ios · 2.8.0",
+        "snippet": "import Payze\n\nlet client = PayzeClient(apiKey: \"pk_live_...\")\n\nclient.presentCheckout(\n    on: self,\n    amount: 249900,    // paise\n    currency: \"INR\",\n    onSuccess: { result in\n        print(\"Paid: \\(result.txnId)\")\n    }\n)"
+      },
+      {
+        "platform": "Android",
+        "version": "2.8.0",
+        "language": "Kotlin · Java compatible",
+        "minOS": "API 24 (Android 7.0)+",
+        "binarySize": "2.1 MB",
+        "install": "implementation 'com.payze:payze-android:2.8.0'",
+        "installAlt": "Maven Central · sonatype snapshot repo for beta",
+        "snippet": "import com.payze.android.PayzeClient\n\nval payze = PayzeClient.create(apiKey = \"pk_live_...\")\n\npayze.presentCheckout(\n    activity = this,\n    amount = 249900,    // paise\n    currency = \"INR\",\n    onSuccess = { result ->\n        Log.d(\"Paid\", result.txnId)\n    }\n)"
+      },
+      {
+        "platform": "React Native",
+        "version": "2.8.0",
+        "language": "TypeScript",
+        "minOS": "RN 0.72+",
+        "binarySize": "0.9 MB (shared)",
+        "install": "npm install @payze/react-native",
+        "installAlt": "yarn add @payze/react-native · auto-linking",
+        "snippet": "import { PayzeClient } from '@payze/react-native';\n\nconst payze = new PayzeClient({ apiKey: 'pk_live_...' });\n\nawait payze.presentCheckout({\n  amount: 249900,\n  currency: 'INR',\n  onSuccess: (r) => console.log('Paid:', r.txnId),\n});"
+      },
+      {
+        "platform": "Flutter",
+        "version": "2.8.0",
+        "language": "Dart",
+        "minOS": "Flutter 3.13+",
+        "binarySize": "1.2 MB (shared)",
+        "install": "flutter pub add payze_flutter",
+        "installAlt": "pub.dev · payze_flutter ^2.8.0",
+        "snippet": "import 'package:payze_flutter/payze.dart';\n\nfinal payze = PayzeClient(apiKey: 'pk_live_...');\n\nfinal result = await payze.presentCheckout(\n  amount: 249900,\n  currency: 'INR',\n);\nprint('Paid: ${result.txnId}');"
+      }
+    ],
+    "features": [
+      "Drop-in UI · auto-handles 3DS, UPI deep links, BNPL redirects",
+      "Headless mode · bring your own UI, use our tokenization",
+      "Biometric auth · Face ID, Touch ID, fingerprint",
+      "Offline queue · retries on network recovery",
+      "App-link deep-linking · returns cleanly to your app after redirect flows",
+      "Theming · matches your brand colors and typography"
+    ]
+  }
+}
