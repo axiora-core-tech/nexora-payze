@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, Navigate, Outlet, useLocation, useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
 import { colors, radius, typography } from '../design/tokens';
+import { Modal, Button } from '../design/primitives';
 import * as Icons from '../design/icons';
 import { useTenant } from './components/TenantContext';
 import { Nexora } from './components/Nexora';
@@ -22,6 +23,7 @@ export function AppLayout() {
   const [currencyOpen, setCurrencyOpen] = useState(false);
   const [currency, setCurrency] = useState('INR');
   const [session, setSession] = useState<Session | null>(() => initializeOrRestoreSession());
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
 
   const handleSignOut = () => {
     setProfileOpen(false);
@@ -29,6 +31,17 @@ export function AppLayout() {
     setSession(null);
     toast.success('Signed out', { description: 'You have been signed out of Payze.' });
     navigate('/signin', { replace: true });
+  };
+
+  const handleOpenProfile = () => {
+    setProfileOpen(false);
+    setProfileModalOpen(true);
+  };
+
+  const handleOpenDocs = () => {
+    setProfileOpen(false);
+    toast.success('Opening Payze docs', { description: 'docs.payze.com · new tab' });
+    try { window.open('https://docs.payze.com', '_blank', 'noopener,noreferrer'); } catch {}
   };
 
   // Route guard: if the user is signed out, bounce to /signin.
@@ -87,6 +100,8 @@ export function AppLayout() {
           profileOpen={profileOpen} setProfileOpen={setProfileOpen}
           notifOpen={notifOpen} setNotifOpen={setNotifOpen}
           onSignOut={handleSignOut}
+          onOpenProfile={handleOpenProfile}
+          onOpenDocs={handleOpenDocs}
         />
         <main style={{ flex: 1, padding: '24px 40px 64px 24px', minWidth: 0 }}>
           <Outlet />
@@ -99,6 +114,12 @@ export function AppLayout() {
         open={searchOpen}
         onOpen={() => setSearchOpen(true)}
         onClose={() => setSearchOpen(false)}
+      />
+      <ProfileModal
+        open={profileModalOpen}
+        onClose={() => setProfileModalOpen(false)}
+        session={session}
+        onSignOut={() => { setProfileModalOpen(false); handleSignOut(); }}
       />
       {(profileOpen || notifOpen || currencyOpen) && (
         <div onClick={() => { setProfileOpen(false); setNotifOpen(false); setCurrencyOpen(false); }} style={{ position: 'fixed', inset: 0, zIndex: 40 }} />
@@ -190,7 +211,7 @@ function DockItem({ item, basePath, isActive, dockOpen }: { item: NavItem; baseP
   );
 }
 
-function Header({ tenant, session, currency, setCurrency, currencyOpen, setCurrencyOpen, setSearchOpen, profileOpen, setProfileOpen, notifOpen, setNotifOpen, onSignOut }: any) {
+function Header({ tenant, session, currency, setCurrency, currencyOpen, setCurrencyOpen, setSearchOpen, profileOpen, setProfileOpen, notifOpen, setNotifOpen, onSignOut, onOpenProfile, onOpenDocs }: any) {
   return (
     <header style={{ padding: '20px 40px 20px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', position: 'sticky', top: 0, background: colors.bg, zIndex: 30 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: 1 }}>
@@ -242,14 +263,14 @@ function Header({ tenant, session, currency, setCurrency, currencyOpen, setCurre
           <button onClick={() => setProfileOpen(!profileOpen)} style={{ width: '36px', height: '36px', borderRadius: '50%', background: colors.ink, color: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
             {session?.initials || 'U'}
           </button>
-          {profileOpen && <ProfileDropdown session={session} onSignOut={onSignOut} closeMenu={() => setProfileOpen(false)} />}
+          {profileOpen && <ProfileDropdown session={session} onSignOut={onSignOut} onOpenProfile={onOpenProfile} onOpenDocs={onOpenDocs} closeMenu={() => setProfileOpen(false)} />}
         </div>
       </div>
     </header>
   );
 }
 
-function ProfileDropdown({ session, onSignOut, closeMenu }: { session: Session | null; onSignOut: () => void; closeMenu: () => void }) {
+function ProfileDropdown({ session, onSignOut, onOpenProfile, onOpenDocs, closeMenu }: { session: Session | null; onSignOut: () => void; onOpenProfile: () => void; onOpenDocs: () => void; closeMenu: () => void }) {
   const navigate = useNavigate();
 
   const goTo = (path: string) => {
@@ -258,9 +279,11 @@ function ProfileDropdown({ session, onSignOut, closeMenu }: { session: Session |
   };
 
   const items: { label: string; Icon: React.FC<any>; onClick: () => void; sub?: string }[] = [
-    { label: 'Settings',        Icon: Icons.IconSettings,  onClick: () => goTo('/app/settings'),                       sub: 'Team, API keys, billing' },
-    { label: 'Compliance',      Icon: Icons.IconCompliance, onClick: () => goTo('/app/compliance'),                    sub: 'Posture, KYC, audit trail' },
-    { label: 'Keyboard shortcuts', Icon: Icons.IconSearch, onClick: () => { closeMenu(); toast.success('⌘K · opens search anywhere'); } },
+    { label: 'Profile',            Icon: Icons.IconUser,       onClick: onOpenProfile,                                     sub: 'Account, session, preferences' },
+    { label: 'Settings',           Icon: Icons.IconSettings,   onClick: () => goTo('/app/settings'),                       sub: 'Team, API keys, billing' },
+    { label: 'Compliance',         Icon: Icons.IconCompliance, onClick: () => goTo('/app/compliance'),                    sub: 'Posture, KYC, audit trail' },
+    { label: 'Keyboard shortcuts', Icon: Icons.IconSearch,     onClick: () => { closeMenu(); toast.success('⌘K · opens search anywhere'); }, sub: 'Command palette: ⌘K' },
+    { label: 'Help & docs',        Icon: Icons.IconExternal,   onClick: onOpenDocs,                                        sub: 'docs.payze.com' },
   ];
 
   return (
@@ -337,6 +360,84 @@ function formatRelative(isoTime: string): string {
   } catch {
     return '';
   }
+}
+
+function formatAbsolute(isoTime: string): string {
+  try {
+    const d = new Date(isoTime);
+    const now = new Date();
+    const time = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: false });
+    const sameDay = d.toDateString() === now.toDateString();
+    if (sameDay) return `Today at ${time} IST`;
+    const date = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    return `${date} at ${time} IST`;
+  } catch {
+    return isoTime;
+  }
+}
+
+function ProfileModal({ open, onClose, session, onSignOut }: { open: boolean; onClose: () => void; session: Session | null; onSignOut: () => void }) {
+  if (!session) return null;
+  return (
+    <Modal open={open} onClose={onClose} kicker="Account" title="Your Payze profile" width={460}>
+      {/* Avatar + identity row */}
+      <div style={{ display: 'flex', gap: '14px', alignItems: 'center', padding: '16px', background: colors.bg, borderRadius: radius.md, marginBottom: '16px' }}>
+        <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: colors.ink, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '17px', fontWeight: 600, flexShrink: 0 }}>
+          {session.initials}
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: '15px', fontWeight: 600, color: colors.ink, marginBottom: '2px', letterSpacing: '-0.005em' }}>{session.name}</div>
+          <div style={{ fontSize: '12px', color: colors.text2 }}>{session.email}</div>
+          <div style={{ fontSize: '10px', color: colors.teal, marginTop: '4px', display: 'inline-flex', alignItems: 'center', gap: '5px', fontFamily: typography.family.mono, letterSpacing: '0.05em', fontWeight: 500 }}>
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: colors.teal, animation: 'payze-pulse-dot 2s ease-in-out infinite' }} />
+            Active session
+          </div>
+        </div>
+      </div>
+
+      {/* Details list */}
+      <div style={{ padding: '4px 2px 16px 2px' }}>
+        <ProfileRow label="Role"        value="Operator · Full platform access" />
+        <ProfileRow label="Email"       value={session.email} mono />
+        <ProfileRow label="Initials"    value={session.initials} mono />
+        <ProfileRow label="Signed in"   value={`${formatAbsolute(session.signedInAt)} · ${formatRelative(session.signedInAt)}`} />
+        <ProfileRow label="Session"     value="Persistent · localStorage" mono isLast />
+      </div>
+
+      {/* Action row */}
+      <div style={{ display: 'flex', gap: '8px', paddingTop: '16px', borderTop: `0.5px solid ${colors.border}`, flexWrap: 'wrap' }}>
+        <Button variant="secondary" size="sm" onClick={() => toast.success('Profile editor', { description: 'Coming soon · opens in a side drawer' })}>
+          Edit profile
+        </Button>
+        <Button variant="secondary" size="sm" onClick={() => toast.success('Password change', { description: 'Emails a secure reset link to ' + session.email })}>
+          Change password
+        </Button>
+        <button
+          onClick={onSignOut}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(214, 69, 69, 0.07)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+          style={{
+            marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '6px',
+            padding: '7px 14px', background: 'transparent', border: `0.5px solid rgba(214, 69, 69, 0.25)`,
+            borderRadius: radius.pill, color: '#D64545', fontSize: '12px', fontWeight: 500,
+            cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.15s ease',
+          }}
+        >
+          <Icons.IconLogout size={13} color="#D64545" />
+          Sign out
+        </button>
+      </div>
+    </Modal>
+  );
+}
+
+function ProfileRow({ label, value, mono, isLast }: { label: string; value: string; mono?: boolean; isLast?: boolean }) {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '10px 2px', borderBottom: isLast ? 'none' : `0.5px solid ${colors.border}`, gap: '12px' }}>
+      <span style={{ fontSize: '11px', color: colors.text3, letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 500, flexShrink: 0 }}>{label}</span>
+      <span style={{ fontSize: '12px', color: colors.ink, fontWeight: 500, fontFamily: mono ? typography.family.mono : undefined, textAlign: 'right', minWidth: 0, wordBreak: 'break-word' }}>{value}</span>
+    </div>
+  );
 }
 
 function NotificationsPanel() {
