@@ -24,19 +24,11 @@ export function Pay() {
   if (loading || !data) return <PageLoader label="Loading checkout" />;
 
   const { header, checkout, methods, banks, wallets, savedCards, tokenization, threeDS } = data;
-<<<<<<< HEAD
-=======
-  const [selectedToken, setSelectedToken] = useState<string | null>(null);
->>>>>>> be80785912944f49b03441a702d8b5ded786988a
 
   const handlePay = () => {
     setState('processing');
     // 3DS step (if cards): advance after 1.4s, success after another 1.4s
-<<<<<<< HEAD
     if (methodId === 'card' && checkout.amount >= 2000 && threeDS && !threeDS.frictionless) {
-=======
-    if (methodId === 'card' && checkout.amount >= 2000 && !threeDS.frictionless) {
->>>>>>> be80785912944f49b03441a702d8b5ded786988a
       setTimeout(() => setState('threeds'), 1400);
       setTimeout(() => setState('success'), 2800);
     } else {
