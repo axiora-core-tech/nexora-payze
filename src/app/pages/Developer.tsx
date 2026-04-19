@@ -79,7 +79,7 @@ export function Developer() {
               <Pill tone={w.health === 'Healthy' ? 'teal' : 'outline'}>{w.health}</Pill>
             </div>
           ))}
-          <Button variant="secondary" size="sm" style={{ marginTop: '14px' }} icon={<Icons.IconPlus size={12} />}>Add endpoint</Button>
+          <Button variant="secondary" size="sm" style={{ marginTop: '14px' }} icon={<Icons.IconPlus size={12} />} onClick={() => toast.success('Endpoint added', { description: 'POST events to your URL · signed with HMAC-SHA256' })}>Add endpoint</Button>
         </Card>
       </div>
 

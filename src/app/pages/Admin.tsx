@@ -63,7 +63,7 @@ export function Admin() {
               <div>{m.twoFa ? <Pill tone="teal">Enabled</Pill> : <Pill tone="outline">Disabled</Pill>}</div>
               <div style={{ color: colors.text2, fontSize: '12px' }}>{m.last}</div>
               <div style={{ textAlign: 'right' }}>
-                {!m.you && <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.text3, padding: '4px' }}><Icons.IconSettings size={14} /></button>}
+                {!m.you && <button onClick={() => toast.success(`Edit ${m.name}'s permissions`, { description: 'Opens member editor · roles, scopes, 2FA' })} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.text3, padding: '4px' }}><Icons.IconSettings size={14} /></button>}
               </div>
             </div>
           ))}
@@ -94,7 +94,7 @@ export function Admin() {
               <Kicker style={{ marginBottom: '14px' }}>{s.title}</Kicker>
               <div style={{ fontSize: '14px', color: colors.ink, fontWeight: 500, marginBottom: '6px' }}>{s.status}</div>
               <div style={{ fontSize: '12px', color: colors.text2, marginBottom: '16px' }}>{s.desc}</div>
-              <Button variant="secondary" size="sm">{s.cta}</Button>
+              <Button variant="secondary" size="sm" onClick={() => toast.success(s.cta, { description: `${s.title} · review settings` })}>{s.cta}</Button>
             </Card>
           ))}
         </div>

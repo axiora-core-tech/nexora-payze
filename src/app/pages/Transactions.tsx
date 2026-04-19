@@ -157,7 +157,7 @@ export function Transactions() {
           </div>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
-          <Button variant="secondary" icon={<Icons.IconFilter size={14} />}>Filters</Button>
+          <Button variant="secondary" icon={<Icons.IconFilter size={14} />} onClick={() => toast.success('Filters', { description: 'Status · method · amount range · date · merchant' })}>Filters</Button>
           <Button variant="secondary" icon={<Icons.IconDownload size={14} />} onClick={() => toast.success(`Exporting ${filtered.length} transactions as CSV`)}>Export CSV</Button>
         </div>
       </div>
@@ -493,7 +493,7 @@ function TxnDetailDrawer({ txn, onClose, fxRate, toInr, formatSource, enrichEven
           {txn.status === 'succeeded' && <Button variant="secondary" size="sm" onClick={() => toast.success('Refund initiated')}>Refund</Button>}
           {txn.status === 'blocked' && <Button variant="secondary" size="sm" onClick={() => toast.success('Released to retry')}>Release</Button>}
           <Button variant="secondary" size="sm" icon={<Icons.IconClock size={12} />} onClick={() => setShowTimeline(true)}>View timeline</Button>
-          <Button variant="ghost" size="sm" icon={<Icons.IconDownload size={12} />}>Download receipt</Button>
+          <Button variant="ghost" size="sm" icon={<Icons.IconDownload size={12} />} onClick={() => toast.success('Receipt PDF downloaded', { description: `${txn.id} · GSTR-1 ready · signed PDF` })}>Download receipt</Button>
           <Button variant="ghost" size="sm" icon={<Icons.IconCopy size={12} />} onClick={() => { navigator.clipboard.writeText(txn.id); toast.success('ID copied'); }}>Copy id</Button>
         </div>
       </div>

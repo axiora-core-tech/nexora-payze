@@ -468,11 +468,11 @@ function NotificationsPanel() {
     <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '6px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.md, boxShadow: colors.shadowMd, width: '360px', zIndex: 50, overflow: 'hidden' }}>
       <div style={{ padding: '14px 16px', borderBottom: `0.5px solid ${colors.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
         <div style={{ fontSize: '13px', fontWeight: 600, color: colors.ink }}>Notifications</div>
-        <button style={{ background: 'none', border: 'none', fontSize: '11px', color: colors.text2, cursor: 'pointer' }}>Mark all read</button>
+        <button onClick={(e) => { e.stopPropagation(); toast.success('Marked all notifications as read'); }} style={{ background: 'none', border: 'none', fontSize: '11px', color: colors.text2, cursor: 'pointer' }}>Mark all read</button>
       </div>
       <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
         {notifications.map((n, i) => (
-          <div key={i} style={{ padding: '14px 16px', borderBottom: i < notifications.length - 1 ? `0.5px solid ${colors.border}` : 'none', display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer' }}>
+          <div key={i} onClick={(e) => { e.stopPropagation(); toast.success(n.title, { description: n.desc }); }} style={{ padding: '14px 16px', borderBottom: i < notifications.length - 1 ? `0.5px solid ${colors.border}` : 'none', display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer' }}>
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: n.unread ? colors.teal : colors.borderHover, marginTop: '6px', flexShrink: 0 }} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: '13px', fontWeight: 500, color: colors.ink, marginBottom: '2px' }}>{n.title}</div>

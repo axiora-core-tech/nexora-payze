@@ -20,6 +20,9 @@ export function Pay() {
   const [state, setState] = useState<State>('pick');
   const [selectedToken, setSelectedToken] = useState<string | null>(null);
   const [selectedBnpl, setSelectedBnpl] = useState<string | null>(null);
+  const [selectedBank, setSelectedBank] = useState<string | null>(null);
+  const [selectedWallet, setSelectedWallet] = useState<string | null>(null);
+  const [upiId, setUpiId] = useState('');
   const [selectedEmiTenure, setSelectedEmiTenure] = useState<number | null>(null);
   const [expressLaneDismissed, setExpressLaneDismissed] = useState(false);
 
@@ -60,7 +63,7 @@ export function Pay() {
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
           <Button variant="primary" onClick={() => { setMethodId(null); setState('pick'); }}>Pay another</Button>
-          <Button variant="ghost" icon={<Icons.IconDownload size={14} />}>Download receipt</Button>
+          <Button variant="ghost" icon={<Icons.IconDownload size={14} />} onClick={() => toast.success('Receipt PDF downloaded', { description: 'GSTR-1 ready · signed PDF' })}>Download receipt</Button>
         </div>
       </div>
     );
@@ -172,8 +175,19 @@ export function Pay() {
               <div>
                 <Kicker style={{ marginBottom: '16px' }}>Enter your UPI ID</Kicker>
                 <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                  <input style={{ ...inputStyle, fontFamily: typography.family.mono, flex: 1 }} placeholder="yourname@oksbi" />
-                  <Button variant="secondary" onClick={() => toast.success('VPA verified')}>Verify</Button>
+                  <input
+                    value={upiId}
+                    onChange={e => setUpiId(e.target.value)}
+                    style={{ ...inputStyle, fontFamily: typography.family.mono, flex: 1 }}
+                    placeholder="yourname@oksbi"
+                  />
+                  <Button
+                    variant="secondary"
+                    disabled={!upiId.trim()}
+                    onClick={() => toast.success(`VPA verified`, { description: `${upiId} · resolves to Rohan Shankar` })}
+                  >
+                    Verify
+                  </Button>
                 </div>
                 <div style={{ padding: '16px', background: colors.bg, borderRadius: radius.md, textAlign: 'center' }}>
                   <div style={{ fontSize: '12px', color: colors.text2, marginBottom: '8px' }}>Or scan on any UPI app</div>
@@ -184,7 +198,7 @@ export function Pay() {
               </div>
             )}
 
-            {(methodId === 'card' || methodId === 'emi') && (
+            {methodId === 'card' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 {savedCards && savedCards.length > 0 && methodId === 'card' && (
                   <div style={{ marginBottom: '6px' }}>
@@ -228,11 +242,6 @@ export function Pay() {
                   <Field label="CVV"><input style={{ ...inputStyle, fontFamily: typography.family.mono }} placeholder="•••" type="password" /></Field>
                 </div>
                 <Field label="Cardholder name"><input style={inputStyle} placeholder="As printed on card" disabled={!!selectedToken} /></Field>
-                {methodId === 'emi' && (
-                  <Field label="EMI tenure">
-                    <select style={inputStyle}><option>3 months</option><option>6 months</option><option>9 months</option><option>12 months</option></select>
-                  </Field>
-                )}
                 {!selectedToken && (
                   <label style={{ fontSize: '12px', color: colors.text2, display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
                     <input type="checkbox" /> Save card as RBI-compliant network token for future payments
@@ -245,11 +254,25 @@ export function Pay() {
               <div>
                 <Kicker style={{ marginBottom: '16px' }}>Select your bank</Kicker>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
-                  {banks.map((bank: string) => (
-                    <button key={bank} style={{ padding: '18px 10px', background: colors.bg, border: `0.5px solid ${colors.border}`, borderRadius: radius.md, fontSize: '12px', fontWeight: 500, color: colors.ink, cursor: 'pointer', fontFamily: 'inherit' }}>
-                      {bank}
-                    </button>
-                  ))}
+                  {banks.map((bank: string) => {
+                    const isSel = selectedBank === bank;
+                    return (
+                      <button
+                        key={bank}
+                        onClick={() => setSelectedBank(isSel ? null : bank)}
+                        style={{
+                          padding: '18px 10px',
+                          background: isSel ? 'rgba(28,111,107,0.06)' : colors.bg,
+                          border: `0.5px solid ${isSel ? 'rgba(28,111,107,0.4)' : colors.border}`,
+                          borderRadius: radius.md, fontSize: '12px', fontWeight: 500,
+                          color: isSel ? colors.teal : colors.ink, cursor: 'pointer', fontFamily: 'inherit',
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        {bank}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -258,11 +281,25 @@ export function Pay() {
               <div>
                 <Kicker style={{ marginBottom: '16px' }}>Choose your wallet</Kicker>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
-                  {wallets.map((w: string) => (
-                    <button key={w} style={{ padding: '20px 12px', background: colors.bg, border: `0.5px solid ${colors.border}`, borderRadius: radius.md, fontSize: '12px', fontWeight: 500, color: colors.ink, cursor: 'pointer', fontFamily: 'inherit' }}>
-                      {w}
-                    </button>
-                  ))}
+                  {wallets.map((w: string) => {
+                    const isSel = selectedWallet === w;
+                    return (
+                      <button
+                        key={w}
+                        onClick={() => setSelectedWallet(isSel ? null : w)}
+                        style={{
+                          padding: '20px 12px',
+                          background: isSel ? 'rgba(28,111,107,0.06)' : colors.bg,
+                          border: `0.5px solid ${isSel ? 'rgba(28,111,107,0.4)' : colors.border}`,
+                          borderRadius: radius.md, fontSize: '12px', fontWeight: 500,
+                          color: isSel ? colors.teal : colors.ink, cursor: 'pointer', fontFamily: 'inherit',
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        {w}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
