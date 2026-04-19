@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { useAsync } from '../../hooks/useAsync';
 import { configService } from '../../services';
 
-type TabId = 'overview' | 'escrow' | 'kyc' | 'reporting' | 'grievance' | 'infrastructure';
+type TabId = 'overview' | 'escrow' | 'kyc' | 'reporting' | 'grievance' | 'capital' | 'infrastructure' | 'auditTrail';
 
 const tabs: { id: TabId; label: string }[] = [
   { id: 'overview',       label: 'Overview' },
@@ -14,7 +14,9 @@ const tabs: { id: TabId; label: string }[] = [
   { id: 'kyc',            label: 'KYC & merchant risk' },
   { id: 'reporting',      label: 'Regulatory reporting' },
   { id: 'grievance',      label: 'Grievance' },
+  { id: 'capital',        label: 'Capital' },
   { id: 'infrastructure', label: 'Data & infrastructure' },
+  { id: 'auditTrail',     label: 'Audit trail' },
 ];
 
 export function Compliance() {
@@ -60,7 +62,9 @@ export function Compliance() {
       {tab === 'kyc'            && <KycTab data={data.kyc} />}
       {tab === 'reporting'      && <ReportingTab data={data.reporting} />}
       {tab === 'grievance'      && <GrievanceTab data={data.grievance} />}
+      {tab === 'capital'        && <CapitalTab data={data.capital} />}
       {tab === 'infrastructure' && <InfrastructureTab data={data.infrastructure} />}
+      {tab === 'auditTrail'     && <AuditTrailTab data={data.auditTrail} />}
     </div>
   );
 }
@@ -652,6 +656,69 @@ function InfrastructureTab({ data }: any) {
           <ReconRow label="Key rotation"          value={`${data.pciDss.keyRotationLastDone}  →  ${data.pciDss.nextKeyRotation}`} isLast />
         </Card>
       </div>
+
+      <Card padded>
+        <Kicker style={{ marginBottom: '14px' }}>DR drill history · quarterly failovers</Kicker>
+        <div style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.3fr 0.7fr 0.8fr 2.2fr', gap: '12px', padding: '8px 0', borderBottom: `0.5px solid ${colors.border}`, fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500 }}>
+          <div>Date</div><div>Type</div><div>Duration</div><div>RTO/RPO</div><div>Learnings</div>
+        </div>
+        {data.disasterRecovery.drillHistory.map((d: any, i: number) => (
+          <div key={i} style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.3fr 0.7fr 0.8fr 2.2fr', gap: '12px', padding: '11px 0', borderBottom: i < data.disasterRecovery.drillHistory.length - 1 ? `0.5px solid ${colors.border}` : 'none', fontSize: '12px', alignItems: 'center' }}>
+            <div style={{ color: colors.ink, fontFamily: typography.family.mono, fontSize: '11px' }}>{d.date}</div>
+            <div style={{ color: colors.ink }}>{d.type}</div>
+            <div style={{ color: colors.ink, fontFamily: typography.family.mono, fontWeight: 500 }}>{d.duration}</div>
+            <div style={{ display: 'flex', gap: '4px' }}>
+              <Pill tone={d.rtoMet ? 'teal' : 'neutral'}>{d.rtoMet ? '✓ RTO' : '✗ RTO'}</Pill>
+              <Pill tone={d.rpoMet ? 'teal' : 'neutral'}>{d.rpoMet ? '✓ RPO' : '✗ RPO'}</Pill>
+            </div>
+            <div style={{ fontSize: '11px', color: colors.text2, lineHeight: 1.5 }}>{d.learnings}</div>
+          </div>
+        ))}
+        <div style={{ padding: '14px 16px', background: colors.bg, borderRadius: radius.md, marginTop: '14px', fontSize: '11px', color: colors.text2, lineHeight: 1.6 }}>
+          <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+            <span><span style={{ color: colors.text3 }}>Backup strategy · </span><span style={{ color: colors.ink, fontWeight: 500 }}>{data.disasterRecovery.backups.strategy}</span></span>
+            <span><span style={{ color: colors.text3 }}>Retention · </span><span style={{ color: colors.ink, fontWeight: 500 }}>{data.disasterRecovery.backups.retention}</span></span>
+          </div>
+          <div style={{ marginTop: '6px' }}>
+            <span style={{ color: colors.text3 }}>Encryption · </span><span style={{ color: colors.ink, fontWeight: 500 }}>{data.disasterRecovery.backups.encryption}</span>
+          </div>
+        </div>
+      </Card>
+
+      <Card padded>
+        <Kicker style={{ marginBottom: '14px' }}>PCI-DSS scan history · quarterly ASV</Kicker>
+        <div style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.4fr 0.8fr repeat(4, 0.5fr)', gap: '12px', padding: '8px 0', borderBottom: `0.5px solid ${colors.border}`, fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500 }}>
+          <div>Date</div><div>Type</div><div>Result</div><div style={{ textAlign: 'right' }}>Crit</div><div style={{ textAlign: 'right' }}>High</div><div style={{ textAlign: 'right' }}>Med</div><div style={{ textAlign: 'right' }}>Info</div>
+        </div>
+        {data.pciDss.scanHistory.map((s: any, i: number) => (
+          <div key={i} style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.4fr 0.8fr repeat(4, 0.5fr)', gap: '12px', padding: '11px 0', borderBottom: i < data.pciDss.scanHistory.length - 1 ? `0.5px solid ${colors.border}` : 'none', fontSize: '12px', alignItems: 'center' }}>
+            <div style={{ color: colors.ink, fontFamily: typography.family.mono, fontSize: '11px' }}>{s.date}</div>
+            <div style={{ color: colors.ink }}>{s.type}</div>
+            <div><Pill tone={s.result === 'passed' ? 'teal' : 'neutral'}>{s.result}</Pill></div>
+            <div style={{ textAlign: 'right', fontFamily: typography.family.mono, color: s.critical > 0 ? '#D64545' : colors.text3 }}>{s.critical}</div>
+            <div style={{ textAlign: 'right', fontFamily: typography.family.mono, color: s.high > 0 ? '#B48C3C' : colors.text3 }}>{s.high}</div>
+            <div style={{ textAlign: 'right', fontFamily: typography.family.mono, color: s.medium > 0 ? colors.text2 : colors.text3 }}>{s.medium}</div>
+            <div style={{ textAlign: 'right', fontFamily: typography.family.mono, color: colors.text3 }}>{s.informational}</div>
+          </div>
+        ))}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginTop: '14px' }}>
+          <div style={{ padding: '14px 16px', background: colors.bg, borderRadius: radius.md }}>
+            <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, marginBottom: '8px' }}>Tokenization</div>
+            <div style={{ fontSize: '16px', fontWeight: 600, color: colors.ink, fontFamily: typography.family.mono, marginBottom: '6px' }}>{data.pciDss.tokenizationStats.cardsTokenized.toLocaleString('en-IN')} <span style={{ fontSize: '11px', color: colors.text3, fontFamily: typography.family.sans, fontWeight: 400 }}>cards tokenized</span></div>
+            <div style={{ fontSize: '11px', color: colors.text2, lineHeight: 1.5 }}><span style={{ color: colors.teal, fontWeight: 500 }}>Raw PAN · </span>{data.pciDss.tokenizationStats.rawPANStored}</div>
+            <div style={{ fontSize: '11px', color: colors.text2, lineHeight: 1.5, marginTop: '4px' }}>{data.pciDss.tokenizationStats.vaultProvider}</div>
+          </div>
+          <div style={{ padding: '14px 16px', background: colors.bg, borderRadius: radius.md }}>
+            <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, marginBottom: '8px' }}>Key rotation history</div>
+            {data.pciDss.keyRotationHistory.map((k: any, i: number) => (
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: '11px', gap: '10px' }}>
+                <span style={{ color: colors.text3, fontFamily: typography.family.mono }}>{k.date}</span>
+                <span style={{ color: colors.ink, flex: 1, textAlign: 'right' }}>{k.keyType}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
@@ -676,3 +743,263 @@ function RtoRpoTile({ label, required, actual }: any) {
     </div>
   );
 }
+
+// ── Capital tab ──────────────────────────────────────────────────────
+function CapitalTab({ data }: any) {
+  const toCr = (paise: number) => (paise / 1e9).toFixed(2);
+  const sc = data.statutoryCapital;
+  const maxCr = Math.max(...data.capitalHistory.map((h: any) => Math.max(h.netWorthCr, h.floorCr))) * 1.1;
+
+  return (
+    <div style={{ display: 'grid', gap: '16px' }}>
+      <Card padded>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: '28px', alignItems: 'center' }}>
+          <div>
+            <Kicker style={{ marginBottom: '6px' }}>Statutory net worth · {data.asOf}</Kicker>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '14px', marginBottom: '8px' }}>
+              <div style={{ fontSize: '40px', fontWeight: 600, color: colors.ink, letterSpacing: '-0.025em', lineHeight: 1, fontFamily: typography.family.mono }}>₹{toCr(sc.netWorth)}<span style={{ fontSize: '18px', color: colors.text2, fontFamily: typography.family.sans, fontWeight: 500 }}> Cr</span></div>
+              <Pill tone="teal">{sc.status}</Pill>
+            </div>
+            <div style={{ fontSize: '12px', color: colors.text2, marginBottom: '16px' }}>
+              <span style={{ color: colors.teal, fontWeight: 600 }}>₹{toCr(sc.headroom)} Cr</span> headroom above RBI floor of <span style={{ fontFamily: typography.family.mono, color: colors.ink, fontWeight: 500 }}>₹{toCr(sc.requiredFloor)} Cr</span> · {sc.headroomMultiple}x multiple
+            </div>
+            <div style={{ height: '10px', background: colors.bg, borderRadius: radius.pill, overflow: 'hidden', marginBottom: '6px', position: 'relative' }}>
+              <div style={{ height: '100%', width: `${(sc.requiredFloor / sc.netWorth) * 100}%`, background: '#B48C3C', opacity: 0.35 }} />
+              <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: '100%', background: `linear-gradient(90deg, ${colors.teal} 0%, ${colors.teal} ${(sc.requiredFloor / sc.netWorth) * 100}%, transparent ${(sc.requiredFloor / sc.netWorth) * 100}%)` }} />
+              <div style={{ position: 'absolute', top: 0, left: `${(sc.requiredFloor / sc.netWorth) * 100}%`, height: '100%', width: '1.5px', background: colors.ink }} />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono }}>
+              <span>₹0</span>
+              <span style={{ transform: 'translateX(-50%)', position: 'relative', left: `${(sc.requiredFloor / sc.netWorth) * 100}%` }}>floor ₹{toCr(sc.requiredFloor)} Cr</span>
+              <span>₹{toCr(sc.netWorth)} Cr actual</span>
+            </div>
+            <div style={{ fontSize: '10px', color: colors.text3, marginTop: '14px', lineHeight: 1.55 }}>{sc.regulationRef}</div>
+          </div>
+
+          <div>
+            <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, marginBottom: '10px' }}>Net worth composition</div>
+            {sc.composition.map((c: any, i: number) => {
+              const pct = (c.amount / sc.netWorth) * 100;
+              return (
+                <div key={i} style={{ marginBottom: '10px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                    <span style={{ color: colors.text2 }}>{c.label}</span>
+                    <span style={{ color: colors.ink, fontFamily: typography.family.mono, fontWeight: 500 }}>₹{toCr(c.amount)} Cr</span>
+                  </div>
+                  <div style={{ height: '4px', background: colors.bg, borderRadius: '2px', overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${pct}%`, background: colors.teal, opacity: 0.55 + (i * 0.15) }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </Card>
+
+      <Card padded>
+        <Kicker style={{ marginBottom: '14px' }}>Solvency ratios</Kicker>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 0.7fr 0.9fr 0.6fr 2fr', gap: '14px', padding: '8px 0', borderBottom: `0.5px solid ${colors.border}`, fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500 }}>
+          <div>Ratio</div><div>Value</div><div>Required</div><div>Status</div><div>Basis</div>
+        </div>
+        {data.solvencyRatios.map((r: any, i: number) => (
+          <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.3fr 0.7fr 0.9fr 0.6fr 2fr', gap: '14px', padding: '11px 0', borderBottom: i < data.solvencyRatios.length - 1 ? `0.5px solid ${colors.border}` : 'none', alignItems: 'center', fontSize: '12px' }}>
+            <div style={{ color: colors.ink, fontWeight: 500 }}>{r.label}</div>
+            <div style={{ color: colors.ink, fontFamily: typography.family.mono, fontWeight: 600 }}>{r.value}</div>
+            <div style={{ color: colors.text2, fontFamily: typography.family.mono }}>{r.required}</div>
+            <div><Pill tone={r.status === 'compliant' || r.status === 'healthy' ? 'teal' : 'outline'}>{r.status}</Pill></div>
+            <div style={{ fontSize: '11px', color: colors.text2 }}>{r.note}</div>
+          </div>
+        ))}
+      </Card>
+
+      <Card padded>
+        <Kicker style={{ marginBottom: '14px' }}>Capital trajectory · last 8 quarters</Kicker>
+        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${data.capitalHistory.length}, 1fr)`, gap: '10px', alignItems: 'end', height: '140px', marginBottom: '12px' }}>
+          {data.capitalHistory.slice().reverse().map((h: any, i: number) => {
+            const bhPct = (h.netWorthCr / maxCr) * 100;
+            const floorPct = (h.floorCr / maxCr) * 100;
+            return (
+              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', justifyContent: 'flex-end', position: 'relative' }}>
+                <div style={{ fontSize: '10px', color: colors.ink, fontFamily: typography.family.mono, fontWeight: 500, marginBottom: '4px' }}>₹{h.netWorthCr.toFixed(1)}</div>
+                <div style={{ width: '100%', maxWidth: '46px', height: `${bhPct}%`, background: colors.teal, borderRadius: `${radius.sm} ${radius.sm} 0 0`, position: 'relative' }}>
+                  <div style={{ position: 'absolute', bottom: `${(floorPct / bhPct) * 100}%`, left: 0, right: 0, height: '1.5px', background: colors.ink, borderRadius: '1px' }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${data.capitalHistory.length}, 1fr)`, gap: '10px', marginBottom: '10px' }}>
+          {data.capitalHistory.slice().reverse().map((h: any, i: number) => (
+            <div key={i} style={{ fontSize: '10px', color: colors.text3, textAlign: 'center', fontFamily: typography.family.mono }}>{h.period.replace('FY', '')}</div>
+          ))}
+        </div>
+        <div style={{ display: 'flex', gap: '16px', paddingTop: '10px', borderTop: `0.5px solid ${colors.border}`, fontSize: '11px', color: colors.text2 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ width: '10px', height: '10px', background: colors.teal, borderRadius: '2px' }} /> Net worth</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ width: '12px', height: '2px', background: colors.ink, borderRadius: '1px' }} /> RBI floor (₹15 Cr through FY24-25 → ₹25 Cr from FY25-26)</div>
+        </div>
+      </Card>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+        <Card padded>
+          <Kicker style={{ marginBottom: '14px' }}>Entity & liquidity</Kicker>
+          <ReconRow label="Legal entity"        value={data.entity.name} />
+          <ReconRow label="CIN"                 value={data.entity.cin} />
+          <ReconRow label="PAN"                 value={data.entity.pan} />
+          <ReconRow label="Auditor"             value={data.entity.auditor} />
+          <ReconRow label="Liquid assets"       value={`₹${toCr(data.liquidity.liquidAssets)} Cr`} tone="teal" />
+          <ReconRow label="Operating runway"    value={`${data.liquidity.runwayMonths} months @ current burn`} />
+          <ReconRow label="Last capital raise"  value={`${data.liquidity.lastCapitalRaise.round} · ₹${(data.liquidity.lastCapitalRaise.amount / 1e9).toFixed(0)} Cr · ${data.liquidity.lastCapitalRaise.date}`} isLast />
+        </Card>
+
+        <Card padded>
+          <Kicker style={{ marginBottom: '14px' }}>Upcoming capital filings</Kicker>
+          {data.upcomingFilings.map((f: any, i: number) => (
+            <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr 0.8fr', gap: '14px', padding: '12px 0', borderBottom: i < data.upcomingFilings.length - 1 ? `0.5px solid ${colors.border}` : 'none', alignItems: 'center', fontSize: '12px' }}>
+              <div>
+                <div style={{ color: colors.ink, fontWeight: 500, marginBottom: '2px' }}>{f.type}</div>
+                <div style={{ fontSize: '10px', color: colors.text3 }}>{f.note}</div>
+              </div>
+              <div style={{ color: colors.ink, fontFamily: typography.family.mono, fontSize: '11px' }}>{f.dueBy}</div>
+              <div><Pill tone="outline">{f.authority}</Pill></div>
+            </div>
+          ))}
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+// ── Audit trail tab ──────────────────────────────────────────────────
+function AuditTrailTab({ data }: any) {
+  const [actorFilter, setActorFilter] = useState('All');
+  const [severityFilter, setSeverityFilter] = useState('All');
+
+  const filtered = data.recentEvents.filter((e: any) => {
+    if (actorFilter === 'System' && !e.actor.startsWith('system.')) return false;
+    if (actorFilter === 'Operators' && e.actor.startsWith('system.')) return false;
+    if (actorFilter === 'Super admin' && e.actorRole !== 'Super admin') return false;
+    if (severityFilter !== 'All' && e.severity !== severityFilter.toLowerCase()) return false;
+    return true;
+  });
+
+  return (
+    <div style={{ display: 'grid', gap: '16px' }}>
+      <Card padded>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '28px', alignItems: 'flex-start' }}>
+          <div>
+            <Kicker style={{ marginBottom: '6px' }}>Retention policy</Kicker>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px', marginBottom: '10px' }}>
+              <div style={{ fontSize: '28px', fontWeight: 600, color: colors.ink, letterSpacing: '-0.02em', fontFamily: typography.family.mono }}>10 years</div>
+              <Pill tone="teal">WORM</Pill>
+            </div>
+            <div style={{ fontSize: '11px', color: colors.text3, marginBottom: '14px', fontFamily: typography.family.mono }}>{data.retention.regulationRef}</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginTop: '6px' }}>
+              <div>
+                <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, marginBottom: '4px' }}>Total events</div>
+                <div style={{ fontSize: '14px', fontWeight: 600, color: colors.ink, fontFamily: typography.family.mono }}>{data.retention.totalEvents.toLocaleString('en-IN')}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, marginBottom: '4px' }}>Storage size</div>
+                <div style={{ fontSize: '14px', fontWeight: 600, color: colors.ink, fontFamily: typography.family.mono }}>{data.retention.storageSize}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, marginBottom: '4px' }}>Oldest record</div>
+                <div style={{ fontSize: '11px', color: colors.ink, fontFamily: typography.family.mono }}>{data.retention.oldestRecord}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500, marginBottom: '4px' }}>Storage</div>
+                <div style={{ fontSize: '11px', color: colors.ink }}>{data.retention.storageLocation}</div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ padding: '18px 20px', background: 'rgba(28,111,107,0.06)', border: `0.5px solid rgba(28,111,107,0.25)`, borderRadius: radius.md }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+              <Icons.IconShield size={14} color={colors.teal} />
+              <span style={{ fontSize: '11px', color: colors.teal, fontWeight: 600, letterSpacing: '0.06em' }}>INTEGRITY VERIFIED</span>
+              <span style={{ marginLeft: 'auto', fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono }}>{data.integrity.lastVerified}</span>
+            </div>
+            <div style={{ fontSize: '11px', color: colors.text2, lineHeight: 1.6, marginBottom: '10px' }}>{data.integrity.method}</div>
+            <div style={{ fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono, marginBottom: '8px' }}>Last witnessed hash · {data.integrity.verifiedByHash}</div>
+            <div style={{ fontSize: '10px', color: colors.text3, lineHeight: 1.5 }}>
+              {data.integrity.consecutiveVerifications.toLocaleString('en-IN')} consecutive successful verifications · witnessed by {data.integrity.witnessedBySystem}
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      <Card padded>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', gap: '12px', flexWrap: 'wrap' }}>
+          <Kicker>Live event stream</Kicker>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <select value={actorFilter} onChange={e => setActorFilter(e.target.value)} style={selectStyle}>
+              {data.filters.actors.map((a: string) => <option key={a} value={a}>{a === 'All' ? 'All actors' : a}</option>)}
+            </select>
+            <select value={severityFilter} onChange={e => setSeverityFilter(e.target.value)} style={selectStyle}>
+              {data.filters.severities.map((s: string) => <option key={s} value={s}>{s === 'All' ? 'All severities' : s}</option>)}
+            </select>
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '0.6fr 1.6fr 1.4fr 2fr 0.7fr', gap: '12px', padding: '8px 0', borderBottom: `0.5px solid ${colors.border}`, fontSize: '10px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500 }}>
+          <div>Time</div><div>Actor</div><div>Action</div><div>Target</div><div style={{ textAlign: 'right' }}>Severity</div>
+        </div>
+        {filtered.length === 0 ? (
+          <div style={{ padding: '32px', textAlign: 'center', fontSize: '12px', color: colors.text3 }}>No events match these filters.</div>
+        ) : filtered.map((e: any, i: number) => {
+          const sevColor = e.severity === 'high' ? '#D64545' : e.severity === 'elevated' ? '#B48C3C' : colors.teal;
+          const isSystem = e.actor.startsWith('system.');
+          return (
+            <div key={i} style={{ display: 'grid', gridTemplateColumns: '0.6fr 1.6fr 1.4fr 2fr 0.7fr', gap: '12px', padding: '11px 0', borderBottom: i < filtered.length - 1 ? `0.5px solid ${colors.border}` : 'none', alignItems: 'center', fontSize: '12px' }}>
+              <div style={{ fontFamily: typography.family.mono, color: colors.text2, fontSize: '11px' }}>{e.time}</div>
+              <div>
+                <div style={{ color: colors.ink, fontFamily: typography.family.mono, fontSize: '11px', fontWeight: isSystem ? 400 : 500 }}>{e.actor}</div>
+                <div style={{ fontSize: '10px', color: colors.text3 }}>{e.actorRole}</div>
+              </div>
+              <div style={{ color: colors.ink }}>{e.action}</div>
+              <div style={{ color: colors.text2, fontFamily: typography.family.mono, fontSize: '11px' }}>{e.target}</div>
+              <div style={{ textAlign: 'right', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '6px' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: sevColor }} />
+                <span style={{ fontSize: '11px', color: sevColor, fontWeight: 500 }}>{e.severity}</span>
+              </div>
+            </div>
+          );
+        })}
+      </Card>
+
+      <Card padded>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+          <Kicker>Signed exports · auditor-ready</Kicker>
+          <Button variant="primary" size="sm" icon={<Icons.IconDownload size={12} />} onClick={() => toast.success('Export request queued · signed bundle in 2 min')}>Request export</Button>
+        </div>
+        {data.exports.map((e: any, i: number) => (
+          <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr 1.4fr 0.8fr', gap: '14px', padding: '12px 0', borderBottom: i < data.exports.length - 1 ? `0.5px solid ${colors.border}` : 'none', alignItems: 'center', fontSize: '12px' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '3px' }}>
+                <span style={{ color: colors.ink, fontWeight: 500 }}>{e.type}</span>
+                {e.signed && <Pill tone="teal">✓ signed</Pill>}
+              </div>
+              <div style={{ fontSize: '10px', color: colors.text3 }}>Exported by · <span style={{ fontFamily: typography.family.mono }}>{e.exportedBy}</span></div>
+            </div>
+            <div style={{ color: colors.text2 }}>{e.lastExport}</div>
+            <div style={{ fontSize: '11px', color: colors.text2 }}>{e.for}</div>
+            <div style={{ textAlign: 'right' }}>
+              <Button variant="ghost" size="sm" icon={<Icons.IconDownload size={11} />} onClick={() => toast.success('Re-downloading signed bundle…')}>Download</Button>
+            </div>
+          </div>
+        ))}
+      </Card>
+    </div>
+  );
+}
+
+const selectStyle: React.CSSProperties = {
+  padding: '6px 10px',
+  background: colors.card,
+  border: `0.5px solid ${colors.border}`,
+  borderRadius: radius.pill,
+  fontSize: '11px',
+  color: colors.ink,
+  cursor: 'pointer',
+  fontFamily: 'inherit',
+  outline: 'none',
+};

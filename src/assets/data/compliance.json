@@ -329,7 +329,20 @@
       "lastDrill": "7 days ago · 14 Apr 2026",
       "nextScheduledDrill": "23 days · 11 May 2026",
       "lastIncident": "No production incidents affecting SLA last 90 days",
-      "drReadiness": "green"
+      "drReadiness": "green",
+      "drillHistory": [
+        { "date": "14 Apr 2026", "type": "Full region failover",    "duration": "1h 32m", "rtoMet": true,  "rpoMet": true,  "learnings": "Clean failover · primary restored cleanly · all runbooks validated" },
+        { "date": "15 Jan 2026", "type": "Database-tier partial",    "duration": "0h 44m", "rtoMet": true,  "rpoMet": true,  "learnings": "PostgreSQL failover only · within tolerance" },
+        { "date": "14 Oct 2025", "type": "Full region failover",    "duration": "1h 58m", "rtoMet": true,  "rpoMet": true,  "learnings": "Within tolerance but 30% slower than target · runbook revised" },
+        { "date": "12 Jul 2025", "type": "Full region failover",    "duration": "2h 12m", "rtoMet": false, "rpoMet": true,  "learnings": "RTO breach by 12 min · DNS TTL bottleneck · TTL reduced to 60s in next cycle" }
+      ],
+      "backups": {
+        "strategy": "Continuous PITR + 15-min snapshots",
+        "retention": "30 days rolling + monthly archives for 7 years (per RBI retention norms)",
+        "lastBackupTested": "14 Apr 2026 (during DR drill)",
+        "restoreTimeValidated": "8 min at production scale",
+        "encryption": "AES-256 at rest · KMS-managed keys · cross-AZ replicated"
+      }
     },
     "pciDss": {
       "certificationLevel": "Level 1",
@@ -340,7 +353,118 @@
       "scanResult": "passed · 0 critical · 0 high · 2 informational",
       "tokenizationCoverage": 100,
       "keyRotationLastDone": "01 Apr 2026",
-      "nextKeyRotation": "01 Jul 2026"
+      "nextKeyRotation": "01 Jul 2026",
+      "scanHistory": [
+        { "date": "14 Apr 2026", "type": "Quarterly ASV",      "result": "passed", "critical": 0, "high": 0, "medium": 0, "informational": 2 },
+        { "date": "14 Jan 2026", "type": "Quarterly ASV",      "result": "passed", "critical": 0, "high": 0, "medium": 1, "informational": 1 },
+        { "date": "14 Oct 2025", "type": "Quarterly ASV",      "result": "passed", "critical": 0, "high": 1, "medium": 2, "informational": 3 },
+        { "date": "14 Jul 2025", "type": "Annual attestation", "result": "passed", "critical": 0, "high": 0, "medium": 0, "informational": 1 }
+      ],
+      "tokenizationStats": {
+        "cardsTokenized": 14820492,
+        "rawPANStored": "never · cards tokenized at capture, PAN never hits our DB",
+        "vaultProvider": "In-house HSM-backed vault · AWS CloudHSM (FIPS 140-2 Level 3)",
+        "lastKeyBackup": "4 hours ago",
+        "keyCustodians": 3
+      },
+      "keyRotationHistory": [
+        { "date": "01 Apr 2026", "keyType": "Card tokenization DEK", "method": "automated rotation · old key retained for 90d decrypt-only" },
+        { "date": "01 Jan 2026", "keyType": "Card tokenization DEK", "method": "automated rotation · old key retired" },
+        { "date": "01 Oct 2025", "keyType": "Card tokenization DEK", "method": "automated rotation · old key retired" },
+        { "date": "01 Jul 2025", "keyType": "KEK (master)",           "method": "manual ceremony · 3-custodian quorum" }
+      ]
     }
+  },
+  "capital": {
+    "asOf": "31 Mar 2026",
+    "entity": {
+      "name": "Payze Technologies Pvt Ltd",
+      "pan": "AAFCP8472K",
+      "cin": "U72900KA2023PTC178492",
+      "auditor": "SRB Associates LLP · FRN 008123S",
+      "fiscalYear": "FY25-26"
+    },
+    "statutoryCapital": {
+      "regulationRef": "RBI PA/PG Guidelines (17 Mar 2020) · para 4.1 — minimum net worth ₹15 Cr at application, ₹25 Cr by end of 3rd financial year of operations",
+      "requiredFloor": 25000000000,
+      "requiredFloorLabel": "Year 3 threshold · FY25-26 onwards",
+      "netWorth": 28420000000,
+      "headroom": 3420000000,
+      "headroomMultiple": 1.14,
+      "status": "compliant",
+      "composition": [
+        { "label": "Paid-up equity capital",    "amount": 12000000000 },
+        { "label": "Securities premium",        "amount": 10500000000 },
+        { "label": "General reserves",          "amount": 4200000000 },
+        { "label": "Retained earnings",         "amount": 1720000000 }
+      ]
+    },
+    "solvencyRatios": [
+      { "label": "Net worth ratio",       "value": "1.14x", "required": "1.00x",   "status": "compliant", "note": "Net worth ÷ RBI required floor" },
+      { "label": "Quick ratio",           "value": "2.38x", "required": "≥ 1.00x", "status": "compliant", "note": "Liquid assets ÷ current liabilities (excl. escrow)" },
+      { "label": "Escrow-to-capital",     "value": "0.12x", "required": "≤ 1.00x", "status": "compliant", "note": "Merchant escrow held ÷ own net worth" },
+      { "label": "Leverage (Debt/Equity)","value": "0.18x", "required": "reportable", "status": "healthy", "note": "Total debt ÷ equity · well within healthy range" }
+    ],
+    "capitalHistory": [
+      { "period": "Q4 FY25-26", "netWorthCr": 28.42, "floorCr": 25.00 },
+      { "period": "Q3 FY25-26", "netWorthCr": 27.18, "floorCr": 25.00 },
+      { "period": "Q2 FY25-26", "netWorthCr": 26.15, "floorCr": 25.00 },
+      { "period": "Q1 FY25-26", "netWorthCr": 25.82, "floorCr": 25.00 },
+      { "period": "Q4 FY24-25", "netWorthCr": 24.84, "floorCr": 15.00 },
+      { "period": "Q3 FY24-25", "netWorthCr": 23.90, "floorCr": 15.00 },
+      { "period": "Q2 FY24-25", "netWorthCr": 22.40, "floorCr": 15.00 },
+      { "period": "Q1 FY24-25", "netWorthCr": 21.10, "floorCr": 15.00 }
+    ],
+    "liquidity": {
+      "liquidAssets": 18400000000,
+      "operatingCashBurnMonthly": 840000000,
+      "runwayMonths": 21,
+      "lastCapitalRaise": { "round": "Series B", "amount": 820000000000, "date": "Jun 2024", "leadInvestor": "Peak XV Partners" }
+    },
+    "upcomingFilings": [
+      { "type": "Auditor-certified net worth statement", "dueBy": "30 Jun 2026", "authority": "RBI DPSS",      "note": "Annual · required within 90 days of FY close" },
+      { "type": "Annual PA compliance return",           "dueBy": "31 Jul 2026", "authority": "RBI DPSS",      "note": "Annual · comprehensive return" },
+      { "type": "Form DPT-3 (deposits)",                 "dueBy": "30 Jun 2026", "authority": "MCA",           "note": "Annual · outstanding money return" }
+    ]
+  },
+  "auditTrail": {
+    "retention": {
+      "policy": "10 years",
+      "regulationRef": "RBI Master Direction on KYC · para 58 · + PMLA s.12 record retention",
+      "oldestRecord": "12 Jan 2020 · 14:32:08 IST",
+      "totalEvents": 184728292,
+      "storageSize": "4.84 TB",
+      "storageLocation": "ap-south-1 Mumbai · WORM-enabled S3 · cross-AZ replicated"
+    },
+    "integrity": {
+      "method": "SHA-256 hash chain · each event cryptographically signed · tamper-evident",
+      "lastVerified": "8 min ago",
+      "verifiedByHash": "0x4a8f…c291",
+      "status": "verified",
+      "consecutiveVerifications": 10482,
+      "witnessedBySystem": "Confluent Audit Log (separate trust boundary)"
+    },
+    "filters": {
+      "actors": ["All", "System", "Operators", "Super admin"],
+      "severities": ["All", "Normal", "Elevated", "High"],
+      "timeRanges": ["Last hour", "Last 24h", "Last 7d", "Last 30d", "Custom"]
+    },
+    "recentEvents": [
+      { "time": "14:48:02", "actor": "arjun.reddy@payze.com",  "actorRole": "Compliance Officer", "action": "STR raised",                "target": "STR-2026-00014",          "severity": "high" },
+      { "time": "14:45:18", "actor": "meera.sub@payze.com",    "actorRole": "Nodal Officer",      "action": "KYC approved",              "target": "merchant:aanya-films",    "severity": "normal" },
+      { "time": "14:42:51", "actor": "system.reconciler",      "actorRole": "System",             "action": "Escrow reconciliation",     "target": "HDFC nodal •••• 8234 · delta ₹0", "severity": "normal" },
+      { "time": "14:38:27", "actor": "kavya.venk@payze.com",   "actorRole": "Grievance Officer",  "action": "Grievance assigned",        "target": "GR-2026-00284",           "severity": "normal" },
+      { "time": "14:30:00", "actor": "system.settlements",     "actorRole": "System",             "action": "Settlement executed",       "target": "STL-9824 · Zomato · ₹45.21 L", "severity": "normal" },
+      { "time": "14:14:22", "actor": "founder@payze.com",      "actorRole": "Super admin",        "action": "Plan tier changed",         "target": "merchant:cred-club · Growth→Scale", "severity": "elevated" },
+      { "time": "13:58:40", "actor": "system.scanner",         "actorRole": "System",             "action": "PCI ASV scan completed",    "target": "env:prod · 0 critical",   "severity": "normal" },
+      { "time": "13:42:18", "actor": "arjun.reddy@payze.com",  "actorRole": "Compliance Officer", "action": "Merchant risk re-tiered",   "target": "merchant:crypto-arcadia · med→high", "severity": "elevated" },
+      { "time": "13:30:00", "actor": "system.dr-drill",        "actorRole": "System",             "action": "Quarterly DR drill completed", "target": "ap-south-1b → 1c · 1h 32m", "severity": "normal" },
+      { "time": "12:18:44", "actor": "meera.sub@payze.com",    "actorRole": "Nodal Officer",      "action": "Refund approved",           "target": "RFN-00412 · ₹34,00",      "severity": "normal" }
+    ],
+    "exports": [
+      { "type": "Full audit trail (CSV)",         "signed": true,  "lastExport": "2 days ago",  "for": "Q4 FY25-26 internal review",   "exportedBy": "founder@payze.com" },
+      { "type": "Auditor-formatted (signed PDF)", "signed": true,  "lastExport": "14 days ago", "for": "SRB Associates · annual audit","exportedBy": "meera.sub@payze.com" },
+      { "type": "KYC events subset",              "signed": true,  "lastExport": "31 days ago", "for": "RBI DPSS inspection",          "exportedBy": "meera.sub@payze.com" }
+    ]
   }
 }
