@@ -4,3 +4,5 @@
 export { tenantService, bookingService } from './tenants';
 export type { Tenant, DemoBooking as Booking } from './tenants';
 export { configService } from './configService';
+export { getSession, signIn, signOut, initializeOrRestoreSession } from './session';
+export type { Session } from './session';

@@ -392,6 +392,28 @@ export function Modal({
 
 /* ── Global keyframes ───────────────────────────────────────── */
 
+export function SectionTabs<T extends string>({ tabs, active, onChange }: {
+  tabs: { id: T; label: string; hint?: string }[];
+  active: T;
+  onChange: (id: T) => void;
+}) {
+  return (
+    <div className="payze-section-tabs">
+      {tabs.map(t => (
+        <button
+          key={t.id}
+          type="button"
+          onClick={() => onChange(t.id)}
+          className={`payze-section-tab${active === t.id ? ' is-active' : ''}`}
+        >
+          <span>{t.label}</span>
+          {t.hint && <span className="payze-section-tab-hint">· {t.hint}</span>}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function GlobalStyles() {
   return (
     <style>{`
@@ -432,6 +454,50 @@ export function GlobalStyles() {
       input, select, textarea { font-family: inherit; }
       a { color: inherit; text-decoration: none; }
       ::selection { background: ${colors.tealTint}; }
+
+      /* Section tabs — primary in-page navigation */
+      .payze-section-tabs {
+        display: inline-flex;
+        gap: 4px;
+        padding: 4px;
+        background: ${colors.bg};
+        border: 0.5px solid ${colors.border};
+        border-radius: 999px;
+        margin-bottom: 24px;
+      }
+      .payze-section-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 16px;
+        border: 0.5px solid transparent;
+        border-radius: 999px;
+        background: transparent;
+        color: ${colors.text2};
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: -0.005em;
+        cursor: pointer;
+        transition: color 0.18s ease, background 0.2s ease, border-color 0.2s ease;
+      }
+      .payze-section-tab:hover:not(.is-active) {
+        background: rgba(26, 26, 26, 0.035);
+        color: ${colors.ink};
+      }
+      .payze-section-tab.is-active {
+        background: rgba(28, 111, 107, 0.085);
+        color: ${colors.teal};
+        border-color: rgba(28, 111, 107, 0.3);
+        font-weight: 600;
+      }
+      .payze-section-tab-hint {
+        font-size: 10px;
+        font-weight: 400;
+        opacity: 0.72;
+      }
+      .payze-section-tab.is-active .payze-section-tab-hint {
+        opacity: 0.8;
+      }
     `}</style>
   );
 }

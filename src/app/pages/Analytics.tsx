@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { colors, radius, typography } from '../../design/tokens';
-import { Card, Kicker, Button, Pill, PageLoader, ErrorState } from '../../design/primitives';
+import { Card, Kicker, Button, Pill, PageLoader, ErrorState, SectionTabs } from '../../design/primitives';
 import * as Icons from '../../design/icons';
 import { toast } from 'sonner';
 import { useAsync } from '../../hooks/useAsync';
@@ -41,17 +41,7 @@ export function Analytics() {
 
       <IntelligenceStrip insights={intelligence} />
 
-      <div style={{ display: 'flex', gap: '4px', background: colors.bg, padding: '4px', borderRadius: radius.pill, width: 'fit-content', marginBottom: '20px' }}>
-        {tabs.map((t: any) => (
-          <button key={t.id} onClick={() => setTab(t.id)} style={{
-            padding: '6px 14px', borderRadius: radius.pill, fontSize: '12px', fontWeight: 500,
-            background: tab === t.id ? colors.card : 'transparent',
-            color: tab === t.id ? colors.ink : colors.text2,
-            border: tab === t.id ? `0.5px solid ${colors.border}` : 'none',
-            cursor: 'pointer', fontFamily: typography.family.sans,
-          }}>{t.label}</button>
-        ))}
-      </div>
+      <SectionTabs active={tab} onChange={setTab} tabs={tabs} />
 
       {tab === 'overview' && (
         <>

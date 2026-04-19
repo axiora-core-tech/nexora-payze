@@ -4,6 +4,7 @@ import { colors, radius, typography } from '../../design/tokens';
 import { Card, Button } from '../../design/primitives';
 import * as Icons from '../../design/icons';
 import { toast } from 'sonner';
+import { signIn } from '../../services';
 
 export function SignIn() {
   const navigate = useNavigate();
@@ -19,12 +20,14 @@ export function SignIn() {
     setSubmitting(true);
     // Simulate auth latency
     await new Promise(r => setTimeout(r, 800));
+    signIn({ email });
     toast.success('Signed in');
     navigate('/app');
   };
 
   const handleSSO = (provider: string) => {
     toast.success(`Redirecting to ${provider}…`);
+    signIn({ email: `${provider.toLowerCase()}@payze.com`, name: `${provider} User` });
     setTimeout(() => navigate('/app'), 600);
   };
 
