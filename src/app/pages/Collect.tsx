@@ -8,8 +8,10 @@ import { useAsync } from '../../hooks/useAsync';
 import { configService } from '../../services';
 import { Invoices } from './Invoices';
 import { Subscriptions } from './Subscriptions';
+import { Send } from './Send';
+import { PaymentPages } from './PaymentPages';
 
-type SectionId = 'surfaces' | 'invoices' | 'subscriptions';
+type SectionId = 'surfaces' | 'pages' | 'invoices' | 'subscriptions' | 'send';
 
 type Surface = {
   id: string;
@@ -49,13 +51,17 @@ export function Collect() {
         onChange={setSection}
         tabs={[
           { id: 'surfaces',      label: 'Surfaces',      hint: 'Links, QR, embeds' },
+          { id: 'pages',         label: 'Pages',         hint: 'Hosted checkout forms' },
           { id: 'invoices',      label: 'Invoices',      hint: 'B2B billing with GST' },
           { id: 'subscriptions', label: 'Subscriptions', hint: 'Active mandates' },
+          { id: 'send',          label: 'Send',          hint: 'UPI push · SMS · WhatsApp' },
         ]}
       />
       {section === 'surfaces'      && <SurfacesSection />}
+      {section === 'pages'         && <PaymentPages />}
       {section === 'invoices'      && <Invoices />}
       {section === 'subscriptions' && <Subscriptions />}
+      {section === 'send'          && <Send />}
     </div>
   );
 }
@@ -277,9 +283,11 @@ function SurfaceDetailDrawer({ surface: s, embedTemplate, onClose }: { surface: 
           </div>
           <div style={{ fontSize: '12px', color: colors.text2, marginBottom: '20px' }}>{s.description}</div>
 
-          <div style={{ display: 'flex', gap: '6px', marginBottom: '24px' }}>
+          <div style={{ display: 'flex', gap: '6px', marginBottom: '24px', flexWrap: 'wrap' }}>
             <Pill tone={s.status === 'active' ? 'teal' : s.status === 'draft' ? 'outline' : 'neutral'}>{s.status}</Pill>
             {s.expiresIn && <Pill tone="outline">{s.expiresIn}</Pill>}
+            {(s as any).reuseMode === 'single_use' && <Pill tone="outline">Single use · expires after 1 payment</Pill>}
+            {(s as any).reuseMode === 'reusable'   && <Pill tone="outline">Reusable · accepts repeat payments</Pill>}
           </div>
         </div>
 
@@ -354,9 +362,62 @@ function SurfaceDetailDrawer({ surface: s, embedTemplate, onClose }: { surface: 
           </div>
         </div>
 
+        {/* Payment history (P1.7) */}
+        {(s as any).payments && (s as any).payments.length > 0 && (
+          <div style={{ padding: '0 32px', marginBottom: '28px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '14px' }}>
+              <Kicker>Payment history · {(s as any).payments.length} {(s as any).payments.length === 1 ? 'payment' : 'payments'}</Kicker>
+              {(s as any).analytics?.expectedPayments != null && (
+                <span style={{ fontSize: '11px', color: colors.text2 }}>
+                  Expected <span style={{ color: colors.ink, fontWeight: 600, fontFamily: typography.family.mono }}>{(s as any).analytics.expectedPayments}</span> ·
+                  Outstanding <span style={{ color: colors.ink, fontWeight: 600, fontFamily: typography.family.mono }}>{(s as any).analytics.outstandingPayments}</span>
+                </span>
+              )}
+            </div>
+            <div style={{ background: colors.bg, border: `0.5px solid ${colors.border}`, borderRadius: radius.md, overflow: 'hidden' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr 1.4fr 0.9fr 0.7fr', gap: '12px', padding: '10px 14px', borderBottom: `0.5px solid ${colors.border}`, fontSize: '9px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600 }}>
+                <div>Customer</div><div style={{ textAlign: 'right' }}>Amount</div><div>Method</div><div>Paid at</div><div style={{ textAlign: 'right' }}>Status</div>
+              </div>
+              {(s as any).payments.map((p: any, i: number, arr: any[]) => {
+                const isLast = i === arr.length - 1;
+                const failed = p.status === 'failed';
+                return (
+                  <div key={p.id} style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr 1.4fr 0.9fr 0.7fr', gap: '12px', padding: '10px 14px', borderBottom: isLast ? 'none' : `0.5px solid ${colors.border}`, alignItems: 'center', fontSize: '11px', background: failed ? 'rgba(214,69,69,0.025)' : 'transparent' }}>
+                    <div>
+                      <div style={{ color: colors.ink, fontWeight: 500 }}>{p.customer}</div>
+                      <div style={{ color: colors.text3, fontSize: '10px', fontFamily: typography.family.mono, marginTop: '1px' }}>{p.phone || p.email}</div>
+                    </div>
+                    <div style={{ textAlign: 'right', color: colors.ink, fontWeight: 600, fontFamily: typography.family.mono, textDecoration: failed ? 'line-through' : 'none' }}>{p.amount}</div>
+                    <div style={{ color: colors.text2 }}>{p.method}</div>
+                    <div style={{ color: colors.text3, fontFamily: typography.family.mono, fontSize: '10px' }}>{p.paidAt}</div>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{
+                        fontSize: '9px', padding: '2px 7px', borderRadius: radius.pill,
+                        background: failed ? 'rgba(214,69,69,0.08)' : 'rgba(28,111,107,0.08)',
+                        color: failed ? '#D64545' : colors.teal,
+                        border: `0.5px solid ${failed ? 'rgba(214,69,69,0.25)' : 'rgba(28,111,107,0.25)'}`,
+                        fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: typography.family.mono,
+                      }}>{p.status}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ display: 'flex', gap: '6px', marginTop: '10px' }}>
+              <Button variant="ghost" size="sm" icon={<Icons.IconDownload size={11} />} onClick={() => toast.success('Payment history exported · CSV')}>Export CSV</Button>
+              <Button variant="ghost" size="sm" icon={<Icons.IconMail size={11} />} onClick={() => toast.success('Reminder sent to outstanding payers')}>Email outstanding</Button>
+            </div>
+          </div>
+        )}
+
         {/* Customer-facing preview */}
         <div style={{ padding: '0 32px', marginBottom: '28px' }}>
-          <Kicker style={{ marginBottom: '14px' }}>Customer view · preview</Kicker>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '14px' }}>
+            <Kicker style={{ margin: 0 }}>Customer view · preview</Kicker>
+            <a href="/app/pay" target="_blank" rel="noopener noreferrer" style={{ fontSize: '11px', color: colors.teal, display: 'inline-flex', alignItems: 'center', gap: '4px', textDecoration: 'none', fontWeight: 500 }}>
+              Open live checkout <Icons.IconExternal size={10} />
+            </a>
+          </div>
           <CheckoutPreview surface={s} />
         </div>
 

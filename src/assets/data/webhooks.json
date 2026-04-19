@@ -1,0 +1,103 @@
+{
+  "header": {
+    "kicker": "Settings · Developer · Webhooks",
+    "title": "Webhook subscriptions",
+    "subtitle": "Subscribe your backend to Payze events. HMAC-signed, automatic retry, replay-safe."
+  },
+  "stats": [
+    { "label": "Active endpoints",  "value": "4",    "sub": "across 12 event types" },
+    { "label": "Deliveries · 24h",   "value": "8,247","sub": "99.94% success" },
+    { "label": "Failed in queue",    "value": "5",    "sub": "auto-retry · 3 attempts left" },
+    { "label": "Avg latency · p50",  "value": "84ms", "sub": "Payze → your server ack" }
+  ],
+  "endpoints": [
+    {
+      "id": "wh_ep_a4821",
+      "url": "https://api.acme-tech.com/payze/events",
+      "description": "Production · main event sink",
+      "createdAt": "12 Mar 2026",
+      "secret": "whsec_7b8e2a9c4f1d6e3b5a0c8d2f4e6b7a9c",
+      "secretLastRotated": "12 Mar 2026 · never",
+      "status": "active",
+      "events": ["payment.succeeded", "payment.failed", "refund.processed", "subscription.charged", "mandate.created", "dispute.opened"],
+      "deliveryStats": { "successRate": 99.97, "lastSuccess": "14 sec ago", "deliveries24h": 6184 }
+    },
+    {
+      "id": "wh_ep_b9183",
+      "url": "https://hooks.slack.com/services/T0X/B0Y/Z82",
+      "description": "Slack alert · #payments-alerts",
+      "createdAt": "08 Apr 2026",
+      "secret": "whsec_3a8c5d2e9f1b6c4a7d0e8f2b5c1a9e3d",
+      "secretLastRotated": "08 Apr 2026 · never",
+      "status": "active",
+      "events": ["payment.failed", "dispute.opened", "subscription.payment_failed"],
+      "deliveryStats": { "successRate": 100.00, "lastSuccess": "2 min ago", "deliveries24h": 142 }
+    },
+    {
+      "id": "wh_ep_c2046",
+      "url": "https://api.acme-tech.com/payze/staging-events",
+      "description": "Staging · QA testing",
+      "createdAt": "01 Feb 2026",
+      "secret": "whsec_9d2e7c4a1f8b5e3c6a0d2f4e8b1c7a3e",
+      "secretLastRotated": "12 Apr 2026 · 7 days ago",
+      "status": "active",
+      "events": ["*"],
+      "deliveryStats": { "successRate": 99.82, "lastSuccess": "4 min ago", "deliveries24h": 1894 }
+    },
+    {
+      "id": "wh_ep_d6541",
+      "url": "https://crm.acme-tech.com/api/payze",
+      "description": "CRM sync · customer enrichment",
+      "createdAt": "22 Feb 2026",
+      "secret": "whsec_5f1c8d3e7a4b2c9e6d0f3a5b1c7e9f2d",
+      "secretLastRotated": "22 Feb 2026 · never",
+      "status": "paused",
+      "events": ["customer.created", "customer.updated", "payment.succeeded"],
+      "deliveryStats": { "successRate": 96.42, "lastSuccess": "2 days ago", "deliveries24h": 27 }
+    }
+  ],
+  "eventCatalog": [
+    { "category": "Payments",      "events": [
+      { "name": "payment.created",   "desc": "Payment intent created · before customer pays" },
+      { "name": "payment.succeeded", "desc": "Payment captured successfully" },
+      { "name": "payment.failed",    "desc": "Payment failed · with failure code" },
+      { "name": "payment.refunded",  "desc": "Payment fully or partially refunded" }
+    ]},
+    { "category": "Refunds",       "events": [
+      { "name": "refund.created",   "desc": "Refund initiated by merchant or auto" },
+      { "name": "refund.processed", "desc": "Refund settled to customer's source method" },
+      { "name": "refund.failed",    "desc": "Refund attempt failed · usually customer account closed" }
+    ]},
+    { "category": "Subscriptions", "events": [
+      { "name": "subscription.created",        "desc": "Customer subscribed to a plan" },
+      { "name": "subscription.charged",        "desc": "Recurring charge succeeded" },
+      { "name": "subscription.payment_failed", "desc": "Recurring charge failed · dunning kicks in" },
+      { "name": "subscription.cancelled",      "desc": "Customer or merchant cancelled" }
+    ]},
+    { "category": "Mandates",      "events": [
+      { "name": "mandate.created", "desc": "UPI Autopay or NACH mandate created" },
+      { "name": "mandate.revoked", "desc": "Customer revoked the mandate · 1-click" },
+      { "name": "mandate.expired", "desc": "Mandate hit its end date" }
+    ]},
+    { "category": "Disputes",      "events": [
+      { "name": "dispute.opened",    "desc": "Chargeback raised by issuer" },
+      { "name": "dispute.evidence_requested", "desc": "Issuer requested evidence" },
+      { "name": "dispute.won",       "desc": "Dispute resolved in your favour" },
+      { "name": "dispute.lost",      "desc": "Dispute resolved against you · funds debited" }
+    ]},
+    { "category": "Customers",     "events": [
+      { "name": "customer.created", "desc": "New customer profile created" },
+      { "name": "customer.updated", "desc": "Customer profile changed" }
+    ]}
+  ],
+  "deliveries": [
+    { "id": "wh_d_8412782", "endpoint": "wh_ep_a4821", "event": "payment.succeeded", "payloadSummary": "txn_00481 · ₹4,500 · Zomato Foods",         "status": "delivered", "httpCode": 200, "attempts": 1, "latency": "84ms",  "deliveredAt": "Today 14:42:18" },
+    { "id": "wh_d_8412781", "endpoint": "wh_ep_a4821", "event": "payment.succeeded", "payloadSummary": "txn_00480 · ₹2,400 · Urban Company",       "status": "delivered", "httpCode": 200, "attempts": 1, "latency": "92ms",  "deliveredAt": "Today 14:41:54" },
+    { "id": "wh_d_8412780", "endpoint": "wh_ep_b9183", "event": "payment.failed",    "payloadSummary": "txn_00479 · €1,890 · Nykaa Beauty (SEPA)",  "status": "delivered", "httpCode": 200, "attempts": 1, "latency": "112ms", "deliveredAt": "Today 14:41:11" },
+    { "id": "wh_d_8412779", "endpoint": "wh_ep_a4821", "event": "subscription.charged","payloadSummary": "sub_482a · ₹4,500 · Rohan Shankar",      "status": "delivered", "httpCode": 200, "attempts": 1, "latency": "78ms",  "deliveredAt": "Today 14:38:56" },
+    { "id": "wh_d_8412778", "endpoint": "wh_ep_a4821", "event": "payment.succeeded", "payloadSummary": "txn_00478 · ₹4,500 · Zomato Foods",         "status": "retrying",  "httpCode": 503, "attempts": 2, "latency": "—",     "deliveredAt": "Today 14:38:54", "nextRetry": "in 4 min", "errorNote": "Origin returned 503 · auto-retry with exp backoff" },
+    { "id": "wh_d_8412777", "endpoint": "wh_ep_a4821", "event": "refund.processed", "payloadSummary": "rf_4821 · ₹12,400 refund · Nykaa Beauty",   "status": "delivered", "httpCode": 200, "attempts": 1, "latency": "104ms", "deliveredAt": "Today 11:48:03" },
+    { "id": "wh_d_8412776", "endpoint": "wh_ep_d6541", "event": "customer.updated", "payloadSummary": "cus_2918 · email changed",                  "status": "failed",    "httpCode": 410, "attempts": 4, "latency": "—",     "deliveredAt": "Today 09:14:22", "nextRetry": null, "errorNote": "Endpoint returned 410 Gone · in dead-letter queue" },
+    { "id": "wh_d_8412775", "endpoint": "wh_ep_b9183", "event": "dispute.opened",   "payloadSummary": "dp_9011 · ₹4,800 · Cred Club · Duplicate",  "status": "delivered", "httpCode": 200, "attempts": 1, "latency": "98ms",  "deliveredAt": "Today 08:42:14" }
+  ]
+}

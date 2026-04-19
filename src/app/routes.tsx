@@ -8,6 +8,7 @@ import { BookDemo } from './pages/BookDemo';
 import { SignIn } from './pages/SignIn';
 import { Dashboard } from './pages/Dashboard';
 import { Tenants } from './pages/Tenants';
+import { Customers } from './pages/Customers';
 import { Risk } from './pages/Risk';
 import { Analytics } from './pages/Analytics';
 import { Collect } from './pages/Collect';
@@ -23,6 +24,7 @@ const appChildren = [
   { index: true, element: <Dashboard /> },
   { path: 'money', element: <Money /> },
   { path: 'tenants', element: <Tenants /> },
+  { path: 'customers', element: <Customers /> },
   { path: 'collect', element: <Collect /> },
   { path: 'risk', element: <Risk /> },
   { path: 'analytics', element: <Analytics /> },

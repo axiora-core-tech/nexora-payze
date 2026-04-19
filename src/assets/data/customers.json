@@ -1,0 +1,233 @@
+{
+  "header": {
+    "kicker": "Customers",
+    "title": "Customer registry",
+    "subtitle": "Every person who paid you, unified by phone + email. Payment preferences, LTV, consent, and communication history — all in one place."
+  },
+  "stats": [
+    { "label": "Total customers",  "value": "8,472",     "sub": "+284 this month" },
+    { "label": "Active · 30d",     "value": "2,148",     "sub": "25.4% of base" },
+    { "label": "Avg LTV",          "value": "₹18,420",   "sub": "+12% YoY" },
+    { "label": "Marketing consent","value": "62%",       "sub": "DPDP-compliant · DPDP Act 2023" }
+  ],
+  "statusFilters": ["all", "active", "dormant", "new", "churned"],
+  "customers": [
+    {
+      "id": "cus_a4821",
+      "name": "Rohan Shankar",
+      "email": "rohan.shankar@gmail.com",
+      "phone": "+91 98765 43210",
+      "city": "Bengaluru, KA",
+      "status": "active",
+      "tags": ["Zomato Gold · subscriber", "High-value"],
+      "createdAt": "12 Jan 2024",
+      "lastPaymentAt": "Today 14:38",
+      "paymentsCount": 24,
+      "totalSpent": "₹1,12,400",
+      "ltv": "₹2,68,800",
+      "avgTicket": "₹4,683",
+      "preferredMethod": { "type": "UPI Autopay", "detail": "GPay · okhdfcbank", "usage": "87% of payments" },
+      "secondaryMethod": { "type": "Cards", "detail": "HDFC Visa ••4821", "usage": "13% of payments" },
+      "consent": { "marketing": true, "transactional": true, "consentedAt": "12 Jan 2024 · DPDP-compliant" },
+      "recentPayments": [
+        { "date": "Today 14:38",   "merchant": "Zomato Foods",  "amount": "₹4,500", "method": "UPI Autopay · GPay" },
+        { "date": "15 Mar 14:38",  "merchant": "Zomato Foods",  "amount": "₹4,500", "method": "UPI Autopay · GPay" },
+        { "date": "15 Feb 14:38",  "merchant": "Zomato Foods",  "amount": "₹4,500", "method": "UPI Autopay · GPay" },
+        { "date": "11 Jan 18:22",  "merchant": "Cred Club",     "amount": "₹9,999", "method": "Cards · HDFC credit" }
+      ]
+    },
+    {
+      "id": "cus_b9183",
+      "name": "Priya Venkataraman",
+      "email": "priya.v@outlook.com",
+      "phone": "+91 99876 51230",
+      "city": "Chennai, TN",
+      "status": "active",
+      "tags": ["Cred Scale · subscriber"],
+      "createdAt": "08 Mar 2025",
+      "lastPaymentAt": "Yesterday 14:32",
+      "paymentsCount": 8,
+      "totalSpent": "₹79,992",
+      "ltv": "₹1,59,984",
+      "avgTicket": "₹9,999",
+      "preferredMethod": { "type": "UPI", "detail": "PhonePe · okaxis", "usage": "100% of payments" },
+      "secondaryMethod": null,
+      "consent": { "marketing": false, "transactional": true, "consentedAt": "08 Mar 2025 · DPDP-compliant" },
+      "recentPayments": [
+        { "date": "Yesterday 14:32", "merchant": "Cred Club", "amount": "₹9,999", "method": "UPI · PhonePe" },
+        { "date": "16 Mar 14:32",    "merchant": "Cred Club", "amount": "₹9,999", "method": "UPI · PhonePe" },
+        { "date": "14 Feb 14:32",    "merchant": "Cred Club", "amount": "₹9,999", "method": "UPI · PhonePe" }
+      ]
+    },
+    {
+      "id": "cus_c2046",
+      "name": "Anushka Rao",
+      "email": "anushka.r@gmail.com",
+      "phone": "+91 99876 51230",
+      "city": "Mumbai, MH",
+      "status": "active",
+      "tags": ["Rhea Yoga · subscriber"],
+      "createdAt": "22 Feb 2026",
+      "lastPaymentAt": "Today 14:38",
+      "paymentsCount": 2,
+      "totalSpent": "₹9,600",
+      "ltv": "₹9,600",
+      "avgTicket": "₹4,800",
+      "preferredMethod": { "type": "UPI Autopay", "detail": "GPay · okaxis", "usage": "100% of payments" },
+      "secondaryMethod": null,
+      "consent": { "marketing": true, "transactional": true, "consentedAt": "22 Feb 2026 · DPDP-compliant" },
+      "recentPayments": [
+        { "date": "Today 14:38",     "merchant": "Rhea Yoga", "amount": "₹4,800", "method": "UPI Autopay · GPay" },
+        { "date": "20 Mar 14:38",    "merchant": "Rhea Yoga", "amount": "₹4,800", "method": "UPI Autopay · GPay" }
+      ]
+    },
+    {
+      "id": "cus_d6541",
+      "name": "Vikram Kothari",
+      "email": "vikram@zomato.com",
+      "phone": "+91 98765 22334",
+      "city": "Bengaluru, KA",
+      "status": "active",
+      "tags": ["Enterprise", "Studio Lumière · B2B"],
+      "createdAt": "14 Apr 2026",
+      "lastPaymentAt": "Yesterday 16:42",
+      "paymentsCount": 1,
+      "totalSpent": "₹4,50,000",
+      "ltv": "₹4,50,000",
+      "avgTicket": "₹4,50,000",
+      "preferredMethod": { "type": "RTGS", "detail": "HDFC Current · Zomato Foods", "usage": "100% of payments" },
+      "secondaryMethod": null,
+      "consent": { "marketing": true, "transactional": true, "consentedAt": "14 Apr 2026 · DPDP-compliant" },
+      "recentPayments": [
+        { "date": "Yesterday 16:42", "merchant": "Studio Lumière", "amount": "₹4,50,000", "method": "RTGS · HDFC" }
+      ]
+    },
+    {
+      "id": "cus_e8273",
+      "name": "Karan Mehta",
+      "email": "karan.m@outlook.com",
+      "phone": "+91 98123 45678",
+      "city": "Bengaluru, KA",
+      "status": "active",
+      "tags": ["Rhea Yoga · subscriber"],
+      "createdAt": "08 Jan 2026",
+      "lastPaymentAt": "Today 09:14",
+      "paymentsCount": 4,
+      "totalSpent": "₹19,200",
+      "ltv": "₹19,200",
+      "avgTicket": "₹4,800",
+      "preferredMethod": { "type": "UPI Autopay", "detail": "PhonePe · oksbi", "usage": "100% of payments" },
+      "secondaryMethod": null,
+      "consent": { "marketing": true, "transactional": true, "consentedAt": "08 Jan 2026 · DPDP-compliant" },
+      "recentPayments": [
+        { "date": "Today 09:14", "merchant": "Rhea Yoga", "amount": "₹4,800", "method": "UPI Autopay · PhonePe" }
+      ]
+    },
+    {
+      "id": "cus_f1029",
+      "name": "Emma Dawson",
+      "email": "emma.dawson@gmail.com",
+      "phone": "+1 347 555 0142",
+      "city": "New York, NY",
+      "status": "active",
+      "tags": ["International", "MakeMyTrip"],
+      "createdAt": "02 Apr 2026",
+      "lastPaymentAt": "14:29",
+      "paymentsCount": 1,
+      "totalSpent": "$320",
+      "ltv": "$320",
+      "avgTicket": "$320",
+      "preferredMethod": { "type": "Cards", "detail": "Amex ••1001", "usage": "100% of payments" },
+      "secondaryMethod": null,
+      "consent": { "marketing": false, "transactional": true, "consentedAt": "02 Apr 2026 · consent per merchant ToS" },
+      "recentPayments": [
+        { "date": "Today 14:29", "merchant": "MakeMyTrip", "amount": "$320", "method": "Amex ••1001" }
+      ]
+    },
+    {
+      "id": "cus_g4728",
+      "name": "Yash Patel",
+      "email": "yash.p@yahoo.in",
+      "phone": "+91 96543 21098",
+      "city": "Ahmedabad, GJ",
+      "status": "churned",
+      "tags": ["Rhea Yoga · lapsed"],
+      "createdAt": "11 Mar 2026",
+      "lastPaymentAt": "15 Apr 14:08 · failed",
+      "paymentsCount": 1,
+      "totalSpent": "₹4,800",
+      "ltv": "₹4,800",
+      "avgTicket": "₹4,800",
+      "preferredMethod": { "type": "UPI", "detail": "GPay · deactivated", "usage": "Failed" },
+      "secondaryMethod": null,
+      "consent": { "marketing": true, "transactional": true, "consentedAt": "11 Mar 2026 · DPDP-compliant" },
+      "recentPayments": [
+        { "date": "15 Apr 14:08", "merchant": "Rhea Yoga", "amount": "₹4,800", "method": "UPI · GPay · FAILED" },
+        { "date": "11 Mar 14:22", "merchant": "Rhea Yoga", "amount": "₹4,800", "method": "UPI · GPay" }
+      ]
+    },
+    {
+      "id": "cus_h8019",
+      "name": "Sneha Kapoor",
+      "email": "sneha.k@gmail.com",
+      "phone": "+91 99887 76655",
+      "city": "Delhi, DL",
+      "status": "dormant",
+      "tags": ["Nykaa"],
+      "createdAt": "18 Feb 2025",
+      "lastPaymentAt": "12 Jan 2026",
+      "paymentsCount": 3,
+      "totalSpent": "₹24,800",
+      "ltv": "₹24,800",
+      "avgTicket": "₹8,267",
+      "preferredMethod": { "type": "Cards", "detail": "HDFC credit ••4821", "usage": "100% of payments" },
+      "secondaryMethod": null,
+      "consent": { "marketing": false, "transactional": true, "consentedAt": "18 Feb 2025 · DPDP-compliant" },
+      "recentPayments": [
+        { "date": "12 Jan 2026", "merchant": "Nykaa Beauty", "amount": "₹12,400", "method": "Cards · HDFC credit" }
+      ]
+    },
+    {
+      "id": "cus_i3847",
+      "name": "Rajiv Mehta",
+      "email": "rajiv.mehta@gmail.com",
+      "phone": "+91 98765 11222",
+      "city": "Mumbai, MH",
+      "status": "active",
+      "tags": ["BookMyShow · repeat"],
+      "createdAt": "04 Nov 2024",
+      "lastPaymentAt": "Today 14:24",
+      "paymentsCount": 18,
+      "totalSpent": "₹42,480",
+      "ltv": "₹42,480",
+      "avgTicket": "₹2,360",
+      "preferredMethod": { "type": "UPI", "detail": "PayTM · 9876@paytm", "usage": "72% of payments" },
+      "secondaryMethod": { "type": "Cards", "detail": "ICICI debit ••9034", "usage": "28% of payments" },
+      "consent": { "marketing": true, "transactional": true, "consentedAt": "04 Nov 2024 · DPDP-compliant" },
+      "recentPayments": [
+        { "date": "Today 14:24", "merchant": "BookMyShow", "amount": "₹1,120", "method": "UPI · PayTM" }
+      ]
+    },
+    {
+      "id": "cus_j1856",
+      "name": "Tara Iyer",
+      "email": "tara.iyer@yahoo.com",
+      "phone": "+91 97654 32109",
+      "city": "Chennai, TN",
+      "status": "new",
+      "tags": ["Rhea Yoga · new"],
+      "createdAt": "Yesterday",
+      "lastPaymentAt": "Yesterday 18:22",
+      "paymentsCount": 1,
+      "totalSpent": "₹4,800",
+      "ltv": "₹4,800",
+      "avgTicket": "₹4,800",
+      "preferredMethod": { "type": "UPI Autopay", "detail": "GPay · okhdfcbank", "usage": "100% of payments" },
+      "secondaryMethod": null,
+      "consent": { "marketing": true, "transactional": true, "consentedAt": "Yesterday · DPDP-compliant" },
+      "recentPayments": [
+        { "date": "Yesterday 18:22", "merchant": "Rhea Yoga", "amount": "₹4,800", "method": "UPI Autopay · GPay" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,235 @@
+{
+  "channels": [
+    {
+      "id": "upi_push",
+      "label": "UPI Collect Request",
+      "subtitle": "Push notification to customer's UPI app · PhonePe · GPay · Paytm",
+      "icon": "IconQR",
+      "primary": true,
+      "trustBadge": "Highest conversion · zero-tap payment",
+      "detail": "Sends an intent to the customer's phone number. Their UPI app (PhonePe, GPay, Paytm, BHIM) pings them with a 'Pay ₹X to Y' prompt. They tap Pay. No link clicked, no page loaded. Expires in 10 minutes by default.",
+      "avgConversion": "64%",
+      "requiresPhone": true,
+      "channelCost": "Free"
+    },
+    {
+      "id": "sms",
+      "label": "SMS",
+      "subtitle": "DLT-registered template · 160-char message with payment link",
+      "icon": "IconBell",
+      "primary": true,
+      "trustBadge": "TRAI-compliant · DLT-registered",
+      "detail": "Shortened payment link delivered via Gupshup SMS gateway. DLT header and template pre-approved with TRAI. Delivery SLA 30 sec median. Tracked open → click → pay.",
+      "avgConversion": "22%",
+      "requiresPhone": true,
+      "channelCost": "₹0.28 per SMS"
+    },
+    {
+      "id": "whatsapp",
+      "label": "WhatsApp",
+      "subtitle": "Business API · HSM-approved template with payment link",
+      "icon": "IconMail",
+      "primary": true,
+      "trustBadge": "Official API · no third-party",
+      "detail": "Sent via Meta's WhatsApp Business API. Template pre-approved under utility category. Supports receipt PDF attachment. Delivery and read receipts tracked.",
+      "avgConversion": "41%",
+      "requiresPhone": true,
+      "channelCost": "₹0.38 per conversation"
+    },
+    {
+      "id": "email",
+      "label": "Email",
+      "subtitle": "Branded HTML with payment button · DKIM signed",
+      "icon": "IconMail",
+      "primary": false,
+      "trustBadge": "DKIM signed · SPF validated",
+      "detail": "Sent via SES with your merchant brand. DKIM and SPF aligned. Tracks open, click, device and geo.",
+      "avgConversion": "12%",
+      "requiresPhone": false,
+      "channelCost": "Free · up to 10K/month"
+    }
+  ],
+  "upiPushMechanics": {
+    "title": "How UPI Collect Request works",
+    "regulationRef": "NPCI UPI Collect Request spec v2.7 · BHIM-standard",
+    "steps": [
+      { "num": 1, "label": "Merchant submits intent",          "detail": "Payze pushes intent with amount, remarks, merchant name to NPCI switch" },
+      { "num": 2, "label": "NPCI routes to customer's PSP",    "detail": "Identified by VPA lookup or registered phone → PSP mapping" },
+      { "num": 3, "label": "Customer's UPI app pings them",    "detail": "Silent push notification → 'Pay ₹X to Y' modal in the app" },
+      { "num": 4, "label": "Customer approves with PIN",       "detail": "Single biometric + UPI PIN → debit authorised" },
+      { "num": 5, "label": "NPCI settles · Payze webhook fires","detail": "payment.succeeded webhook delivered to merchant backend within 2 seconds" }
+    ],
+    "timeoutMinutes": 10,
+    "cancellable": true
+  },
+  "smsTemplates": [
+    {
+      "id": "tmpl_sms_001",
+      "dltTemplateId": "1707161234567890123",
+      "category": "Transactional",
+      "name": "Payment request · standard",
+      "body": "Hi {{name}}, please pay ₹{{amount}} to {{merchant}} using this link: {{short_link}} (valid 24h) · Powered by Payze",
+      "lengthChars": 124,
+      "approvedAt": "14 Jan 2026",
+      "status": "approved"
+    },
+    {
+      "id": "tmpl_sms_002",
+      "dltTemplateId": "1707161234567890456",
+      "category": "Transactional",
+      "name": "Invoice reminder · 1st follow-up",
+      "body": "Reminder: {{merchant}} invoice {{invoice_id}} of ₹{{amount}} is due. Pay in 1 tap: {{short_link}}",
+      "lengthChars": 98,
+      "approvedAt": "18 Jan 2026",
+      "status": "approved"
+    },
+    {
+      "id": "tmpl_sms_003",
+      "dltTemplateId": "1707161234567890789",
+      "category": "Service implicit",
+      "name": "Receipt · payment successful",
+      "body": "Payment of ₹{{amount}} to {{merchant}} successful. Ref {{txn_id}}. View receipt: {{short_link}}",
+      "lengthChars": 97,
+      "approvedAt": "22 Jan 2026",
+      "status": "approved"
+    }
+  ],
+  "whatsappTemplates": [
+    {
+      "id": "tmpl_wa_001",
+      "metaTemplateId": "payment_request_v2",
+      "category": "UTILITY",
+      "name": "Payment request · with button",
+      "body": "Hi {{name}},\n\n{{merchant}} has requested a payment of *₹{{amount}}* from you.\n\n_{{description}}_\n\nTap below to pay securely. Valid for 24 hours.",
+      "ctaButton": "Pay ₹{{amount}}",
+      "approvedAt": "12 Jan 2026",
+      "status": "approved"
+    }
+  ],
+  "deliveryAudit": [
+    {
+      "id": "deliv_00284",
+      "referenceType": "invoice",
+      "referenceId": "INV-2026-00842",
+      "channel": "upi_push",
+      "recipient": "+91 98765 43210 · Rohan Shankar",
+      "amount": "₹4,500",
+      "sentAt": "Today 14:36",
+      "timeline": [
+        { "event": "Intent submitted to NPCI",   "status": "done",    "at": "14:36:02" },
+        { "event": "Routed to PhonePe",           "status": "done",    "at": "14:36:04" },
+        { "event": "Notification delivered",      "status": "done",    "at": "14:36:05" },
+        { "event": "Customer approved · PIN",     "status": "done",    "at": "14:38:12" },
+        { "event": "Payment succeeded",           "status": "done",    "at": "14:38:14" }
+      ],
+      "outcome": "paid",
+      "outcomeDetail": "Paid · ₹4,500 · UPI txn 2938471092",
+      "elapsedSeconds": 132
+    },
+    {
+      "id": "deliv_00283",
+      "referenceType": "surface",
+      "referenceId": "surf_lumq2",
+      "channel": "whatsapp",
+      "recipient": "+91 98765 22334 · Vikram Kothari",
+      "amount": "₹4,50,000",
+      "sentAt": "Yesterday 16:30",
+      "timeline": [
+        { "event": "Template submitted to Meta",  "status": "done",    "at": "16:30:01" },
+        { "event": "Delivered to WhatsApp",        "status": "done",    "at": "16:30:02" },
+        { "event": "Read by recipient",            "status": "done",    "at": "16:31:42" },
+        { "event": "Payment link tapped",          "status": "done",    "at": "16:42:04" },
+        { "event": "Payment succeeded · RTGS",     "status": "done",    "at": "16:42:38" }
+      ],
+      "outcome": "paid",
+      "outcomeDetail": "Paid · ₹4,50,000 · RTGS UTR HDFC26109824",
+      "elapsedSeconds": 752
+    },
+    {
+      "id": "deliv_00282",
+      "referenceType": "invoice",
+      "referenceId": "INV-2026-00841",
+      "channel": "sms",
+      "recipient": "+91 98123 45678 · Karan Mehta",
+      "amount": "₹9,999",
+      "sentAt": "Today 09:10",
+      "timeline": [
+        { "event": "Submitted to Gupshup",         "status": "done",    "at": "09:10:02" },
+        { "event": "Delivered by operator",         "status": "done",    "at": "09:10:28" },
+        { "event": "Link clicked",                  "status": "done",    "at": "09:13:44" },
+        { "event": "Payment succeeded",             "status": "done",    "at": "09:14:12" }
+      ],
+      "outcome": "paid",
+      "outcomeDetail": "Paid · ₹9,999 · UPI Autopay",
+      "elapsedSeconds": 250
+    },
+    {
+      "id": "deliv_00281",
+      "referenceType": "invoice",
+      "referenceId": "INV-2026-00840",
+      "channel": "email",
+      "recipient": "priya.v@outlook.com · Priya Venkataraman",
+      "amount": "₹9,999",
+      "sentAt": "Yesterday 18:00",
+      "timeline": [
+        { "event": "Queued · SES",                  "status": "done",    "at": "18:00:01" },
+        { "event": "Delivered",                     "status": "done",    "at": "18:00:08" },
+        { "event": "Opened",                        "status": "done",    "at": "19:22:14" },
+        { "event": "Link clicked",                  "status": "done",    "at": "14:30:22" }
+      ],
+      "outcome": "clicked_not_paid",
+      "outcomeDetail": "Link clicked but not paid yet · reminder scheduled",
+      "elapsedSeconds": null
+    },
+    {
+      "id": "deliv_00280",
+      "referenceType": "invoice",
+      "referenceId": "INV-2026-00839",
+      "channel": "sms",
+      "recipient": "+91 96543 21098 · Yash Patel",
+      "amount": "₹4,800",
+      "sentAt": "15 Apr 14:00",
+      "timeline": [
+        { "event": "Submitted to Gupshup",          "status": "done",    "at": "14:00:01" },
+        { "event": "Delivered",                     "status": "done",    "at": "14:00:34" },
+        { "event": "Link clicked",                  "status": "done",    "at": "14:07:58" },
+        { "event": "Payment attempt · failed",      "status": "failed",  "at": "14:08:12" }
+      ],
+      "outcome": "failed",
+      "outcomeDetail": "UPI handle deactivated · customer prompted to use alternate method",
+      "elapsedSeconds": 491
+    },
+    {
+      "id": "deliv_00279",
+      "referenceType": "surface",
+      "referenceId": "surf_rhea_month",
+      "channel": "upi_push",
+      "recipient": "+91 98765 11222 · Mira Singh",
+      "amount": "₹4,800",
+      "sentAt": "Yesterday 16:45",
+      "timeline": [
+        { "event": "Intent submitted to NPCI",      "status": "done",    "at": "16:45:02" },
+        { "event": "Routed to GPay",                 "status": "done",    "at": "16:45:04" },
+        { "event": "Notification delivered",         "status": "done",    "at": "16:45:05" },
+        { "event": "Customer approved · PIN",        "status": "done",    "at": "16:46:18" }
+      ],
+      "outcome": "paid",
+      "outcomeDetail": "Paid · ₹4,800 · UPI txn 3847291029",
+      "elapsedSeconds": 76
+    }
+  ],
+  "reminderRules": {
+    "summary": "Auto-reminders recover 12-18% of unpaid invoices in typical B2B settings. Uses the same channel as the original delivery unless the customer has a preferred channel.",
+    "rules": [
+      { "id": "rem_standard",  "name": "Standard · 3 nudges",     "active": true,  "schedule": "+3 days · +7 days · +14 days",  "channel": "same as original",                 "appliesTo": "Invoices" },
+      { "id": "rem_gentle",    "name": "Gentle · B2B friendly",   "active": false, "schedule": "+5 days · +10 days",             "channel": "email primary · WhatsApp fallback","appliesTo": "Invoices > ₹1L" },
+      { "id": "rem_quick",     "name": "Quick · coaching & SaaS", "active": false, "schedule": "+1 day · +3 days · +5 days",     "channel": "UPI push primary · SMS fallback",  "appliesTo": "Recurring surfaces" }
+    ],
+    "recentReminders": [
+      { "id": "rem_ev_0284", "referenceId": "INV-2026-00840", "customer": "Priya Venkataraman", "channel": "email",  "sentAt": "Today 09:00",  "daysSinceOriginal": 3,  "outcome": "clicked_not_paid" },
+      { "id": "rem_ev_0283", "referenceId": "INV-2026-00838", "customer": "Sneha Kapoor",        "channel": "email",  "sentAt": "Yesterday",    "daysSinceOriginal": 7,  "outcome": "paid" },
+      { "id": "rem_ev_0282", "referenceId": "INV-2026-00836", "customer": "Aditya Reddy",        "channel": "sms",    "sentAt": "16 Apr",       "daysSinceOriginal": 3,  "outcome": "paid" },
+      { "id": "rem_ev_0281", "referenceId": "INV-2026-00832", "customer": "Sara D'Souza",        "channel": "whatsapp","sentAt": "14 Apr",      "daysSinceOriginal": 7,  "outcome": "no_response" }
+    ]
+  }
+}

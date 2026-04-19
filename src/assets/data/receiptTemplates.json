@@ -1,0 +1,74 @@
+{
+  "header": {
+    "kicker": "Settings · Receipts",
+    "title": "Receipt templates",
+    "subtitle": "Branded confirmation emails and receipts customers receive after paying. Edit the template · preview · live."
+  },
+  "stats": [
+    { "label": "Templates",        "value": "4",       "sub": "1 active default" },
+    { "label": "Delivered · 30d",   "value": "12,482", "sub": "across 4 merchants" },
+    { "label": "Open rate",         "value": "74.2%",  "sub": "+6.1 pts vs industry" },
+    { "label": "Complaints",        "value": "0",      "sub": "clean DKIM reputation" }
+  ],
+  "templates": [
+    {
+      "id": "tmpl_default",
+      "name": "Default · Payze branded",
+      "description": "Clean Payze-branded receipt · works for any merchant",
+      "type": "default",
+      "isActive": true,
+      "lastEdited": "14 Feb 2026",
+      "brandColor": "#1C6F6B",
+      "logoText": "Payze",
+      "subjectLine": "Payment of ₹{{amount}} to {{merchant}} · successful",
+      "bodyPreview": "Hi {{customer_name}},\n\nThank you for your payment of **₹{{amount}}** to {{merchant}}.\n\nReference: {{txn_id}}\nPaid via: {{method}}\nDate: {{paid_at}}\n\nA tax invoice is attached to this email.\n\nQuestions? Reply to this email.\n\n— {{merchant}}",
+      "mergeFields": ["{{customer_name}}", "{{amount}}", "{{merchant}}", "{{txn_id}}", "{{method}}", "{{paid_at}}", "{{invoice_id}}", "{{pan}}"],
+      "stats": { "sent30d": 8482, "openRate": 72.8, "clickRate": 18.4 }
+    },
+    {
+      "id": "tmpl_zomato",
+      "name": "Zomato · order confirmation",
+      "description": "Red-themed · includes order details and reorder CTA",
+      "type": "merchant",
+      "merchantName": "Zomato Foods",
+      "isActive": true,
+      "lastEdited": "22 Mar 2026",
+      "brandColor": "#E23744",
+      "logoText": "zomato",
+      "subjectLine": "Order confirmed! ₹{{amount}} · {{merchant}}",
+      "bodyPreview": "Hi {{customer_name}},\n\nYour Zomato order of **₹{{amount}}** is confirmed and on its way. Track it in the app.\n\nOrder ID: {{txn_id}}\nPayment: {{method}}\nTime: {{paid_at}}\n\n[Reorder] [Track order] [Rate us]\n\n— Zomato",
+      "mergeFields": ["{{customer_name}}", "{{amount}}", "{{txn_id}}", "{{method}}", "{{paid_at}}", "{{order_link}}"],
+      "stats": { "sent30d": 3184, "openRate": 81.2, "clickRate": 32.4 }
+    },
+    {
+      "id": "tmpl_rhea",
+      "name": "Rhea Yoga · minimal",
+      "description": "Warm minimal template · includes next billing preview",
+      "type": "merchant",
+      "merchantName": "Rhea Yoga",
+      "isActive": false,
+      "lastEdited": "08 Apr 2026",
+      "brandColor": "#A86B3C",
+      "logoText": "rhea.",
+      "subjectLine": "Your Rhea Yoga membership · paid ₹{{amount}}",
+      "bodyPreview": "Namaste {{customer_name}},\n\nWe received your payment of **₹{{amount}}** for this month's membership. Your next billing date is {{next_billing_date}}.\n\nSee you on the mat.\n\n— Rhea",
+      "mergeFields": ["{{customer_name}}", "{{amount}}", "{{next_billing_date}}", "{{pause_link}}"],
+      "stats": { "sent30d": 482, "openRate": 88.4, "clickRate": 12.8 }
+    },
+    {
+      "id": "tmpl_receipt_80g",
+      "name": "80G tax receipt · donation",
+      "description": "For Section 80G-eligible donations · includes PAN, donor info, tax section",
+      "type": "merchant",
+      "merchantName": "Bombay Mission Collective",
+      "isActive": true,
+      "lastEdited": "14 Mar 2026",
+      "brandColor": "#C25B1E",
+      "logoText": "BMC",
+      "subjectLine": "80G receipt · donation of ₹{{amount}} · BMC",
+      "bodyPreview": "Dear {{customer_name}},\n\nThank you for your donation of **₹{{amount}}** to Bombay Mission Collective.\n\nReceipt number: {{receipt_id}}\nPAN provided: {{pan_masked}}\nDate: {{paid_at}}\n\nThis donation is eligible for deduction under Section 80G of the Income Tax Act · 50% deduction.\n\nRegistration number: AAABM2742K · 80G Certificate attached.\n\nWith gratitude,\nBombay Mission Collective",
+      "mergeFields": ["{{customer_name}}", "{{amount}}", "{{receipt_id}}", "{{pan_masked}}", "{{paid_at}}", "{{80g_cert}}"],
+      "stats": { "sent30d": 334, "openRate": 91.8, "clickRate": 8.2 }
+    }
+  ]
+}

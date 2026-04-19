@@ -1,0 +1,171 @@
+{
+  "header": {
+    "kicker": "Collect · Payment Pages",
+    "title": "Hosted Payment Pages",
+    "subtitle": "Full hosted checkout pages with custom fields, file uploads, and terms consent. Build once, share anywhere."
+  },
+  "stats": [
+    { "label": "Active pages",   "value": "12",        "sub": "+3 this month" },
+    { "label": "Collected · 30d","value": "₹18.4 L",  "sub": "across 482 payments" },
+    { "label": "Avg conversion", "value": "24.8%",     "sub": "view to paid" },
+    { "label": "Top page",       "value": "GGCOHORT3", "sub": "Grow Ghar · 43% conversion" }
+  ],
+  "useCases": [
+    { "id": "coaching",  "label": "Coaching · course",   "desc": "Sell a course, program, or coaching cohort" },
+    { "id": "donation",  "label": "Donation",            "desc": "Accept donations · suggested amounts + custom" },
+    { "id": "event",     "label": "Event · ticketing",   "desc": "Tickets with date · venue · attendee details" },
+    { "id": "service",   "label": "Service · retainer",  "desc": "Project deposit · milestone billing" },
+    { "id": "product",   "label": "Product · pre-order", "desc": "Physical goods with shipping address" }
+  ],
+  "fieldTypes": [
+    { "id": "text",        "label": "Short text",     "icon": "IconFileText" },
+    { "id": "textarea",    "label": "Long text",      "icon": "IconFileText" },
+    { "id": "email",       "label": "Email",          "icon": "IconMail" },
+    { "id": "phone",       "label": "Phone",          "icon": "IconBell" },
+    { "id": "dropdown",    "label": "Dropdown",       "icon": "IconChevronDown" },
+    { "id": "checkbox",    "label": "Checkbox",       "icon": "IconCheck" },
+    { "id": "file_upload", "label": "File upload",    "icon": "IconDownload" },
+    { "id": "terms",       "label": "Terms consent",  "icon": "IconShield" }
+  ],
+  "pages": [
+    {
+      "id": "pg_ggcohort3",
+      "title": "Grow Ghar · Kitchen Cohort · Batch 3",
+      "merchantName": "Grow Ghar",
+      "slug": "ggcohort3",
+      "shortUrl": "payze.app/pg/ggcohort3",
+      "useCase": "coaching",
+      "type": "fixed",
+      "amount": "₹14,999",
+      "description": "6-week cohort teaching home gardening from seed to harvest. Sundays 11am IST on Zoom. Recordings included.",
+      "status": "active",
+      "createdAt": "28 Mar 2026",
+      "expiresAt": "28 Apr 2026",
+      "brandColor": "#2D7A3E",
+      "customFields": [
+        { "type": "text",     "label": "Full name",           "required": true },
+        { "type": "phone",    "label": "WhatsApp number",     "required": true, "note": "For cohort group" },
+        { "type": "dropdown", "label": "Experience level",    "required": true, "options": ["Beginner", "Some experience", "Advanced"] },
+        { "type": "textarea", "label": "What do you hope to grow?", "required": false, "maxLength": 200 },
+        { "type": "terms",    "label": "I agree to the refund policy and cohort rules", "required": true }
+      ],
+      "analytics": { "views": 312, "paid": 134, "conversion": 43.0, "revenue": "₹20,09,866" }
+    },
+    {
+      "id": "pg_bmc_drive",
+      "title": "Monsoon Relief · Mumbai",
+      "merchantName": "Bombay Mission Collective",
+      "slug": "bmcdrive",
+      "shortUrl": "payze.app/pg/bmcdrive",
+      "useCase": "donation",
+      "type": "custom",
+      "amount": null,
+      "suggestedAmounts": [100, 500, 1000, 5000, 10000],
+      "description": "Support 812 families displaced by the 2026 Mumbai monsoon. 100% of donations reach recipients · 80G-eligible receipt issued by email.",
+      "status": "active",
+      "createdAt": "02 Apr 2026",
+      "expiresAt": null,
+      "brandColor": "#C25B1E",
+      "customFields": [
+        { "type": "text",     "label": "Full name (for 80G receipt)", "required": true },
+        { "type": "email",    "label": "Email (receipt delivery)",    "required": true },
+        { "type": "phone",    "label": "Phone · for urgent updates",  "required": false },
+        { "type": "text",     "label": "PAN · for 80G above ₹2,000",  "required": false, "note": "Required by IT Dept only if donation ≥ ₹2,000" },
+        { "type": "checkbox", "label": "I'm open to getting impact updates",         "required": false }
+      ],
+      "analytics": { "views": 1842, "paid": 418, "conversion": 22.7, "revenue": "₹8,24,500" }
+    },
+    {
+      "id": "pg_tcb_2026",
+      "title": "Tanishq Curator's Ball · 2026",
+      "merchantName": "Tanishq Curator",
+      "slug": "tcb2026",
+      "shortUrl": "payze.app/pg/tcb2026",
+      "useCase": "event",
+      "type": "fixed",
+      "amount": "₹4,999",
+      "description": "Annual dinner + runway preview. Taj Palace, Mumbai · 22 May 2026, 7pm. Black-tie.",
+      "status": "active",
+      "createdAt": "12 Apr 2026",
+      "expiresAt": "20 May 2026",
+      "brandColor": "#8C1D40",
+      "customFields": [
+        { "type": "text",     "label": "Attendee full name",    "required": true },
+        { "type": "email",    "label": "Email",                  "required": true },
+        { "type": "phone",    "label": "Phone",                  "required": true },
+        { "type": "dropdown", "label": "Meal preference",        "required": true, "options": ["Vegetarian", "Non-vegetarian", "Vegan", "Jain"] },
+        { "type": "textarea", "label": "Accessibility needs",    "required": false, "maxLength": 200 },
+        { "type": "terms",    "label": "I agree to the event T&Cs",       "required": true }
+      ],
+      "analytics": { "views": 218, "paid": 42, "conversion": 19.3, "revenue": "₹2,09,958" }
+    },
+    {
+      "id": "pg_studiolum_q3",
+      "title": "Studio Lumière · Q3 Retainer",
+      "merchantName": "Studio Lumière",
+      "slug": "lumq3",
+      "shortUrl": "payze.app/pg/lumq3",
+      "useCase": "service",
+      "type": "fixed",
+      "amount": "₹3,50,000",
+      "description": "Q3 design retainer · 3 months · logo refinement, brand guidelines v2, marketing collateral. 30-day payment terms.",
+      "status": "draft",
+      "createdAt": "Today",
+      "expiresAt": null,
+      "brandColor": "#1C6F6B",
+      "customFields": [
+        { "type": "text",     "label": "Billing company name",     "required": true },
+        { "type": "text",     "label": "GSTIN",                    "required": false },
+        { "type": "email",    "label": "Billing email",             "required": true },
+        { "type": "file_upload","label": "PO document (if any)",    "required": false },
+        { "type": "terms",    "label": "I agree to the SoW terms",  "required": true }
+      ],
+      "analytics": { "views": 0, "paid": 0, "conversion": 0.0, "revenue": "₹0" }
+    },
+    {
+      "id": "pg_maitri_preorder",
+      "title": "Maitri Ceramics · Spring Collection · Pre-order",
+      "merchantName": "Maitri Ceramics",
+      "slug": "maitrisp26",
+      "shortUrl": "payze.app/pg/maitrisp26",
+      "useCase": "product",
+      "type": "fixed",
+      "amount": "₹2,400",
+      "description": "Hand-thrown stoneware mug · 300ml · limited run of 200. Ships 15 May. Free delivery India-wide.",
+      "status": "active",
+      "createdAt": "04 Apr 2026",
+      "expiresAt": null,
+      "brandColor": "#5E4B3E",
+      "customFields": [
+        { "type": "text",     "label": "Delivery name",       "required": true },
+        { "type": "phone",    "label": "Phone (for courier)", "required": true },
+        { "type": "textarea", "label": "Delivery address",    "required": true, "maxLength": 300 },
+        { "type": "text",     "label": "PIN code",             "required": true },
+        { "type": "dropdown", "label": "Gift wrap?",            "required": false, "options": ["No", "Yes (+₹100)"] },
+        { "type": "terms",    "label": "I understand this is a pre-order · ships 15 May",  "required": true }
+      ],
+      "analytics": { "views": 482, "paid": 96, "conversion": 19.9, "revenue": "₹2,30,400" }
+    },
+    {
+      "id": "pg_verdant_giveaway",
+      "title": "Verdant · Carbon-offset Pledge",
+      "merchantName": "Verdant Climate",
+      "slug": "vrdgvpledge",
+      "shortUrl": "payze.app/pg/vrdgvpledge",
+      "useCase": "donation",
+      "type": "custom",
+      "amount": null,
+      "suggestedAmounts": [200, 500, 1000, 2500],
+      "description": "Plant trees across Western Ghats. ₹200 funds 1 sapling + 3-year maintenance. 80G-eligible.",
+      "status": "paused",
+      "createdAt": "18 Mar 2026",
+      "expiresAt": null,
+      "brandColor": "#357842",
+      "customFields": [
+        { "type": "text",  "label": "Full name", "required": true },
+        { "type": "email", "label": "Email",     "required": true }
+      ],
+      "analytics": { "views": 248, "paid": 42, "conversion": 16.9, "revenue": "₹32,800" }
+    }
+  ]
+}

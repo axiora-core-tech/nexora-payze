@@ -23,6 +23,12 @@ import healthData from '../assets/data/health.json';
 import txnSearchData from '../assets/data/txnSearch.json';
 import disputeEvidenceData from '../assets/data/disputeEvidence.json';
 import subIntelligenceData from '../assets/data/subIntelligence.json';
+import refundsData from '../assets/data/refunds.json';
+import webhooksData from '../assets/data/webhooks.json';
+import customersData from '../assets/data/customers.json';
+import sendData from '../assets/data/send.json';
+import paymentPagesData from '../assets/data/paymentPages.json';
+import receiptTemplatesData from '../assets/data/receiptTemplates.json';
 import taxRulesData from '../assets/data/taxRules.json';
 import testScenariosData from '../assets/data/testScenarios.json';
 import timelineData from '../assets/data/timeline.json';
@@ -63,6 +69,12 @@ export const configService = {
   getTxnSearch: () => mockFetch(txnSearchData),
   getDisputeEvidence: () => mockFetch(disputeEvidenceData),
   getSubIntelligence: () => mockFetch(subIntelligenceData),
+  getRefunds: () => mockFetch(refundsData),
+  getWebhooks: () => mockFetch(webhooksData),
+  getCustomers: () => mockFetch(customersData),
+  getSend: () => mockFetch(sendData),
+  getPaymentPages: () => mockFetch(paymentPagesData),
+  getReceiptTemplates: () => mockFetch(receiptTemplatesData),
   getTaxRules: () => mockFetch(taxRulesData),
   getTestScenarios: () => mockFetch(testScenariosData),
   getTimeline: () => mockFetch(timelineData),

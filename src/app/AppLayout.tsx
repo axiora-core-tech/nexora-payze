@@ -57,6 +57,7 @@ export function AppLayout() {
     { to: '',            label: 'Dashboard',  Icon: Icons.IconHome,       matches: (p) => p === '/' || p === '' },
     { to: '/money',      label: 'Money',      Icon: Icons.IconLedger,     matches: (p) => p.startsWith('/money') || p.startsWith('/transactions') || p.startsWith('/settlements') },
     { to: '/tenants',    label: 'Tenants',    Icon: Icons.IconTenants,    matches: (p) => p.startsWith('/tenants') },
+    { to: '/customers',  label: 'Customers',  Icon: Icons.IconUser,       matches: (p) => p.startsWith('/customers') },
     { to: '/collect',    label: 'Collect',    Icon: Icons.IconPay,        matches: (p) => p.startsWith('/collect') || p.startsWith('/invoices') || p.startsWith('/subscriptions') },
     { to: '/risk',       label: 'Risk',       Icon: Icons.IconShield,     matches: (p) => p.startsWith('/risk') },
     { to: '/analytics',  label: 'Analytics',  Icon: Icons.IconChart,      matches: (p) => p.startsWith('/analytics') },
