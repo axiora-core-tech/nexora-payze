@@ -9,7 +9,6 @@ import { SignIn } from './pages/SignIn';
 import { Dashboard } from './pages/Dashboard';
 import { Tenants } from './pages/Tenants';
 import { Customers } from './pages/Customers';
-import { Payouts } from './pages/Payouts';
 import { Risk } from './pages/Risk';
 import { Analytics } from './pages/Analytics';
 import { Collect } from './pages/Collect';
@@ -26,7 +25,6 @@ const appChildren = [
   { path: 'money', element: <Money /> },
   { path: 'tenants', element: <Tenants /> },
   { path: 'customers', element: <Customers /> },
-  { path: 'payouts', element: <Payouts /> },
   { path: 'collect', element: <Collect /> },
   { path: 'risk', element: <Risk /> },
   { path: 'analytics', element: <Analytics /> },
@@ -37,7 +35,8 @@ const appChildren = [
 
   // Legacy routes · preserved as redirects into the consolidated pages
   { path: 'transactions',  element: <Navigate to="/app/money" replace /> },
-  { path: 'settlements',   element: <Navigate to="/app/money?tab=payouts" replace /> },
+  { path: 'settlements',   element: <Navigate to="/app/money?tab=settlements" replace /> },
+  { path: 'payouts',       element: <Navigate to="/app/money?tab=payouts" replace /> },
   { path: 'invoices',      element: <Navigate to="/app/collect?section=invoices" replace /> },
   { path: 'subscriptions', element: <Navigate to="/app/collect?section=subscriptions" replace /> },
   { path: 'admin',         element: <Navigate to="/app/settings" replace /> },

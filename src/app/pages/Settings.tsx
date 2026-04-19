@@ -28,7 +28,7 @@ export function Settings() {
         tabs={[
           { id: 'team',       label: 'Team',       hint: 'Users, roles, billing' },
           { id: 'developer',  label: 'Developer',  hint: 'API keys · webhooks · test mode' },
-          { id: 'receipts',   label: 'Receipts',   hint: 'Branded confirmation emails' },
+          { id: 'receipts',   label: 'Receipts',   hint: 'Template gallery · 4 designs' },
           { id: 'enterprise', label: 'Enterprise', hint: 'Multi-MID · splits · 2FA · audit' },
           { id: 'tools',      label: 'Tools',      hint: 'Fraud · disputes · analytics' },
         ]}
