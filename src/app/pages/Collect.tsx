@@ -10,8 +10,9 @@ import { Invoices } from './Invoices';
 import { Subscriptions } from './Subscriptions';
 import { Send } from './Send';
 import { PaymentPages } from './PaymentPages';
+import { CheckoutStudio } from './CheckoutStudio';
 
-type SectionId = 'surfaces' | 'pages' | 'invoices' | 'subscriptions' | 'send';
+type SectionId = 'surfaces' | 'pages' | 'invoices' | 'subscriptions' | 'send' | 'studio';
 
 type Surface = {
   id: string;
@@ -55,6 +56,7 @@ export function Collect() {
           { id: 'invoices',      label: 'Invoices',      hint: 'B2B billing with GST' },
           { id: 'subscriptions', label: 'Subscriptions', hint: 'Active mandates' },
           { id: 'send',          label: 'Send',          hint: 'UPI push · SMS · WhatsApp' },
+          { id: 'studio',        label: 'Studio',        hint: 'Customize · A/B test' },
         ]}
       />
       {section === 'surfaces'      && <SurfacesSection />}
@@ -62,6 +64,7 @@ export function Collect() {
       {section === 'invoices'      && <Invoices />}
       {section === 'subscriptions' && <Subscriptions />}
       {section === 'send'          && <Send />}
+      {section === 'studio'        && <CheckoutStudio />}
     </div>
   );
 }

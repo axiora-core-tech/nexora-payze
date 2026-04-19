@@ -29,6 +29,8 @@ import customersData from '../assets/data/customers.json';
 import sendData from '../assets/data/send.json';
 import paymentPagesData from '../assets/data/paymentPages.json';
 import receiptTemplatesData from '../assets/data/receiptTemplates.json';
+import dunningData from '../assets/data/dunning.json';
+import checkoutStudioData from '../assets/data/checkoutStudio.json';
 import taxRulesData from '../assets/data/taxRules.json';
 import testScenariosData from '../assets/data/testScenarios.json';
 import timelineData from '../assets/data/timeline.json';
@@ -75,6 +77,8 @@ export const configService = {
   getSend: () => mockFetch(sendData),
   getPaymentPages: () => mockFetch(paymentPagesData),
   getReceiptTemplates: () => mockFetch(receiptTemplatesData),
+  getDunning: () => mockFetch(dunningData),
+  getCheckoutStudio: () => mockFetch(checkoutStudioData),
   getTaxRules: () => mockFetch(taxRulesData),
   getTestScenarios: () => mockFetch(testScenariosData),
   getTimeline: () => mockFetch(timelineData),

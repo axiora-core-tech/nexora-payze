@@ -1,0 +1,87 @@
+{
+  "header": {
+    "kicker": "Collect · Checkout Studio",
+    "title": "Checkout Studio",
+    "subtitle": "Customize the customer-facing checkout. Brand it, reorder methods, run A/B tests. All without code."
+  },
+  "stats": [
+    { "label": "Active tests",       "value": "3",    "sub": "2 significant · 1 gathering" },
+    { "label": "Avg lift from winners", "value": "+18.4%", "sub": "conversion · last 30d" },
+    { "label": "Brand presets",      "value": "12",   "sub": "merchants customized" },
+    { "label": "Method orderings",   "value": "42",   "sub": "variants running" }
+  ],
+  "customization": {
+    "kicker": "Brand + layout",
+    "summary": "Every Collect surface, Payment Page, and hosted checkout inherits from one brand preset. Change it here once — it applies everywhere.",
+    "brandPreset": {
+      "logoText": "Studio Lumière",
+      "logoUrl": "/merchant-logos/studio-lumiere.svg",
+      "brandColor": "#1C6F6B",
+      "accentColor": "#1A1A1A",
+      "fontStack": "Inter · system-ui",
+      "cornerRadius": "md",
+      "buttonStyle": "pill"
+    },
+    "customization": [
+      { "key": "methodOrder",      "label": "Payment method order",        "value": "UPI → Cards → BNPL → NetBanking → Wallet",  "hint": "Reorder by drag · reflects on all checkouts in 60 seconds" },
+      { "key": "primaryCtaLabel",  "label": "Primary button label",         "value": "Pay ₹{{amount}}",                           "hint": "Shown on pay button · supports {{amount}}, {{merchant}}, {{reference}} merge fields" },
+      { "key": "successRedirect",  "label": "Post-payment redirect URL",    "value": "https://studiolumiere.design/thank-you?ref={{txn_id}}", "hint": "Where customer lands after success · always HTTPS" },
+      { "key": "failureRedirect",  "label": "Post-failure redirect URL",    "value": "https://studiolumiere.design/retry",        "hint": "Where customer lands after failure" },
+      { "key": "cancelUrl",        "label": "Cancel URL",                   "value": "https://studiolumiere.design",              "hint": "Customer bails out of checkout · sends here" },
+      { "key": "termsUrl",         "label": "T&C link",                     "value": "https://studiolumiere.design/terms",        "hint": "Shown under pay button · optional" },
+      { "key": "supportEmail",     "label": "Customer support email",       "value": "help@studiolumiere.design",                 "hint": "Displayed on error screen · shown in receipts" }
+    ]
+  },
+  "abTests": [
+    {
+      "id": "ab_cta_button_copy",
+      "name": "Button copy · 'Pay' vs 'Complete purchase'",
+      "goal": "Improve click-to-pay conversion",
+      "status": "significant_winner",
+      "startedAt": "22 Mar 2026 · 28 days ago",
+      "variants": [
+        { "id": "A", "label": "'Pay ₹{{amount}}'",         "traffic": 50, "visitors": 4248, "conversions": 1042, "rate": 24.53, "isControl": true,  "isWinner": false },
+        { "id": "B", "label": "'Complete purchase'",       "traffic": 50, "visitors": 4261, "conversions": 1149, "rate": 26.97, "isControl": false, "isWinner": true  }
+      ],
+      "lift": "+9.94%",
+      "confidence": 97.4,
+      "sampleSizeReached": true,
+      "recommendation": "Ship variant B · statistical significance reached"
+    },
+    {
+      "id": "ab_method_order",
+      "name": "Method order · UPI first vs Cards first",
+      "goal": "Default to highest-converting method for mobile",
+      "status": "significant_winner",
+      "startedAt": "02 Apr 2026 · 17 days ago",
+      "variants": [
+        { "id": "A", "label": "Cards → UPI → BNPL",  "traffic": 50, "visitors": 2812, "conversions": 582, "rate": 20.70, "isControl": true,  "isWinner": false },
+        { "id": "B", "label": "UPI → Cards → BNPL",  "traffic": 50, "visitors": 2828, "conversions": 781, "rate": 27.62, "isControl": false, "isWinner": true  }
+      ],
+      "lift": "+33.4%",
+      "confidence": 99.1,
+      "sampleSizeReached": true,
+      "recommendation": "Ship variant B · UPI-first for mobile sessions"
+    },
+    {
+      "id": "ab_express",
+      "name": "Express checkout · show vs hide for recognized",
+      "goal": "Measure lift from Magic Checkout one-click lane",
+      "status": "gathering",
+      "startedAt": "14 Apr 2026 · 5 days ago",
+      "variants": [
+        { "id": "A", "label": "Hide express lane · full form",       "traffic": 50, "visitors": 482,  "conversions": 102, "rate": 21.16, "isControl": true,  "isWinner": false },
+        { "id": "B", "label": "Show express lane · 1-click for known","traffic": 50, "visitors": 476,  "conversions": 142, "rate": 29.83, "isControl": false, "isWinner": false }
+      ],
+      "lift": "+41.0%",
+      "confidence": 82.4,
+      "sampleSizeReached": false,
+      "recommendation": "Continue · 95% CI not yet reached (needs ~1,200 more visits)"
+    }
+  ],
+  "retiredTests": [
+    { "id": "ab_fee_display", "name": "GST inline vs separate", "winner": "separate", "lift": "+4.8%", "endedAt": "12 Mar 2026" },
+    { "id": "ab_trust_row",   "name": "Trust icons row show/hide", "winner": "show", "lift": "+7.1%", "endedAt": "28 Feb 2026" },
+    { "id": "ab_error_copy",  "name": "Failure copy · 'Try again' vs 'Different method'", "winner": "Different method", "lift": "+12.4%", "endedAt": "14 Feb 2026" }
+  ]
+}

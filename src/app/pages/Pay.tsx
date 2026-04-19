@@ -19,11 +19,14 @@ export function Pay() {
   const [methodId, setMethodId] = useState<string | null>(null);
   const [state, setState] = useState<State>('pick');
   const [selectedToken, setSelectedToken] = useState<string | null>(null);
+  const [selectedBnpl, setSelectedBnpl] = useState<string | null>(null);
+  const [selectedEmiTenure, setSelectedEmiTenure] = useState<number | null>(null);
+  const [expressLaneDismissed, setExpressLaneDismissed] = useState(false);
 
   if (error) return <ErrorState message={`Couldn't load checkout — ${error.message}`} onRetry={refetch} />;
   if (loading || !data) return <PageLoader label="Loading checkout" />;
 
-  const { header, checkout, methods, banks, wallets, savedCards, tokenization, threeDS } = data;
+  const { header, checkout, methods, banks, wallets, savedCards, tokenization, threeDS, bnplProviders, emiOptions, magicCheckout, otpLess } = data;
 
   const handlePay = () => {
     setState('processing');
@@ -34,6 +37,12 @@ export function Pay() {
     } else {
       setTimeout(() => setState('success'), 1800);
     }
+  };
+
+  const handleMagicOneClick = () => {
+    setState('processing');
+    // Magic Checkout is OTP-less for trusted devices · straight to success
+    setTimeout(() => setState('success'), 1100);
   };
 
   if (state === 'success') {
@@ -85,7 +94,45 @@ export function Pay() {
 
         {state === 'pick' && (
           <div style={{ padding: '28px' }}>
-            <Kicker style={{ marginBottom: '16px' }}>Choose how you'll pay</Kicker>
+
+            {/* ── Magic Checkout · express lane for recognized customer ── */}
+            {magicCheckout?.enabled && magicCheckout.oneClickEligible && !expressLaneDismissed && (
+              <div style={{ marginBottom: '24px', padding: '20px 22px', background: 'linear-gradient(135deg, rgba(28,111,107,0.07), rgba(28,111,107,0.02))', border: '0.5px solid rgba(28,111,107,0.3)', borderRadius: radius.lg, position: 'relative' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: colors.teal, animation: 'payze-pulse-dot 2s ease-in-out infinite' }} />
+                  <span style={{ fontSize: '10px', fontWeight: 700, color: colors.teal, letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: typography.family.mono }}>Magic Checkout · Express lane</span>
+                  <span style={{ marginLeft: 'auto', fontSize: '10px', color: colors.text3, fontFamily: typography.family.mono }}>+{magicCheckout.conversionLift} conversion</span>
+                </div>
+                <div style={{ fontSize: '16px', fontWeight: 600, color: colors.ink, marginBottom: '4px', letterSpacing: '-0.01em' }}>Welcome back, {magicCheckout.identifiedAs.split(' ')[0]}</div>
+                <div style={{ fontSize: '12px', color: colors.text2, marginBottom: '12px' }}>
+                  Recognized by {magicCheckout.recognizedBy} · <span style={{ fontFamily: typography.family.mono }}>{magicCheckout.phoneOnFile}</span> · Last paid {magicCheckout.lastPaidAt}
+                </div>
+                <div style={{ padding: '10px 12px', background: colors.card, border: `0.5px solid ${colors.border}`, borderRadius: radius.md, marginBottom: '14px', fontSize: '11px', color: colors.text2, lineHeight: 1.55 }}>
+                  <div style={{ fontSize: '9px', color: colors.text3, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginBottom: '6px' }}>Saved address</div>
+                  <div style={{ color: colors.ink }}>{magicCheckout.savedAddress.line1}</div>
+                  <div>{magicCheckout.savedAddress.line2}</div>
+                </div>
+                {magicCheckout.otpLess?.trustedDevice && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', background: 'rgba(28,111,107,0.05)', border: '0.5px solid rgba(28,111,107,0.2)', borderRadius: radius.sm, marginBottom: '14px' }}>
+                    <Icons.IconShield size={12} color={colors.teal} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: '11px', fontWeight: 600, color: colors.teal, marginBottom: '2px' }}>OTP-less · trusted device</div>
+                      <div style={{ fontSize: '10px', color: colors.text2, lineHeight: 1.4 }}>{magicCheckout.otpLess.reason}</div>
+                    </div>
+                  </div>
+                )}
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <Button variant="primary" fullWidth size="lg" onClick={handleMagicOneClick}>
+                    Pay ₹{checkout.amount.toLocaleString('en-IN')} in 1 tap
+                  </Button>
+                </div>
+                <button onClick={() => setExpressLaneDismissed(true)} style={{ background: 'none', border: 'none', color: colors.text3, fontSize: '11px', cursor: 'pointer', padding: '8px 0 0 0', fontFamily: 'inherit', display: 'block', margin: '0 auto' }}>
+                  Not me · use a different method
+                </button>
+              </div>
+            )}
+
+            <Kicker style={{ marginBottom: '16px' }}>{expressLaneDismissed || !magicCheckout?.oneClickEligible ? 'Choose how you\'ll pay' : 'Or choose another method'}</Kicker>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
               {methods.map((m: any) => {
                 const Icon = iconMap[m.icon] || Icons.IconSettlements;
@@ -230,8 +277,87 @@ export function Pay() {
               </div>
             )}
 
+            {methodId === 'bnpl' && bnplProviders && (
+              <div>
+                <Kicker style={{ marginBottom: '14px' }}>Pick your Pay-later provider</Kicker>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '14px' }}>
+                  {bnplProviders.map((p: any) => {
+                    const isSelected = selectedBnpl === p.id;
+                    return (
+                      <button key={p.id} onClick={() => setSelectedBnpl(isSelected ? null : p.id)} style={{
+                        display: 'flex', alignItems: 'center', gap: '12px',
+                        padding: '14px 16px',
+                        background: isSelected ? 'rgba(28,111,107,0.05)' : colors.bg,
+                        border: `0.5px solid ${isSelected ? 'rgba(28,111,107,0.4)' : colors.border}`,
+                        borderRadius: radius.md, cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left',
+                        transition: 'all 0.15s',
+                      }}>
+                        <div style={{ width: '36px', height: '36px', borderRadius: radius.sm, background: p.color, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700, flexShrink: 0 }}>{p.name.slice(0, 2)}</div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: '12px', fontWeight: 600, color: colors.ink, marginBottom: '2px' }}>{p.name}</div>
+                          <div style={{ fontSize: '10px', color: colors.text3 }}>{p.limitHint} · {p.interestFree}</div>
+                        </div>
+                        {isSelected && <Icons.IconCheck size={14} color={colors.teal} strokeWidth={2} />}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div style={{ padding: '10px 12px', background: colors.bg, borderRadius: radius.sm, fontSize: '11px', color: colors.text2, lineHeight: 1.55 }}>
+                  You'll be redirected to {selectedBnpl ? bnplProviders.find((p: any) => p.id === selectedBnpl)?.name : 'the provider'} to authenticate with your registered mobile. Repayment is managed in their app.
+                </div>
+              </div>
+            )}
+
+            {methodId === 'emi' && emiOptions && (
+              <div>
+                <Kicker style={{ marginBottom: '6px' }}>{emiOptions.kicker}</Kicker>
+                <div style={{ fontSize: '11px', color: colors.text2, marginBottom: '14px' }}>Pick a tenure · card eligibility checked after card number</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px' }}>
+                  {emiOptions.tenures.map((t: any) => {
+                    const isSelected = selectedEmiTenure === t.months;
+                    return (
+                      <button key={t.months} onClick={() => setSelectedEmiTenure(isSelected ? null : t.months)} style={{
+                        display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr 28px',
+                        gap: '14px', padding: '12px 14px',
+                        background: isSelected ? 'rgba(28,111,107,0.05)' : colors.bg,
+                        border: `0.5px solid ${isSelected ? 'rgba(28,111,107,0.4)' : colors.border}`,
+                        borderRadius: radius.md, cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left', alignItems: 'center',
+                      }}>
+                        <div>
+                          <div style={{ fontSize: '12px', fontWeight: 600, color: colors.ink, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            {t.months} months
+                            {t.noCost && <span style={{ fontSize: '9px', padding: '2px 7px', background: 'rgba(28,111,107,0.08)', color: colors.teal, borderRadius: radius.pill, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>No-cost</span>}
+                          </div>
+                          <div style={{ fontSize: '10px', color: colors.text3 }}>{t.label}</div>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '10px', color: colors.text3 }}>Monthly</div>
+                          <div style={{ fontSize: '13px', fontWeight: 600, color: colors.ink, fontFamily: typography.family.mono }}>₹{t.monthlyAmount.toLocaleString('en-IN')}</div>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '10px', color: colors.text3 }}>Total interest</div>
+                          <div style={{ fontSize: '12px', color: t.noCost ? colors.teal : colors.ink, fontFamily: typography.family.mono, fontWeight: t.noCost ? 600 : 500 }}>{t.noCost ? '₹0' : `₹${t.totalInterest}`}</div>
+                        </div>
+                        {isSelected && <Icons.IconCheck size={14} color={colors.teal} strokeWidth={2} />}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div style={{ padding: '10px 12px', background: colors.bg, borderRadius: radius.sm, fontSize: '11px', color: colors.text2, lineHeight: 1.55, marginBottom: '14px' }}>
+                  {emiOptions.noCostExplainer}
+                </div>
+                <Field label="Card number"><input style={{ ...inputStyle, fontFamily: typography.family.mono }} placeholder="0000 0000 0000 0000" /></Field>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginTop: '14px' }}>
+                  <Field label="Expiry"><input style={{ ...inputStyle, fontFamily: typography.family.mono }} placeholder="MM / YY" /></Field>
+                  <Field label="CVV"><input style={{ ...inputStyle, fontFamily: typography.family.mono }} placeholder="•••" type="password" /></Field>
+                </div>
+              </div>
+            )}
+
             <Button variant="primary" fullWidth onClick={handlePay} size="lg" style={{ marginTop: '24px' }}>
               Pay ₹{checkout.amount.toLocaleString('en-IN')}
+              {methodId === 'emi' && selectedEmiTenure && ` · ${selectedEmiTenure} months`}
+              {methodId === 'bnpl' && selectedBnpl && ` · via ${bnplProviders.find((p: any) => p.id === selectedBnpl)?.name}`}
             </Button>
 
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', marginTop: '16px', fontSize: '11px', color: colors.text3 }}>

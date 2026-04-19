@@ -1,0 +1,135 @@
+{
+  "header": {
+    "kicker": "Money · Dunning",
+    "title": "Smart retry · recover failed subscriptions",
+    "subtitle": "Bank-issuer-aware retry schedule. Recovers 4-7% of MRR for subscription businesses without touching your codebase."
+  },
+  "stats": [
+    { "label": "Recovered · 30d",   "value": "₹14.82 L",  "sub": "4.8% of at-risk MRR · 284 subs" },
+    { "label": "Currently retrying", "value": "142",       "sub": "₹6.84 L pending · across 3 cohorts" },
+    { "label": "Avg attempts to recover", "value": "1.8",  "sub": "82% recover by 2nd attempt" },
+    { "label": "Giving up rate",     "value": "11.2%",     "sub": "failed at 3rd retry · churned" }
+  ],
+  "retrySchedule": {
+    "defaultRule": "Bank-issuer aware · smart schedule",
+    "ladder": [
+      { "attempt": 1, "timing": "+0h",    "label": "Original charge",      "behaviour": "Scheduled at mandate anniversary" },
+      { "attempt": 2, "timing": "+3d",    "label": "1st retry",             "behaviour": "3 days later · most common salary credit pattern" },
+      { "attempt": 3, "timing": "+5d",    "label": "2nd retry",             "behaviour": "After month-end float cycles" },
+      { "attempt": 4, "timing": "+7d",    "label": "3rd retry · final",     "behaviour": "Last attempt before marking as churned" }
+    ],
+    "intelligentTimingBy": {
+      "kicker": "When to retry, by issuer",
+      "detail": "Payze learns per-issuer, per-BIN success windows. HDFC salaried accounts see 54% success on day 3 after 1st of month. ICICI debit cards see 62% on day 5. We schedule your retries accordingly.",
+      "issuerData": [
+        { "issuer": "HDFC Bank",       "bestRetryHour": "10:00 IST",  "bestRetryDay": "+3d",  "successRate": 54.2 },
+        { "issuer": "ICICI Bank",      "bestRetryHour": "14:00 IST",  "bestRetryDay": "+5d",  "successRate": 62.1 },
+        { "issuer": "Axis Bank",       "bestRetryHour": "11:00 IST",  "bestRetryDay": "+3d",  "successRate": 48.4 },
+        { "issuer": "SBI",             "bestRetryHour": "09:00 IST",  "bestRetryDay": "+2d",  "successRate": 51.8 },
+        { "issuer": "Kotak Bank",      "bestRetryHour": "13:00 IST",  "bestRetryDay": "+4d",  "successRate": 58.9 },
+        { "issuer": "Yes Bank",        "bestRetryHour": "15:00 IST",  "bestRetryDay": "+5d",  "successRate": 44.6 }
+      ]
+    }
+  },
+  "failureCodeStrategy": [
+    { "code": "Z03",   "label": "Insufficient funds",       "strategy": "Retry on +3d, +5d, +7d",  "avgRecovery": "68%",  "hint": "Most common · salary cycle dependent"  },
+    { "code": "R01",   "label": "Issuer unavailable",       "strategy": "Retry on +2h, +4h, +6h",  "avgRecovery": "94%",  "hint": "Transient · retry quickly"  },
+    { "code": "Z14",   "label": "Do not honor",             "strategy": "Retry once at +5d",       "avgRecovery": "12%",  "hint": "Bank decline · prompt customer to update"  },
+    { "code": "E02",   "label": "Limit exceeded",           "strategy": "No retry · switch to UPI","avgRecovery": "42%",  "hint": "Try alternate method" },
+    { "code": "M01",   "label": "Mandate expired",          "strategy": "Stop retry · send reminder","avgRecovery": "24%", "hint": "Needs customer to re-authorize"  },
+    { "code": "D01",   "label": "Card expired",             "strategy": "Stop retry · send reminder","avgRecovery": "31%", "hint": "Needs customer to update card" }
+  ],
+  "activeRetries": [
+    {
+      "id": "dun_8274",
+      "customer": "Yash Patel",
+      "customerId": "cus_g4728",
+      "merchant": "Rhea Yoga",
+      "amount": "₹4,800",
+      "cadence": "monthly",
+      "failedOn": "15 Apr",
+      "failureCode": "Z03",
+      "failureLabel": "Insufficient funds",
+      "issuer": "HDFC Bank",
+      "status": "retrying",
+      "attempt": 2,
+      "totalAttempts": 4,
+      "nextAttemptAt": "22 Apr · 10:00 IST",
+      "recoveryProbability": 68
+    },
+    {
+      "id": "dun_8273",
+      "customer": "Meera Subramanian",
+      "customerId": "cus_f1029",
+      "merchant": "MakeMyTrip",
+      "amount": "$320",
+      "cadence": "yearly",
+      "failedOn": "Today",
+      "failureCode": "R01",
+      "failureLabel": "Issuer unavailable",
+      "issuer": "Amex",
+      "status": "retrying",
+      "attempt": 1,
+      "totalAttempts": 3,
+      "nextAttemptAt": "Today · 18:00 IST",
+      "recoveryProbability": 94
+    },
+    {
+      "id": "dun_8272",
+      "customer": "Karthik Rao",
+      "customerId": "cus_unknown_a",
+      "merchant": "Cred Club",
+      "amount": "₹9,999",
+      "cadence": "monthly",
+      "failedOn": "Yesterday",
+      "failureCode": "E02",
+      "failureLabel": "Limit exceeded",
+      "issuer": "ICICI Bank",
+      "status": "awaiting_method_switch",
+      "attempt": 1,
+      "totalAttempts": 1,
+      "nextAttemptAt": "Customer prompted to switch to UPI",
+      "recoveryProbability": 42
+    },
+    {
+      "id": "dun_8271",
+      "customer": "Aditya Reddy",
+      "customerId": "cus_unknown_b",
+      "merchant": "Cred Club",
+      "amount": "₹9,999",
+      "cadence": "monthly",
+      "failedOn": "16 Apr",
+      "failureCode": "Z03",
+      "failureLabel": "Insufficient funds",
+      "issuer": "Axis Bank",
+      "status": "retrying",
+      "attempt": 3,
+      "totalAttempts": 4,
+      "nextAttemptAt": "23 Apr · 11:00 IST",
+      "recoveryProbability": 48
+    },
+    {
+      "id": "dun_8270",
+      "customer": "Sneha Kapoor",
+      "customerId": "cus_h8019",
+      "merchant": "Nykaa Beauty",
+      "amount": "₹1,299",
+      "cadence": "monthly",
+      "failedOn": "12 Apr",
+      "failureCode": "M01",
+      "failureLabel": "Mandate expired",
+      "issuer": "HDFC Bank",
+      "status": "giving_up",
+      "attempt": 3,
+      "totalAttempts": 3,
+      "nextAttemptAt": "No further retries · customer notified to re-authorize",
+      "recoveryProbability": 24
+    }
+  ],
+  "recentRecoveries": [
+    { "id": "rec_00412", "customer": "Karan Mehta",     "merchant": "Rhea Yoga",   "amount": "₹4,800", "attempt": 2, "daysToRecover": 3, "method": "UPI Autopay",   "recoveredAt": "Today 09:14" },
+    { "id": "rec_00411", "customer": "Priya Venkataraman", "merchant": "Cred Club", "amount": "₹9,999", "attempt": 1, "daysToRecover": 0, "method": "Cards · HDFC", "recoveredAt": "Yesterday 14:32" },
+    { "id": "rec_00410", "customer": "Tara Iyer",       "merchant": "Rhea Yoga",   "amount": "₹4,800", "attempt": 2, "daysToRecover": 5, "method": "UPI Autopay",   "recoveredAt": "16 Apr 18:22" },
+    { "id": "rec_00409", "customer": "Ishaan Kapoor",   "merchant": "Rhea Yoga",   "amount": "₹4,800", "attempt": 1, "daysToRecover": 0, "method": "Cards · ICICI", "recoveredAt": "15 Apr 09:10" }
+  ]
+}
