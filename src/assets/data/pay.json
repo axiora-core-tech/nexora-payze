@@ -34,11 +34,7 @@
     "version":  "3DS 2.2",
     "afaThreshold": "₹2,000 (RBI Additional Factor of Authentication mandate)",
     "fraudScore": 14,
-<<<<<<< HEAD
     "frictionless": false,
-=======
-    "frictionless": true,
->>>>>>> be80785912944f49b03441a702d8b5ded786988a
     "frictionlessReason": "Risk score below challenge threshold · device & behaviour profile match prior successful auths"
   }
 }
